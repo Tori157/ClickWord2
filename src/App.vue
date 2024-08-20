@@ -3,14 +3,21 @@ import playButton from "./components/icons/play.png";
 import bulb from "./components/icons/bulb.png";
 import prize from "./components/icons/prize.png";
 
+import {ref} from 'vue'
+
+const isVisible = ref(0)
+
+const modePage=()=>{
+  isVisible.value=1
+}
 </script>
 
 <template>
   <div>
     <!-- Start Page -->
-    <!-- <div id="startPage" class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen">
+    <div v-if="isVisible===0" class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen">
       <h1 class="text-[150px] justify-start text-[#237C9D] mt-[-75px]">CLICK WORD</h1>
-      <img :src="playButton" alt="Play Button" class="w-60 h-60 mx-auto mb-[50px] mt-10 hover:scale-110">
+      <button @click="modePage"><img :src="playButton" alt="Play Button" class="w-60 h-60 mx-auto mb-[50px] mt-10 hover:scale-110"></button>
       <div class="flex gap-80 mt-10">
         <div class="flex flex-col item-center gap-2">
           <img :src="prize" alt="Play Button" class="w-20 h-20 mx-auto my-auto mb-1 ">
@@ -21,10 +28,10 @@ import prize from "./components/icons/prize.png";
           <h3 class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3">Hints (3)</h3>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <!-- Mode Page -->
-    <!-- <div id="modePage" class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen gap-20">
+    <div v-if="isVisible===1" class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen gap-20">
       <h1 class="text-[130px] justify-start text-[#237C9D] mt-[-200px]">MODE</h1>
       <div class="flex flex-col gap-6 ">
         <button
@@ -34,10 +41,10 @@ import prize from "./components/icons/prize.png";
         <button
           class="bg-[#FE6D73] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ee464c]">Hard</button>
       </div>
-    </div> -->
+    </div>
 
     <!-- Play Page -->
-    <div id="playPage">
+    <div v-if="isVisible===2">
 
     </div>
   </div>
