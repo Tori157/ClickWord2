@@ -24,7 +24,7 @@ const playMode = (difficulty) => {
   const question = Questions.filter((q) => q.difficulty === difficulty)[
     level.value
   ]
-  selectedWord.value = question.word.split('')
+  selectedWord.value = shuffleArray(question.word.split(''))
   spaceCount.value = selectedWord.value.length
   col.value = selectedWord.value.length
   correctAnswer.value = question.correctAnswer.split('')
@@ -55,7 +55,6 @@ const checkAnswer = () => {
 
   if (isCorrect) {
     console.log('you win')
-    // correctPage();
   } else {
     console.log('you lose')
   }
