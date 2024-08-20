@@ -48,8 +48,6 @@ const playMode = (difficulty) => {
   col.value = selectedWord.value.length
   correctAnswer.value = question.correctAnswer.split('')
   selectedAnswer.value = Array(spaceCount.value).fill(' ')
-
-  console.log(selectedAnswer.value)
 }
 
 const playEasyMode = () => playMode('easy')
