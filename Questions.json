@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "difficulty": "easy",
+    "word": "apple",
+    "correctAnswer": "fruit",
+    "level": 1
+  },
+  {
+    "id": 2,
+    "difficulty": "easy",
+    "word": "cat",
+    "correctAnswer": "animal",
+    "level": 2
+  },
+  {
+    "id": 3,
+    "difficulty": "easy",
+    "word": "sun",
+    "correctAnswer": "star",
+    "level": 3
+  },
+  {
+    "id": 4,
+    "difficulty": "easy",
+    "word": "car",
+    "correctAnswer": "vehicle",
+    "level": 4
+  },
+  {
+    "id": 5,
+    "difficulty": "easy",
+    "word": "pencil",
+    "correctAnswer": "stationery",
+    "level": 5
+  },
+  {
+    "id": 6,
+    "difficulty": "medium",
+    "word": "ocean",
+    "correctAnswer": "water",
+    "level": 1
+  },
+  {
+    "id": 7,
+    "difficulty": "medium",
+    "word": "guitar",
+    "correctAnswer": "instrument",
+    "level": 2
+  },
+  {
+    "id": 8,
+    "difficulty": "medium",
+    "word": "mountain",
+    "correctAnswer": "landform",
+    "level": 3
+  },
+  {
+    "id": 9,
+    "difficulty": "medium",
+    "word": "river",
+    "correctAnswer": "water",
+    "level": 4
+  },
+  {
+    "id": 10,
+    "difficulty": "medium",
+    "word": "computer",
+    "correctAnswer": "device",
+    "level": 5
+  },
+  {
+    "id": 11,
+    "difficulty": "hard",
+    "word": "mercury",
+    "correctAnswer": "planet",
+    "level": 1
+  },
+  {
+    "id": 12,
+    "difficulty": "hard",
+    "word": "quantum",
+    "correctAnswer": "physics",
+    "level": 2
+  },
+  {
+    "id": 13,
+    "difficulty": "hard",
+    "word": "nebula",
+    "correctAnswer": "space",
+    "level": 3
+  },
+  {
+    "id": 14,
+    "difficulty": "hard",
+    "word": "algorithm",
+    "correctAnswer": "math",
+    "level": 4
+  },
+  {
+    "id": 15,
+    "difficulty": "hard",
+    "word": "molecule",
+    "correctAnswer": "chemistry",
+    "level": 5
+  }
+]
