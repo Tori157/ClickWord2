@@ -18,7 +18,7 @@ import prize from "./components/icons/prize.png";
         </div>
         <div class="flex flex-col item-center gap-2">
           <img :src="bulb" alt="Play Button" class="w-20 h-20 mx-auto my-auto mb-1 mr-3 ">
-          <h3 class="bg-[#FF9090] text-[##FE6D73] text-[20px] rounded-2xl p-3">Hints (3)</h3>
+          <h3 class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3">Hints (3)</h3>
         </div>
       </div>
     </div> -->
