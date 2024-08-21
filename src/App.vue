@@ -24,6 +24,7 @@ const col = ref(0)
 
 const modePage = () => {
   isVisible.value = 1
+  clearLevel()
 }
 
 const startPage = () => {
@@ -72,7 +73,10 @@ const checkAnswer = () => {
 
   if (isCorrect) {
     console.log('you win')
-    // correctPage();
+    level.value += 1
+    playMode('easy')
+    selectedAnswer.value = Array(spaceCount.value).fill(' ')
+    count.value = 0
   } else {
     console.log('you lose')
   }
@@ -87,9 +91,13 @@ function shuffleArray(arr) {
   return shuffled
 }
 
-const clear = () => {
+const clearSelectAnswer = () => {
   selectedAnswer.value = Array(spaceCount.value).fill(' ')
   count.value = 0
+}
+
+const clearLevel = () => {
+  level.value = 0
 }
 </script>
 
@@ -182,7 +190,7 @@ const clear = () => {
             class="w-[50px] h-[50px] ml-5 mt-5 hover:scale-110"
           />
         </button>
-        <h3 class="mt-6 text-4xl text-black">Level 1</h3>
+        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level + 1}` }}</h3>
         <div class="flex flex-col">
           <button @click="successPage">
             <img
@@ -225,7 +233,7 @@ const clear = () => {
 
       <div class="flex justify-center items-end mb-16 gap-10">
         <button
-          @click="clear"
+          @click="clearSelectAnswer"
           class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black"
         >
           Clear
