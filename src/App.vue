@@ -86,6 +86,11 @@ function shuffleArray(arr) {
   }
   return shuffled
 }
+
+const clear = () => {
+  selectedAnswer.value = Array(spaceCount.value).fill(' ')
+  count.value = 0
+}
 </script>
 
 <template>
@@ -220,6 +225,7 @@ function shuffleArray(arr) {
 
       <div class="flex justify-center items-end mb-16 gap-10">
         <button
+          @click="clear"
           class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black"
         >
           Clear
