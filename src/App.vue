@@ -241,6 +241,7 @@ watch(() => count.value, () => {
         </div>
         <div class="flex flex-row gap-2 mb-8">
           <div v-for="(item, index) in selectedAnswer" :key="index"
+            :class="[usedHintIndexes.includes(index) ? 'bg-[#FFCB77]' : '']"
             class="text-[40px] text-black flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl">
             {{ item }}
           </div>
