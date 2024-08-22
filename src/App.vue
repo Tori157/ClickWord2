@@ -9,9 +9,9 @@ import soundButton from './components/icons/soundButton.png'
 import loadSuccess from './components/icons/loadPhoto.png'
 import levelSuccess from './components/icons/level-up-photo.png'
 import prizePhoto from './components/icons/prizePhoto.png'
-import Questions from '../Questions.json'
+import Questions from './data/word_levels.json'
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const isVisible = ref(0)
 const level = ref(0)
@@ -24,6 +24,7 @@ const col = ref(0)
 
 const modePage = () => {
   isVisible.value = 1
+  clearLevel()
 }
 
 const startPage = () => {
@@ -40,14 +41,26 @@ const successPage = () => {
 
 const playMode = (difficulty) => {
   isVisible.value = 2
-  const question = Questions.filter((q) => q.difficulty === difficulty)[
-    level.value
-  ]
+  clearSelectAnswer()
+  // const question = Questions.filter((q) => q.difficulty === difficulty)[
+  //   level.value
+  // ]
+
+  const filterquestions = Questions.filter((q) => q.difficulty === difficulty)
+
+  const randomIndex = Math.floor(Math.random() * filterquestions.length)
+
+  const question = filterquestions[randomIndex]
+
   selectedWord.value = shuffleArray(question.word.split(''))
+
   spaceCount.value = selectedWord.value.length
   col.value = selectedWord.value.length
+
   correctAnswer.value = question.correctAnswer.split('')
   selectedAnswer.value = Array(spaceCount.value).fill(' ')
+
+  console.log(selectedAnswer.value)
 }
 
 const playEasyMode = () => playMode('easy')
@@ -65,27 +78,65 @@ const selectLetter = (letter) => {
   }
 }
 
+// const checkAnswer = () => {
+//   const isCorrect = correctAnswer.value.every(
+//     (char, index) => char === selectedAnswer.value[index]
+//   )
+
+//   if (isCorrect) {
+//     console.log('you win')
+//     level.value += 1
+//     playMode('easy')
+//     selectedAnswer.value = Array(spaceCount.value).fill(' ')
+//     count.value = 0
+//   } else {
+//     console.log('you lose')
+//   }
+// }
+
 const checkAnswer = () => {
+  const flattenedSelectedAnswer = selectedAnswer.value.flat()
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === selectedAnswer.value[index]
+    (char, index) => char === flattenedSelectedAnswer[index]
   )
 
   if (isCorrect) {
     console.log('you win')
-    // correctPage();
+    level.value += 1
+    playMode('easy')
+    selectedAnswer.value = Array(spaceCount.value).fill(' ')
+    count.value = 0
   } else {
     console.log('you lose')
   }
 }
 
 function shuffleArray(arr) {
-  let shuffled = arr.slice() // Create a copy of the array
+  let shuffled = arr.slice() // สร้างสำเนาของอาร์เรย์
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]] // Swap elements
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]] // สลับตำแหน่งของสมาชิกในอาร์เรย์
   }
   return shuffled
 }
+
+const clearSelectAnswer = () => {
+  selectedAnswer.value = Array(spaceCount.value).fill(' ')
+  count.value = 0
+}
+
+const clearLevel = () => {
+  level.value = 0
+}
+
+const splitWords = computed(() => {
+  const rows = []
+  const perRow = col.value / 2
+  for (let i = 0; i < selectedWord.value.length; i += perRow) {
+    rows.push(selectedWord.value.slice(i, i + perRow))
+  }
+  return rows
+})
 </script>
 
 <template>
@@ -177,7 +228,7 @@ function shuffleArray(arr) {
             class="w-[50px] h-[50px] ml-5 mt-5 hover:scale-110"
           />
         </button>
-        <h3 class="mt-6 text-4xl text-black">Level 1</h3>
+        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level + 1}` }}</h3>
         <div class="flex flex-col">
           <button @click="successPage">
             <img
@@ -196,7 +247,7 @@ function shuffleArray(arr) {
         </div>
       </div>
 
-      <div class="flex flex-col items-center justify-center flex-1 gap-8">
+      <!-- <div class="flex flex-col items-center justify-center flex-1 gap-8">
         <div class="flex flex-row gap-2 mb-8">
           <button
             v-for="word in selectedWord"
@@ -216,10 +267,37 @@ function shuffleArray(arr) {
             {{ item }}
           </div>
         </div>
+      </div> -->
+
+      <div class="flex flex-col items-center justify-center flex-1 gap-8">
+        <div
+          v-for="(row, rowIndex) in splitWords"
+          :key="rowIndex"
+          class="flex flex-row gap-2 mb-8"
+        >
+          <button
+            v-for="word in row"
+            :key="word"
+            @click="selectLetter(word)"
+            class="text-[40px] text-[#FEF9EF] rounded-2xl w-20 h-20 bg-[#19C3B2]"
+          >
+            {{ word }}
+          </button>
+        </div>
+        <div class="flex flex-row gap-2 mb-8">
+          <div
+            v-for="(item, index) in selectedAnswer"
+            :key="index"
+            class="text-[40px] text-black flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl"
+          >
+            {{ item }}
+          </div>
+        </div>
       </div>
 
       <div class="flex justify-center items-end mb-16 gap-10">
         <button
+          @click="clearSelectAnswer"
           class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black"
         >
           Clear
