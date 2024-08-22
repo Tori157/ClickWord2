@@ -17,12 +17,13 @@ const isVisible = ref(0)
 const level = ref(0)
 const selectedWord = ref([])
 const selectedAnswer = ref([])
-const spaceCount = ref(0)
 const count = ref(0)
 const correctAnswer = ref([])
-const col = ref(0)
+const boxAnswerLength = ref(0)
 const hints = ref(300)
 const usedHintIndexes = ref([])
+// Fix bug: when completed a level, always directed to 'easy' mode
+const onMode = ref('')
 
 const modePage = () => {
   isVisible.value = 1
@@ -33,7 +34,7 @@ const startPage = () => {
   isVisible.value = 0
 }
 
-const easyPage = () => {
+const gamePlayPage = () => {
   isVisible.value = 2
 }
 
@@ -41,42 +42,37 @@ const successPage = () => {
   isVisible.value = 3
 }
 
-const playMode = (difficulty) => {
-  isVisible.value = 2
+const playMode = () => {
+  gamePlayPage()
   clearSelectAnswer()
-  // const question = Questions.filter((q) => q.difficulty === difficulty)[
-  //   level.value
-  // ]
 
-  const filterquestions = Questions.filter((q) => q.difficulty === difficulty)
-
+  const filterquestions = Questions.filter((q) => q.difficulty === onMode.value)
   const randomIndex = Math.floor(Math.random() * filterquestions.length)
-
   const question = filterquestions[randomIndex]
 
   selectedWord.value = shuffleArray(question.word.split(''))
-
-  spaceCount.value = selectedWord.value.length
-  col.value = selectedWord.value.length
-
+  boxAnswerLength.value = selectedWord.value.length
   correctAnswer.value = question.correctAnswer.split('')
-  selectedAnswer.value = Array(spaceCount.value).fill(' ')
-
-  console.log(selectedAnswer.value)
+  selectedAnswer.value = Array(boxAnswerLength.value).fill('')
 }
 
-const playEasyMode = () => playMode('easy')
-const playMediumMode = () => playMode('medium')
-const playHardMode = () => playMode('hard')
+const playEasyMode = () => {
+  onMode.value = 'easy'
+  playMode()
+}
+const playMediumMode = () => {
+  onMode.value = 'medium'
+  playMode()
+}
+const playHardMode = () => {
+  onMode.value = 'hard'
+  playMode()
+}
 
 const selectLetter = (letter) => {
   if (count.value < selectedAnswer.value.length) {
     selectedAnswer.value[count.value] = letter
     count.value += 1
-
-    // if (count.value >= correctAnswer.value.length) {
-    //   checkAnswer()
-    // }
   }
 }
 
@@ -90,8 +86,8 @@ const checkAnswer = () => {
   if (isCorrect) {
     console.log('you win')
     level.value += 1
-    playMode('easy')
-    selectedAnswer.value = Array(spaceCount.value).fill(' ')
+    playMode()
+    selectedAnswer.value = Array(boxAnswerLength.value).fill('')
     count.value = 0
   } else {
     console.log('you lose')
@@ -108,7 +104,8 @@ function shuffleArray(arr) {
 }
 
 const clearSelectAnswer = () => {
-  selectedAnswer.value = Array(spaceCount.value).fill(' ')
+  usedHintIndexes.value.length = 0
+  selectedAnswer.value = Array(boxAnswerLength.value).fill('')
   count.value = 0
 }
 
@@ -118,7 +115,7 @@ const clearLevel = () => {
 
 const splitWords = computed(() => {
   const rows = []
-  const perRow = col.value / 2
+  const perRow = boxAnswerLength.value / 2
   for (let i = 0; i < selectedWord.value.length; i += perRow) {
     rows.push(selectedWord.value.slice(i, i + perRow))
   }
