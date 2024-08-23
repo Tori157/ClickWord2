@@ -302,14 +302,14 @@ watch(
             {{ item.letter }}
           </button>
         </div>
-        <div class="flex flex-row gap-2 mb-8">
+        <div class="flex flex-row gap-2 mt-5">
           <div
             v-for="(item, index) in selectedAnswer"
             :key="index"
             :class="[usedHintIndexes.includes(index) ? 'bg-[#FFCB77]' : '']"
             class="text-[40px] text-black flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl"
           >
-            {{ item }}
+            {{ item.toUpperCase() }}
           </div>
         </div>
       </div>
@@ -331,10 +331,10 @@ watch(
     </div>
 
     <!-- Success Page -->
-    <!-- <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-start items-center">
+    <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-start items-center">
       <h2 class="text-white text-7xl mt-10 justify-start">Level 1 Completed !!</h2>
       <img :src="loadSuccess" alt="Prize" class=" w-[610px] h-[600px] items-end">
-     </div> -->
+     </div>
 
     <!-- Level-up Page -->
     <!-- <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-between items-center">
