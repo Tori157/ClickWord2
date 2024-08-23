@@ -21,22 +21,43 @@ const spaceCount = ref(0)
 const count = ref(0)
 const correctAnswer = ref([])
 const col = ref(0)
+const currentMode = ref('')
 
 const modePage = () => {
   isVisible.value = 1
   clearLevel()
+  count.value = 0
 }
 
 const startPage = () => {
   isVisible.value = 0
 }
 
-const easyPage = () => {
-  isVisible.value = 2
-}
-
 const successPage = () => {
   isVisible.value = 3
+}
+
+const clearSelectAnswer = () => {
+  selectedAnswer.value = Array(spaceCount.value).fill(' ')
+  count.value = 0
+}
+
+const clearLevel = () => {
+  level.value = 0
+}
+
+const getCharClass = (index) => {
+  // ปรับการจัดการ class ตาม index หรือเงื่อนไขอื่น ๆ
+  // ใช้ class ต่าง ๆ ตาม index ของตัวอักษร
+  return index % 2 === 0
+    ? 'text-[40px] flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl'
+    : 'bg-[#19C3B2] text-[40px] text-[#FFFFFF] flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl'
+}
+
+const changeMode = (mode) => {
+  currentMode.value = mode
+  level.value = 0 // รีเซ็ตระดับเมื่อเปลี่ยนโหมด
+  playMode(currentMode.value) // เริ่มต้นโหมดที่เลือก
 }
 
 const playMode = (difficulty) => {
@@ -62,10 +83,6 @@ const playMode = (difficulty) => {
 
   console.log(selectedAnswer.value)
 }
-
-const playEasyMode = () => playMode('easy')
-const playMediumMode = () => playMode('medium')
-const playHardMode = () => playMode('hard')
 
 const selectLetter = (letter) => {
   if (count.value < selectedAnswer.value.length) {
@@ -94,20 +111,58 @@ const selectLetter = (letter) => {
 //   }
 // }
 
+// const checkAnswer = () => {
+//   const flattenedSelectedAnswer = selectedAnswer.value.flat()
+//   const isCorrect = correctAnswer.value.every(
+//     (char, index) => char === flattenedSelectedAnswer[index]
+//   )
+
+//   if (isCorrect) {
+//     console.log('you win')
+//     level.value += 1
+//     playMode('easy')
+//     selectedAnswer.value = Array(spaceCount.value).fill(' ')
+//     count.value = 0
+//   } else {
+//     console.log('you lose')
+//   }
+// }
+
 const checkAnswer = () => {
-  const flattenedSelectedAnswer = selectedAnswer.value.flat()
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index]
+    (char, index) => char === selectedAnswer.value[index]
   )
 
   if (isCorrect) {
     console.log('you win')
-    level.value += 1
-    playMode('easy')
-    selectedAnswer.value = Array(spaceCount.value).fill(' ')
-    count.value = 0
+    isVisible.value = 3
+
+    // นับถอยหลัง 1 วินาที
+    setTimeout(() => {
+      level.value += 1 // เปลี่ยนไประดับถัดไป
+      playMode(currentMode.value)
+      selectedAnswer.value = Array(spaceCount.value).fill(' ') // รีเซ็ตคำตอบที่เลือก
+      count.value = 0 // รีเซ็ตตัวนับเวลา
+
+      // เปลี่ยนหน้าเพจเป็นหน้าเริ่มต้นหรือหน้าโหมดตามที่ต้องการ
+      isVisible.value = 2 // เปลี่ยนเป็นหน้าถัดไปที่ต้องการ
+    }, 1000)
+
+    // เริ่มจับเวลา
   } else {
     console.log('you lose')
+    // Clear array after lose
+    selectedWord.value = []
+    // นับถอยหลัง 1 วินาที
+    setTimeout(() => {
+      // level.value += 1;// เปลี่ยนไประดับถัดไป
+      playMode(currentMode.value)
+      selectedAnswer.value = Array(spaceCount.value).fill(' ') // รีเซ็ตคำตอบที่เลือก
+      count.value = 0 // รีเซ็ตตัวนับเวลา
+
+      // เปลี่ยนหน้าเพจเป็นหน้าเริ่มต้นหรือหน้าโหมดตามที่ต้องการ
+      isVisible.value = 2 // เปลี่ยนเป็นหน้าถัดไปที่ต้องการ
+    }, 1000)
   }
 }
 
@@ -118,15 +173,6 @@ function shuffleArray(arr) {
     ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]] // สลับตำแหน่งของสมาชิกในอาร์เรย์
   }
   return shuffled
-}
-
-const clearSelectAnswer = () => {
-  selectedAnswer.value = Array(spaceCount.value).fill(' ')
-  count.value = 0
-}
-
-const clearLevel = () => {
-  level.value = 0
 }
 
 const splitWords = computed(() => {
@@ -188,19 +234,19 @@ const splitWords = computed(() => {
       <h1 class="text-[130px] justify-start text-[#237C9D]">MODE</h1>
       <div class="flex flex-col gap-6">
         <button
-          @click="playEasyMode"
+          @click="changeMode('easy')"
           class="bg-[#19C3B2] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#20a396]"
         >
           Easy
         </button>
         <button
-          @click="playMediumMode"
+          @click="changeMode('medium')"
           class="bg-[#FFCB77] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ffb031]"
         >
           Medium
         </button>
         <button
-          @click="playHardMode"
+          @click="changeMode('hard')"
           class="bg-[#FE6D73] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ee464c]"
         >
           Hard
@@ -269,28 +315,31 @@ const splitWords = computed(() => {
         </div>
       </div> -->
 
-      <div class="flex flex-col items-center justify-center flex-1 gap-8">
-        <div
-          v-for="(row, rowIndex) in splitWords"
-          :key="rowIndex"
-          class="flex flex-row gap-2 mb-8"
-        >
-          <button
-            v-for="word in row"
-            :key="word"
-            @click="selectLetter(word)"
-            class="text-[40px] text-[#FEF9EF] rounded-2xl w-20 h-20 bg-[#19C3B2]"
+      <div class="flex flex-col items-center justify-center">
+        <div class="flex flex-col gap-3 mb-10">
+          <div
+            v-for="(row, rowIndex) in splitWords"
+            :key="rowIndex"
+            class="flex flex-row gap-2"
           >
-            {{ word }}
-          </button>
+            <button
+              v-for="word in row"
+              :key="word"
+              @click="selectLetter(word)"
+              class="text-[40px] text-[#FEF9EF] rounded-2xl w-20 h-20 bg-[#19C3B2]"
+            >
+              {{ word.toUpperCase() }}
+            </button>
+          </div>
         </div>
-        <div class="flex flex-row gap-2 mb-8">
+        <div class="flex flex-row gap-2 mt-5">
           <div
             v-for="(item, index) in selectedAnswer"
             :key="index"
-            class="text-[40px] text-black flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl"
+            class="border-[#19C3B2]"
+            :class="getCharClass(item)"
           >
-            {{ item }}
+            {{ item.toUpperCase() }}
           </div>
         </div>
       </div>
@@ -311,10 +360,10 @@ const splitWords = computed(() => {
     </div>
 
     <!-- Success Page -->
-    <!-- <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-start items-center">
+    <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-start items-center">
       <h2 class="text-white text-7xl mt-10 justify-start">Level 1 Completed !!</h2>
       <img :src="loadSuccess" alt="Prize" class=" w-[610px] h-[600px] items-end">
-     </div> -->
+     </div>
 
     <!-- Level-up Page -->
     <!-- <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-between items-center">
