@@ -48,8 +48,6 @@ const clearLevel = () => {
 }
 
 const getCharClass = (index) => {
-  // ปรับการจัดการ class ตาม index หรือเงื่อนไขอื่น ๆ
-  // ใช้ class ต่าง ๆ ตาม index ของตัวอักษร
   return index % 2 === 0
     ? 'text-[40px] flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl'
     : 'bg-[#19C3B2] text-[40px] text-[#FFFFFF] flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl'
@@ -57,31 +55,21 @@ const getCharClass = (index) => {
 
 const changeMode = (mode) => {
   currentMode.value = mode
-  level.value = 0 // รีเซ็ตระดับเมื่อเปลี่ยนโหมด
-  playMode(currentMode.value) // เริ่มต้นโหมดที่เลือก
+  level.value = 0 
+  playMode(currentMode.value) 
 }
 
 const playMode = (difficulty) => {
   isVisible.value = 2
   clearSelectAnswer()
-  // const question = Questions.filter((q) => q.difficulty === difficulty)[
-  //   level.value
-  // ]
-
   const filterquestions = Questions.filter((q) => q.difficulty === difficulty)
-
   const randomIndex = Math.floor(Math.random() * filterquestions.length)
-
   const question = filterquestions[randomIndex]
-
   selectedWord.value = shuffleArray(question.word.split(''))
-
   spaceCount.value = selectedWord.value.length
   col.value = selectedWord.value.length
-
   correctAnswer.value = question.correctAnswer.split('')
   selectedAnswer.value = Array(spaceCount.value).fill(' ')
-
   console.log(selectedAnswer.value)
 }
 
@@ -89,45 +77,11 @@ const selectLetter = (letter) => {
   if (count.value < selectedAnswer.value.length) {
     selectedAnswer.value[count.value] = letter
     count.value += 1
-
     if (count.value >= correctAnswer.value.length) {
       checkAnswer()
     }
   }
 }
-
-// const checkAnswer = () => {
-//   const isCorrect = correctAnswer.value.every(
-//     (char, index) => char === selectedAnswer.value[index]
-//   )
-
-//   if (isCorrect) {
-//     console.log('you win')
-//     level.value += 1
-//     playMode('easy')
-//     selectedAnswer.value = Array(spaceCount.value).fill(' ')
-//     count.value = 0
-//   } else {
-//     console.log('you lose')
-//   }
-// }
-
-// const checkAnswer = () => {
-//   const flattenedSelectedAnswer = selectedAnswer.value.flat()
-//   const isCorrect = correctAnswer.value.every(
-//     (char, index) => char === flattenedSelectedAnswer[index]
-//   )
-
-//   if (isCorrect) {
-//     console.log('you win')
-//     level.value += 1
-//     playMode('easy')
-//     selectedAnswer.value = Array(spaceCount.value).fill(' ')
-//     count.value = 0
-//   } else {
-//     console.log('you lose')
-//   }
-// }
 
 const checkAnswer = () => {
   const isCorrect = correctAnswer.value.every(
@@ -138,37 +92,28 @@ const checkAnswer = () => {
     console.log('you win')
     isVisible.value = 3
 
-    // นับถอยหลัง 1 วินาที
-    setTimeout(() => {
-      level.value += 1 // เปลี่ยนไประดับถัดไป
-      playMode(currentMode.value)
-      selectedAnswer.value = Array(spaceCount.value).fill(' ') // รีเซ็ตคำตอบที่เลือก
-      count.value = 0 // รีเซ็ตตัวนับเวลา
 
-      // เปลี่ยนหน้าเพจเป็นหน้าเริ่มต้นหรือหน้าโหมดตามที่ต้องการ
-      isVisible.value = 2 // เปลี่ยนเป็นหน้าถัดไปที่ต้องการ
+    setTimeout(() => {
+      level.value += 1 
+      playMode(currentMode.value)
+      selectedAnswer.value = Array(spaceCount.value).fill(' ') 
+      isVisible.value = 2 
     }, 1000)
 
-    // เริ่มจับเวลา
   } else {
     console.log('you lose')
-    // Clear array after lose
     selectedWord.value = []
-    // นับถอยหลัง 1 วินาที
     setTimeout(() => {
-      // level.value += 1;// เปลี่ยนไประดับถัดไป
       playMode(currentMode.value)
-      selectedAnswer.value = Array(spaceCount.value).fill(' ') // รีเซ็ตคำตอบที่เลือก
-      count.value = 0 // รีเซ็ตตัวนับเวลา
-
-      // เปลี่ยนหน้าเพจเป็นหน้าเริ่มต้นหรือหน้าโหมดตามที่ต้องการ
-      isVisible.value = 2 // เปลี่ยนเป็นหน้าถัดไปที่ต้องการ
+      selectedAnswer.value = Array(spaceCount.value).fill(' ') 
+      count.value = 0 
+      isVisible.value = 2 
     }, 1000)
   }
 }
 
 function shuffleArray(arr) {
-  let shuffled = arr.slice() // สร้างสำเนาของอาร์เรย์
+  let shuffled = arr.slice() 
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]] // สลับตำแหน่งของสมาชิกในอาร์เรย์
@@ -294,28 +239,6 @@ const splitWords = computed(() => {
         </div>
       </div>
 
-      <!-- <div class="flex flex-col items-center justify-center flex-1 gap-8">
-        <div class="flex flex-row gap-2 mb-8">
-          <button
-            v-for="word in selectedWord"
-            :key="word"
-            @click="selectLetter(word)"
-            class="text-[40px] text-[#FEF9EF] rounded-2xl w-20 h-20 bg-[#19C3B2]"
-          >
-            {{ word }}
-          </button>
-        </div>
-        <div class="flex flex-row gap-2 mb-8">
-          <div
-            v-for="item in selectedAnswer"
-            :key="item"
-            class="text-[40px] text-black flex justify-center items-center w-20 h-20 border-2 border-[#19C3B2] rounded-2xl"
-          >
-            {{ item }}
-          </div>
-        </div>
-      </div> -->
-
       <div class="flex flex-col items-center justify-center">
         <div class="flex flex-col gap-3 mb-10">
           <div
@@ -393,7 +316,6 @@ h1 {
   font-weight: 500;
   font-style: normal;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  /* เงาที่ตัวอักษร */
 }
 
 * {
