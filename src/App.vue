@@ -11,13 +11,17 @@ import levelSuccess from "./components/icons/level-up-photo.png";
 import prizePhoto from "./components/icons/prizePhoto.png";
 import Questions from "./data/word_levels.json";
 
+import "./extensions/array";
+
 import { ref, computed, watch } from "vue";
 
 const isVisible = ref(0);
+const filteredWordCollection = ref([]);
+const playedIds = [];
+const currentWordId = ref(0);
 const level = ref(0);
 const selectedWord = ref([]);
 const selectedAnswer = ref([]);
-const count = ref(0);
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
 const hints = ref(3);
@@ -42,15 +46,17 @@ const successPage = () => {
   isVisible.value = 3;
 };
 
-const playMode = () => {
+const nextLevel = () => {
   gamePlayPage();
   clearSelectAnswer();
 
-  const filterquestions = Questions.filter(
-    (q) => q.difficulty === onMode.value,
+  filteredWordCollection.value =
+    filteredWordCollection.value.filterByExcludeIds(playedIds);
+  const randomIndex = Math.floor(
+    Math.random() * filteredWordCollection.value.length,
   );
-  const randomIndex = Math.floor(Math.random() * filterquestions.length);
-  const question = filterquestions[randomIndex];
+  const question = filteredWordCollection.value[randomIndex];
+  currentWordId.value = question.id;
 
   selectedWord.value = shuffleArray(question.word.split(""));
   boxAnswerLength.value = selectedWord.value.length;
@@ -58,17 +64,10 @@ const playMode = () => {
   selectedAnswer.value = Array(boxAnswerLength.value).fill("");
 };
 
-const playEasyMode = () => {
-  onMode.value = "easy";
-  playMode();
-};
-const playMediumMode = () => {
-  onMode.value = "medium";
-  playMode();
-};
-const playHardMode = () => {
-  onMode.value = "hard";
-  playMode();
+const playOnMode = (mode) => {
+  onMode.value = mode;
+  filteredWordCollection.value = Questions.filterByMode(mode).shuffle();
+  nextLevel();
 };
 
 const selectLetter = (letter, index) => {
@@ -107,8 +106,9 @@ const checkAnswer = () => {
 
   if (isCorrect) {
     console.log("you win");
+    playedIds.push(currentWordId.value);
     level.value += 1;
-    playMode();
+    nextLevel();
     selectedAnswer.value = Array(boxAnswerLength.value).fill("");
   } else {
     console.log("you lose");
@@ -162,7 +162,7 @@ const useHint = () => {
       Math.random() * availableIndexes.length,
     );
     const randomIndex = availableIndexes[randomOfAvailable];
-    
+
     putHintOn(correctAnswer.value[randomIndex], randomIndex);
     hints.value -= 1;
   }
@@ -227,19 +227,19 @@ watch(
       <h1 class="text-[130px] justify-start text-[#237C9D]">MODE</h1>
       <div class="flex flex-col gap-6">
         <button
-          @click="playEasyMode"
+          @click="playOnMode('easy')"
           class="bg-[#19C3B2] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#20a396]"
         >
           Easy
         </button>
         <button
-          @click="playMediumMode"
+          @click="playOnMode('medium')"
           class="bg-[#FFCB77] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ffb031]"
         >
           Medium
         </button>
         <button
-          @click="playHardMode"
+          @click="playOnMode('hard')"
           class="bg-[#FE6D73] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ee464c]"
         >
           Hard
