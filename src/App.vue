@@ -1,89 +1,118 @@
 <script setup>
-import { ref, computed, watch } from "vue";
-import playButton from "./assets/icons/play.png";
-import bulb from "./assets/icons/bulb.png";
-import prize from "./assets/icons/prize.png";
-import back from "./assets/icons/back.png";
-import homeButton from "./assets/icons/HomeButton.png";
-import helpButton from "./assets/icons/helpButton.png";
-import soundButton from "./assets/icons/soundButton.png";
-import loadSuccess from "./assets/icons/loadPhoto.png";
-import levelSuccess from "./assets/icons/level-up-photo.png";
-import continueButton from "./assets/icons/continue.png";
-import prizePhoto from "./assets/icons/prizePhoto.png";
-import Questions from "./data/word_levels.json";
+import { ref, computed, watch } from 'vue'
+import playButton from './assets/icons/play.png'
+import bulb from './assets/icons/bulb.png'
+import prize from './assets/icons/prize.png'
+import back from './assets/icons/back.png'
+import homeButton from './assets/icons/HomeButton.png'
+import helpButton from './assets/icons/helpButton.png'
+import soundButton from './assets/icons/soundButton.png'
+import loadSuccess from './assets/icons/loadPhoto.png'
+import levelSuccess from './assets/icons/level-up-photo.png'
+import continueButton from './assets/icons/continue.png'
+import prizePhoto from './assets/icons/prizePhoto.png'
+import Questions from './data/word_levels.json'
 
-import "./extensions/array";
+import './extensions/array'
 
-const isVisible = ref(0);
-const filteredWordCollection = ref([]);
-const playedIds = [];
-const currentWordId = ref(0);
-const level = ref(0);
-const selectedWord = ref([]);
-const selectedAnswer = ref([]);
-const correctAnswer = ref([]);
-const boxAnswerLength = ref(0);
-const hints = ref(3);
-const usedHintIndexes = ref([]);
-const clickedLetters = ref({});
-const onMode = ref("");
+const isVisible = ref(0)
+const filteredWordCollection = ref([])
+const playedIds = []
+const currentWordId = ref(0)
+const level = ref(1)
+const easyLevel = ref(1)
+const mediumLevel = ref(1)
+const hardLevel = ref(1)
+const selectedWord = ref([])
+const selectedAnswer = ref([])
+const correctAnswer = ref([])
+const boxAnswerLength = ref(0)
+const hints = ref(3)
+const usedHintIndexes = ref([])
+const clickedLetters = ref({})
+const onMode = ref('')
+const success = ref(0)
+
+const storedSuccess = localStorage.getItem('userSuccess')
+if (storedSuccess !== null) {
+  success.value = Number(storedSuccess)
+}
+const storedEasyLevel = localStorage.getItem('easyLevel')
+if (storedEasyLevel !== null) {
+  level.value = Number(storedEasyLevel)
+}
+const storedMediumLevel = localStorage.getItem('mediumLevel')
+if (storedMediumLevel !== null) {
+  level.value = Number(storedMediumLevel)
+}
+const storedHardLevel = localStorage.getItem('hardLevel')
+if (storedHardLevel !== null) {
+  level.value = Number(storedHardLevel)
+}
 
 const modePage = () => {
-  isVisible.value = 1;
-  clearLevel();
-};
+  isVisible.value = 1
+}
 
 const startPage = () => {
-  isVisible.value = 0;
-};
+  isVisible.value = 0
+}
 
 const gamePlayPage = () => {
-  isVisible.value = 2;
-};
+  isVisible.value = 2
+}
 
 const successPage = () => {
-  isVisible.value = 3;
-};
+  isVisible.value = 3
+}
 
 const successMode = () => {
-  isVisible.value = 4;
-};
+  isVisible.value = 4
+}
 
 const maxLevels = {
   easy: 35,
   medium: 35,
   hard: 30,
-};
+}
 
 const nextLevel = () => {
   if (level.value >= maxLevels[onMode.value]) {
-    successMode();
-    return;
+    successMode()
+    return
   }
 
-  gamePlayPage();
-  clearSelectAnswer();
+  gamePlayPage()
+  clearSelectAnswer()
 
   filteredWordCollection.value =
-    filteredWordCollection.value.filterByExcludeIds(playedIds);
+    filteredWordCollection.value.filterByExcludeIds(playedIds)
   const randomIndex = Math.floor(
-    Math.random() * filteredWordCollection.value.length,
-  );
-  const question = filteredWordCollection.value[randomIndex];
-  currentWordId.value = question.id;
+    Math.random() * filteredWordCollection.value.length
+  )
+  const question = filteredWordCollection.value[randomIndex]
+  currentWordId.value = question.id
 
-  selectedWord.value = question.word.split("").shuffle();
-  boxAnswerLength.value = selectedWord.value.length;
-  correctAnswer.value = question.correctAnswer.split("");
-  selectedAnswer.value = Array(boxAnswerLength.value).fill("");
-};
+  selectedWord.value = question.word.split('').shuffle()
+  boxAnswerLength.value = selectedWord.value.length
+  correctAnswer.value = question.correctAnswer.split('')
+  selectedAnswer.value = Array(boxAnswerLength.value).fill('')
+}
 
 const playOnMode = (mode) => {
-  onMode.value = mode;
-  filteredWordCollection.value = Questions.filterByMode(mode).shuffle();
-  nextLevel();
-};
+  onMode.value = mode
+  filteredWordCollection.value = Questions.filterByMode(mode).shuffle()
+  if (onMode.value === 'easy') {
+    level.value = easyLevel.value
+  }
+  if (onMode.value === 'medium') {
+    level.value = mediumLevel.value
+  }
+  if (onMode.value === 'hard') {
+    level.value = hardLevel.value
+  }
+  nextLevel()
+}
 
 const selectLetter = (letter, index) => {
   if (
@@ -91,101 +120,123 @@ const selectLetter = (letter, index) => {
     !clickedLetters.value[index]
   ) {
     const firstEmptyIndex = selectedAnswer.value.findIndex(
-      (char) => char === "",
-    );
+      (char) => char === ''
+    )
     if (firstEmptyIndex !== -1) {
-      selectedAnswer.value[firstEmptyIndex] = letter;
-      clickedLetters.value[index] = true;
+      selectedAnswer.value[firstEmptyIndex] = letter
+      clickedLetters.value[index] = true
     }
   }
-};
+}
 
 const putHintOn = (letter, correctIndex) => {
   if (filledBoxLength.value < selectedAnswer.value.length) {
-    selectedAnswer.value[correctIndex] = letter;
-    usedHintIndexes.value.push(correctIndex);
+    selectedAnswer.value[correctIndex] = letter
+    usedHintIndexes.value.push(correctIndex)
     const clickedIndex = splitWords.value
       .flat()
-      .findIndex((e, i) => letter === e.letter && !clickedLetters.value[i]);
+      .findIndex((e, i) => letter === e.letter && !clickedLetters.value[i])
     if (clickedIndex !== -1) {
-      clickedLetters.value[clickedIndex] = true;
+      clickedLetters.value[clickedIndex] = true
     }
   }
-};
+}
 
 const checkAnswer = () => {
-  const flattenedSelectedAnswer = selectedAnswer.value.flat();
+  const flattenedSelectedAnswer = selectedAnswer.value.flat()
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index],
-  );
+    (char, index) => char === flattenedSelectedAnswer[index]
+  )
 
   if (isCorrect) {
-    successPage();
+    successPage()
     setTimeout(() => {
-      playedIds.push(currentWordId.value);
-      level.value += 1;
-      nextLevel();
-      selectedAnswer.value = Array(boxAnswerLength.value).fill("");
-    }, 1000);
+      playedIds.push(currentWordId.value)
+      nextLevel()
+      selectedAnswer.value = Array(boxAnswerLength.value).fill('')
+    }, 1000)
+    success.value += 1
+    localStorage.setItem('userSuccess', success.value.toString())
+    if (onMode.value === 'easy') {
+      easyLevel.value += 1
+      level.value = easyLevel.value
+      localStorage.setItem('easyLevel', easyLevel.value.toString())
+    }
+    if (onMode.value === 'medium') {
+      mediumLevel.value += 1
+      level.value = mediumLevel.value
+      localStorage.setItem('mediumLevel', mediumLevel.value.toString())
+    }
+    if (onMode.value === 'hard') {
+      hardLevel.value += 1
+      level.value = hardLevel.value
+      localStorage.setItem('hardLevel', hardLevel.value.toString())
+    }
   } else {
     setTimeout(() => {
-      clearSelectAnswer();
-    }, 500);
+      clearSelectAnswer()
+    }, 500)
   }
-};
+}
 
 const clearSelectAnswer = () => {
-  usedHintIndexes.value.length = 0;
-  selectedAnswer.value = Array(boxAnswerLength.value).fill("");
-  clickedLetters.value = {};
-};
+  usedHintIndexes.value.length = 0
+  selectedAnswer.value = Array(boxAnswerLength.value).fill('')
+  clickedLetters.value = {}
+}
 
-const clearLevel = () => {
-  level.value = 0;
-};
+const clear = () => {
+  level.value = 1
+  success.value = 0
+  easyLevel.value = 1
+  mediumLevel.value = 1
+  hardLevel.value = 1
+  localStorage.setItem('userLevel', '1')
+  localStorage.setItem('userSuccess', '0')
+}
 
 const splitWords = computed(() => {
-  const rows = [];
-  const perRow = Math.ceil(boxAnswerLength.value / 2);
+  const rows = []
+  const perRow = Math.ceil(boxAnswerLength.value / 2)
   selectedWord.value.forEach((letter, index) => {
-    const rowIndex = Math.floor(index / perRow);
+    const rowIndex = Math.floor(index / perRow)
     if (!rows[rowIndex]) {
-      rows[rowIndex] = [];
+      rows[rowIndex] = []
     }
-    rows[rowIndex].push({ letter, index });
-  });
-  return rows;
-});
+    rows[rowIndex].push({ letter, index })
+  })
+  return rows
+})
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length,
-);
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length
+)
 
 const useHint = () => {
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = Array.from(
       { length: correctAnswer.value.length },
-      (_, i) => i,
-    ).filter((e) => !usedHintIndexes.value.includes(e));
+      (_, i) => i
+    ).filter((e) => !usedHintIndexes.value.includes(e))
 
     const randomOfAvailable = Math.floor(
-      Math.random() * availableIndexes.length,
-    );
-    const randomIndex = availableIndexes[randomOfAvailable];
+      Math.random() * availableIndexes.length
+    )
+    const randomIndex = availableIndexes[randomOfAvailable]
 
-    putHintOn(correctAnswer.value[randomIndex], randomIndex);
-    hints.value -= 1;
+    putHintOn(correctAnswer.value[randomIndex], randomIndex)
+    hints.value -= 1
   }
-};
+}
 
 watch(
   () => filledBoxLength.value,
   () => {
     if (filledBoxLength.value >= correctAnswer.value.length) {
-      checkAnswer();
+      checkAnswer()
     }
-  },
-);
+  }
+)
 </script>
 
 <template>
@@ -198,6 +249,7 @@ watch(
       <h1 class="text-[150px] justify-start text-[#237C9D] mt-[-75px]">
         CLICK WORD
       </h1>
+      <button @click="clear">clear</button>
       <button @click="modePage">
         <img
           :src="playButton"
@@ -213,7 +265,7 @@ watch(
             class="w-20 h-20 mx-auto my-auto mb-1"
           />
           <h3 class="bg-[#19C3B2] text-[#FEF9EF] text-[20px] rounded-2xl p-3">
-            Success (0%)
+            Success ({{ success }}%)
           </h3>
         </div>
         <div class="flex flex-col item-center gap-2">
@@ -277,7 +329,7 @@ watch(
             class="w-[50px] h-[50px] ml-5 mt-5 hover:scale-110"
           />
         </button>
-        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level + 1}` }}</h3>
+        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level}` }}</h3>
         <div class="flex flex-col">
           <button @click="successPage">
             <img
@@ -360,7 +412,7 @@ watch(
       class="bg-[#227C9D] h-screen flex flex-col justify-start items-center"
     >
       <h2 class="text-white text-7xl mt-10 justify-start">
-        {{ `Level ${level + 1} completed !` }}
+        {{ `Level ${level} completed !` }}
       </h2>
       <img
         :src="loadSuccess"
@@ -407,11 +459,11 @@ watch(
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
 
 h1 {
-  font-family: "Irish Grover", sans-serif;
+  font-family: 'Irish Grover', sans-serif;
   font-weight: 500;
   font-style: normal;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -419,7 +471,7 @@ h1 {
 }
 
 * {
-  font-family: "Itim", cursive;
+  font-family: 'Itim', cursive;
   font-weight: 400;
   font-style: normal;
 }
