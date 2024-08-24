@@ -30,7 +30,6 @@ const clickedLetters = ref({});
 const onMode = ref("");
 
 
-
 const modePage = () => {
   isVisible.value = 1;
   clearLevel();
@@ -266,7 +265,7 @@ watch(
 
     <!-- Success Page -->
     <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-start items-center">
-      <h2 class="text-white text-7xl mt-10 justify-start">{{ `Level ${level + 1} complete!!!` }}</h2>
+      <h2 class="text-white text-7xl mt-10 justify-start">Level 1 Completed !!</h2>
       <img :src="loadSuccess" alt="Prize" class=" w-[610px] h-[600px] items-end">
     </div>
 
