@@ -1,16 +1,16 @@
 <script setup>
 import { ref, computed, watch } from "vue";
-import playButton from "./components/icons/play.png";
-import bulb from "./components/icons/bulb.png";
-import prize from "./components/icons/prize.png";
-import back from "./components/icons/back.png";
-import homeButton from "./components/icons/HomeButton.png";
-import helpButton from "./components/icons/helpButton.png";
-import soundButton from "./components/icons/soundButton.png";
-import loadSuccess from "./components/icons/loadPhoto.png";
-import levelSuccess from "./components/icons/level-up-photo.png";
-import continueButton from "./components/icons/continue.png";
-import prizePhoto from "./components/icons/prizePhoto.png";
+import playButton from "./assets/icons/play.png";
+import bulb from "./assets/icons/bulb.png";
+import prize from "./assets/icons/prize.png";
+import back from "./assets/icons/back.png";
+import homeButton from "./assets/icons/HomeButton.png";
+import helpButton from "./assets/icons/helpButton.png";
+import soundButton from "./assets/icons/soundButton.png";
+import loadSuccess from "./assets/icons/loadPhoto.png";
+import levelSuccess from "./assets/icons/level-up-photo.png";
+import continueButton from "./assets/icons/continue.png";
+import prizePhoto from "./assets/icons/prizePhoto.png";
 import Questions from "./data/word_levels.json";
 
 import "./extensions/array";
