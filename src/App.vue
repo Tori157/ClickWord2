@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, watch } from "vue";
-
 import playButton from "./components/icons/play.png";
 import bulb from "./components/icons/bulb.png";
 import prize from "./components/icons/prize.png";
