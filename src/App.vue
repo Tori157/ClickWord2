@@ -1,4 +1,5 @@
 <script setup>
+
 import { ref, computed, watch } from "vue";
  
 import playButton from "./components/icons/play.png";
@@ -31,6 +32,32 @@ const clickedLetters = ref({});
 const onMode = ref("");
  
  
+=======
+import playButton from './components/icons/play.png'
+import bulb from './components/icons/bulb.png'
+import prize from './components/icons/prize.png'
+import back from './components/icons/back.png'
+import homeButton from './components/icons/HomeButton.png'
+import helpButton from './components/icons/helpButton.png'
+import soundButton from './components/icons/soundButton.png'
+import loadSuccess from './components/icons/loadPhoto.png'
+import levelSuccess from './components/icons/level-up-photo.png'
+import prizePhoto from './components/icons/prizePhoto.png'
+import Questions from './data/word_levels.json'
+
+import { ref, computed } from 'vue'
+
+const isVisible = ref(0)
+const level = ref(0)
+const selectedWord = ref([])
+const selectedAnswer = ref([])
+const spaceCount = ref(0)
+const count = ref(0)
+const correctAnswer = ref([])
+const col = ref(0)
+const currentMode = ref('')
+
+
 const modePage = () => {
   isVisible.value = 1;
   clearLevel();
@@ -289,7 +316,7 @@ watch(
  
     <!-- Success Page -->
     <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-start items-center">
-      <h2 class="text-white text-7xl mt-10 justify-start">{{ `Level ${level + 1} complete!!!` }}</h2>
+      <h2 class="text-white text-7xl mt-10 justify-start">Level 1 Completed !!</h2>
       <img :src="loadSuccess" alt="Prize" class=" w-[610px] h-[600px] items-end">
     </div>
  
