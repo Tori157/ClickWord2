@@ -77,7 +77,7 @@ const maxLevels = {
 }
 
 const nextLevel = () => {
-  if (level.value >= maxLevels[onMode.value]) {
+  if (level.value > maxLevels[onMode.value]) {
     successMode()
     return
   }
@@ -249,7 +249,7 @@ watch(
       <h1 class="text-[150px] justify-start text-[#237C9D] mt-[-75px]">
         CLICK WORD
       </h1>
-      <button @click="clear">clear</button>
+      <!-- <button @click="clear">clear</button> -->
       <button @click="modePage">
         <img
           :src="playButton"
@@ -412,7 +412,7 @@ watch(
       class="bg-[#227C9D] h-screen flex flex-col justify-start items-center"
     >
       <h2 class="text-white text-7xl mt-10 justify-start">
-        {{ `Level ${level} completed !` }}
+        {{ `Level ${level - 1} completed !` }}
       </h2>
       <img
         :src="loadSuccess"
