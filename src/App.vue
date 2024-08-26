@@ -322,10 +322,10 @@ const prevPage = () => {
           <!-- Help Modal -->
           <div
             v-if="showHelpModal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-500 flex items-center justify-center bg-black bg-opacity-50"
           >
             <div
-              class="relative w-full max-w-3xl p-6 bg-white rounded-lg shadow-lg"
+              class="relative w-full max-w-4xl  p-6 bg-[#FEF9EF] rounded-lg shadow-lg"
             >
               <button
                 @click="closeHelpModal"
@@ -345,11 +345,13 @@ const prevPage = () => {
                 >
                   <img :src="nextlefticon" alt="Previous" class="w-10 h-10" />
                 </button>
-                <img
-                  :src="helpPages[currentPage]"
-                  alt="Help Page"
-                  class="w-[500px] h-auto"
-                />
+                <div class="flex justify-center items-center w-[500px] h-auto">
+                  <img
+                    :src="helpPages[currentPage]"
+                    alt="Help Page"
+                    class="w-full h-auto"
+                  />
+                </div>
                 <button
                   v-if="currentPage < helpPages.length - 1"
                   @click="nextPage"
@@ -361,7 +363,7 @@ const prevPage = () => {
               </div>
             </div>
           </div>
-          
+
           <button @click="modePage">
             <img
               :src="soundButton"
