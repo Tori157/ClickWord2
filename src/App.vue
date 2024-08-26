@@ -29,13 +29,13 @@ const usedHintIndexes = ref([]);
 const clickedLetters = ref({});
 const onMode = ref("");
 
+const startPage = () => {
+  isVisible.value = 0;
+};
+
 const modePage = () => {
   isVisible.value = 1;
   clearLevel();
-};
-
-const startPage = () => {
-  isVisible.value = 0;
 };
 
 const gamePlayPage = () => {
@@ -48,6 +48,7 @@ const successPage = () => {
 
 const successMode = () => {
   isVisible.value = 4;
+  hints.value += 5;
 };
 
 const maxLevels = {
