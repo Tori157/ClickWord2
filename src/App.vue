@@ -24,7 +24,7 @@ const selectedWord = ref([]);
 const selectedAnswer = ref([]);
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
-const hints = ref(3);
+const hints = ref(localStorage.getItem("hints") || 3);
 const usedHintIndexes = ref([]);
 const clickedLetters = ref({});
 const onMode = ref("");
@@ -163,6 +163,8 @@ const filledBoxLength = computed(
 );
 
 const useHint = () => {
+  console.log(hints.value);
+  
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = Array.from(
       { length: correctAnswer.value.length },
@@ -185,6 +187,13 @@ watch(
     if (filledBoxLength.value >= correctAnswer.value.length) {
       checkAnswer();
     }
+  },
+);
+
+watch(
+  () => hints.value,
+  (newHints, _) => {
+    localStorage.setItem("hints", newHints);
   },
 );
 </script>
