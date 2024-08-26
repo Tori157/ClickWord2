@@ -325,7 +325,7 @@ const prevPage = () => {
             class="fixed inset-0 z-500 flex items-center justify-center bg-black bg-opacity-50"
           >
             <div
-              class="relative w-full max-w-4xl  p-6 bg-[#FEF9EF] rounded-lg shadow-lg"
+              class="relative w-full max-w-3xl p-6 bg-[#FEF9EF] rounded-lg shadow-lg"
             >
               <button
                 @click="closeHelpModal"
@@ -338,10 +338,10 @@ const prevPage = () => {
               </button>
               <div class="flex items-center justify-between">
                 <button
-                  v-if="currentPage > 0"
                   @click="prevPage"
                   :disabled="currentPage === 0"
-                  class="p-2 hover:scale-110 w-[100px] h-[100px]"
+                  :class="currentPage > 0 ? '' : 'invisible'"
+                  class="p-2 hover:scale-110"
                 >
                   <img :src="nextlefticon" alt="Previous" class="w-10 h-10" />
                 </button>
@@ -353,9 +353,9 @@ const prevPage = () => {
                   />
                 </div>
                 <button
-                  v-if="currentPage < helpPages.length - 1"
                   @click="nextPage"
                   :disabled="currentPage === helpPages.length - 1"
+                  :class="currentPage < helpPages.length - 1 ? '' : 'invisible'"
                   class="p-2 hover:scale-110"
                 >
                   <img :src="nextrighticon" alt="Next" class="w-10 h-10" />
@@ -487,6 +487,10 @@ const prevPage = () => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+* {
+  user-select: none;
+}
 
 h1 {
   font-family: 'Irish Grover', sans-serif;
