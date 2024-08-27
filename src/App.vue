@@ -1,96 +1,96 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
-import playButton from './assets/icons/play.png'
-import bulb from './assets/icons/bulb.png'
-import prize from './assets/icons/prize.png'
-import back from './assets/icons/back.png'
-import homeButton from './assets/icons/HomeButton.png'
-import helpButton from './assets/icons/helpButton.png'
-import soundButton from './assets/icons/soundButton.png'
-import loadSuccess from './assets/icons/loadPhoto.png'
-import levelSuccess from './assets/icons/level-up-photo.png'
-import continueButton from './assets/icons/continue.png'
-import prizePhoto from './assets/icons/prizePhoto.png'
-import Questions from './data/word_levels.json'
-import helppage1 from './assets/images/helppage1.webp'
-import helppage2 from './assets/images/helppage2.webp'
-import helppage3 from './assets/images/helppage3.webp'
-import helppage4 from './assets/images/helppage4.webp'
-import nextlefticon from './assets/icons/nextlefticon.png'
-import nextrighticon from './assets/icons/nextrighticon.png'
-import cancelicon from './assets/icons/cancel.png'
+import { ref, computed, watch } from "vue";
+import playButton from "./assets/icons/play.png";
+import bulb from "./assets/icons/bulb.png";
+import prize from "./assets/icons/prize.png";
+import back from "./assets/icons/back.png";
+import homeButton from "./assets/icons/HomeButton.png";
+import helpButton from "./assets/icons/helpButton.png";
+import soundButton from "./assets/icons/soundButton.png";
+import loadSuccess from "./assets/icons/loadPhoto.png";
+import levelSuccess from "./assets/icons/level-up-photo.png";
+import continueButton from "./assets/icons/continue.png";
+import prizePhoto from "./assets/icons/prizePhoto.png";
+import Questions from "./data/word_levels.json";
+import helppage1 from "./assets/images/helppage1.webp";
+import helppage2 from "./assets/images/helppage2.webp";
+import helppage3 from "./assets/images/helppage3.webp";
+import helppage4 from "./assets/images/helppage4.webp";
+import nextlefticon from "./assets/icons/nextlefticon.png";
+import nextrighticon from "./assets/icons/nextrighticon.png";
+import cancelicon from "./assets/icons/cancel.png";
 
-import './extensions/array'
+import "./extensions/array";
 
-const isVisible = ref(0)
-const filteredWordCollection = ref([])
-const playedIds = []
-const currentWordId = ref(0)
-const level = ref(0)
-const selectedWord = ref([])
-const selectedAnswer = ref([])
-const correctAnswer = ref([])
-const boxAnswerLength = ref(0)
-const hints = ref(3)
-const usedHintIndexes = ref([])
-const clickedLetters = ref({})
-const onMode = ref('')
+const isVisible = ref(0);
+const filteredWordCollection = ref([]);
+const playedIds = [];
+const currentWordId = ref(0);
+const level = ref(0);
+const selectedWord = ref([]);
+const selectedAnswer = ref([]);
+const correctAnswer = ref([]);
+const boxAnswerLength = ref(0);
+const hints = ref(3);
+const usedHintIndexes = ref([]);
+const clickedLetters = ref({});
+const onMode = ref("");
 
 const modePage = () => {
-  isVisible.value = 1
-  clearLevel()
-}
+  isVisible.value = 1;
+  clearLevel();
+};
 
 const startPage = () => {
-  isVisible.value = 0
-}
+  isVisible.value = 0;
+};
 
 const gamePlayPage = () => {
-  isVisible.value = 2
-}
+  isVisible.value = 2;
+};
 
 const successPage = () => {
-  isVisible.value = 3
-}
+  isVisible.value = 3;
+};
 
 const successMode = () => {
-  isVisible.value = 4
-}
+  isVisible.value = 4;
+};
 
 const maxLevels = {
   easy: 35,
   medium: 35,
-  hard: 30
-}
+  hard: 30,
+};
 
 const nextLevel = () => {
   if (level.value >= maxLevels[onMode.value]) {
-    successMode()
-    return
+    successMode();
+    return;
   }
 
-  gamePlayPage()
-  clearSelectAnswer()
+  gamePlayPage();
+  clearSelectAnswer();
 
   filteredWordCollection.value =
-    filteredWordCollection.value.filterByExcludeIds(playedIds)
+    filteredWordCollection.value.filterByExcludeIds(playedIds);
   const randomIndex = Math.floor(
-    Math.random() * filteredWordCollection.value.length
-  )
-  const question = filteredWordCollection.value[randomIndex]
-  currentWordId.value = question.id
+    Math.random() * filteredWordCollection.value.length,
+  );
+  const question = filteredWordCollection.value[randomIndex];
+  currentWordId.value = question.id;
 
-  selectedWord.value = question.word.split('').shuffle()
-  boxAnswerLength.value = selectedWord.value.length
-  correctAnswer.value = question.correctAnswer.split('')
-  selectedAnswer.value = Array(boxAnswerLength.value).fill('')
-}
+  selectedWord.value = question.word.split("").shuffle();
+  boxAnswerLength.value = selectedWord.value.length;
+  correctAnswer.value = question.correctAnswer.split("");
+  selectedAnswer.value = Array(boxAnswerLength.value).fill("");
+};
 
 const playOnMode = (mode) => {
-  onMode.value = mode
-  filteredWordCollection.value = Questions.filterByMode(mode).shuffle()
-  nextLevel()
-}
+  onMode.value = mode;
+  filteredWordCollection.value = Questions.filterByMode(mode).shuffle();
+  nextLevel();
+};
 
 const selectLetter = (letter, index) => {
   if (
@@ -98,126 +98,126 @@ const selectLetter = (letter, index) => {
     !clickedLetters.value[index]
   ) {
     const firstEmptyIndex = selectedAnswer.value.findIndex(
-      (char) => char === ''
-    )
+      (char) => char === "",
+    );
     if (firstEmptyIndex !== -1) {
-      selectedAnswer.value[firstEmptyIndex] = letter
-      clickedLetters.value[index] = true
+      selectedAnswer.value[firstEmptyIndex] = letter;
+      clickedLetters.value[index] = true;
     }
   }
-}
+};
 
 const putHintOn = (letter, correctIndex) => {
   if (filledBoxLength.value < selectedAnswer.value.length) {
-    selectedAnswer.value[correctIndex] = letter
-    usedHintIndexes.value.push(correctIndex)
+    selectedAnswer.value[correctIndex] = letter;
+    usedHintIndexes.value.push(correctIndex);
     const clickedIndex = splitWords.value
       .flat()
-      .findIndex((e, i) => letter === e.letter && !clickedLetters.value[i])
+      .findIndex((e, i) => letter === e.letter && !clickedLetters.value[i]);
     if (clickedIndex !== -1) {
-      clickedLetters.value[clickedIndex] = true
+      clickedLetters.value[clickedIndex] = true;
     }
   }
-}
+};
 
 const checkAnswer = () => {
-  const flattenedSelectedAnswer = selectedAnswer.value.flat()
+  const flattenedSelectedAnswer = selectedAnswer.value.flat();
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index]
-  )
+    (char, index) => char === flattenedSelectedAnswer[index],
+  );
 
   if (isCorrect) {
-    successPage()
+    successPage();
     setTimeout(() => {
-      playedIds.push(currentWordId.value)
-      level.value += 1
-      nextLevel()
-      selectedAnswer.value = Array(boxAnswerLength.value).fill('')
-    }, 1000)
+      playedIds.push(currentWordId.value);
+      level.value += 1;
+      nextLevel();
+      selectedAnswer.value = Array(boxAnswerLength.value).fill("");
+    }, 1000);
   } else {
     setTimeout(() => {
-      clearSelectAnswer()
-    }, 500)
+      clearSelectAnswer();
+    }, 500);
   }
-}
+};
 
 const clearSelectAnswer = () => {
-  usedHintIndexes.value.length = 0
-  selectedAnswer.value = Array(boxAnswerLength.value).fill('')
-  clickedLetters.value = {}
-}
+  usedHintIndexes.value.length = 0;
+  selectedAnswer.value = Array(boxAnswerLength.value).fill("");
+  clickedLetters.value = {};
+};
 
 const clearLevel = () => {
-  level.value = 0
-}
+  level.value = 0;
+};
 
 const splitWords = computed(() => {
-  const rows = []
-  const perRow = Math.ceil(boxAnswerLength.value / 2)
+  const rows = [];
+  const perRow = Math.ceil(boxAnswerLength.value / 2);
   selectedWord.value.forEach((letter, index) => {
-    const rowIndex = Math.floor(index / perRow)
+    const rowIndex = Math.floor(index / perRow);
     if (!rows[rowIndex]) {
-      rows[rowIndex] = []
+      rows[rowIndex] = [];
     }
-    rows[rowIndex].push({ letter, index })
-  })
-  return rows
-})
+    rows[rowIndex].push({ letter, index });
+  });
+  return rows;
+});
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length
-)
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length,
+);
 
 const useHint = () => {
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = Array.from(
       { length: correctAnswer.value.length },
-      (_, i) => i
-    ).filter((e) => !usedHintIndexes.value.includes(e))
+      (_, i) => i,
+    ).filter((e) => !usedHintIndexes.value.includes(e));
 
     const randomOfAvailable = Math.floor(
-      Math.random() * availableIndexes.length
-    )
-    const randomIndex = availableIndexes[randomOfAvailable]
+      Math.random() * availableIndexes.length,
+    );
+    const randomIndex = availableIndexes[randomOfAvailable];
 
-    putHintOn(correctAnswer.value[randomIndex], randomIndex)
-    hints.value -= 1
+    putHintOn(correctAnswer.value[randomIndex], randomIndex);
+    hints.value -= 1;
   }
-}
+};
 
 watch(
   () => filledBoxLength.value,
   () => {
     if (filledBoxLength.value >= correctAnswer.value.length) {
-      checkAnswer()
+      checkAnswer();
     }
-  }
-)
+  },
+);
 
-const showHelpModal = ref(false)
-const currentPage = ref(0)
-const helpPages = [helppage1, helppage2, helppage3, helppage4]
+const showHelpModal = ref(false);
+const currentPage = ref(0);
+const helpPages = [helppage1, helppage2, helppage3, helppage4];
 
 const openHelpModal = () => {
-  currentPage.value = 0
-  showHelpModal.value = true
-}
+  currentPage.value = 0;
+  showHelpModal.value = true;
+};
 
 const closeHelpModal = () => {
-  showHelpModal.value = false
-}
+  showHelpModal.value = false;
+};
 
 const nextPage = () => {
   if (currentPage.value < helpPages.length - 1) {
-    currentPage.value++
+    currentPage.value++;
   }
-}
+};
 
 const prevPage = () => {
   if (currentPage.value > 0) {
-    currentPage.value--
+    currentPage.value--;
   }
-}
+};
 </script>
 
 <template>
@@ -392,7 +392,7 @@ const prevPage = () => {
               'w-20',
               'h-20',
               'hover:bg-[#09897c]',
-              clickedLetters[item.index] ? 'bg-[#09897c]' : 'bg-[#19C3B2]'
+              clickedLetters[item.index] ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
             ]"
           >
             {{ item.letter.toUpperCase() }}
@@ -407,7 +407,7 @@ const prevPage = () => {
                 ? 'hinted-box'
                 : !item
                   ? 'unfilled-box'
-                  : 'filled-box'
+                  : 'filled-box',
             ]"
             class="box-base"
           >
@@ -485,15 +485,15 @@ const prevPage = () => {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
 
 * {
   user-select: none;
 }
 
 h1 {
-  font-family: 'Irish Grover', sans-serif;
+  font-family: "Irish Grover", sans-serif;
   font-weight: 500;
   font-style: normal;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -501,7 +501,7 @@ h1 {
 }
 
 * {
-  font-family: 'Itim', cursive;
+  font-family: "Itim", cursive;
   font-weight: 400;
   font-style: normal;
 }
