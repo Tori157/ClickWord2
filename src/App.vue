@@ -31,18 +31,18 @@ const selectedWord = ref([]);
 const selectedAnswer = ref([]);
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
-const hints = ref(3);
+const hints = ref(localStorage.getItem("hints") || 3);
 const usedHintIndexes = ref([]);
 const clickedLetters = ref({});
 const onMode = ref("");
 
+const startPage = () => {
+  isVisible.value = 0;
+};
+
 const modePage = () => {
   isVisible.value = 1;
   clearLevel();
-};
-
-const startPage = () => {
-  isVisible.value = 0;
 };
 
 const gamePlayPage = () => {
@@ -55,6 +55,7 @@ const successPage = () => {
 
 const successMode = () => {
   isVisible.value = 4;
+  hints.value += 5;
 };
 
 const maxLevels = {
@@ -191,6 +192,13 @@ watch(
     if (filledBoxLength.value >= correctAnswer.value.length) {
       checkAnswer();
     }
+  },
+);
+
+watch(
+  () => hints.value,
+  (newHints, _) => {
+    localStorage.setItem("hints", newHints);
   },
 );
 
