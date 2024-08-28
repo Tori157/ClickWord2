@@ -170,8 +170,6 @@ const filledBoxLength = computed(
 );
 
 const useHint = () => {
-  console.log(hints.value);
-  
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = Array.from(
       { length: correctAnswer.value.length },
