@@ -12,6 +12,13 @@ import levelSuccess from "./assets/icons/level-up-photo.png";
 import continueButton from "./assets/icons/continue.png";
 import prizePhoto from "./assets/icons/prizePhoto.png";
 import Questions from "./data/word_levels.json";
+import helppage1 from "./assets/images/helppage1.webp";
+import helppage2 from "./assets/images/helppage2.webp";
+import helppage3 from "./assets/images/helppage3.webp";
+import helppage4 from "./assets/images/helppage4.webp";
+import nextlefticon from "./assets/icons/nextlefticon.png";
+import nextrighticon from "./assets/icons/nextrighticon.png";
+import cancelicon from "./assets/icons/cancel.png";
 
 import "./extensions/array";
 
@@ -196,6 +203,31 @@ watch(
     localStorage.setItem("hints", newHints);
   },
 );
+
+const showHelpModal = ref(false);
+const currentPage = ref(0);
+const helpPages = [helppage1, helppage2, helppage3, helppage4];
+
+const openHelpModal = () => {
+  currentPage.value = 0;
+  showHelpModal.value = true;
+};
+
+const closeHelpModal = () => {
+  showHelpModal.value = false;
+};
+
+const nextPage = () => {
+  if (currentPage.value < helpPages.length - 1) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value--;
+  }
+};
 </script>
 
 <template>
@@ -289,13 +321,59 @@ watch(
         </button>
         <h3 class="mt-6 text-4xl text-black">{{ `Level ${level + 1}` }}</h3>
         <div class="flex flex-col">
-          <button @click="successPage">
+          <button @click="openHelpModal">
             <img
               :src="helpButton"
               alt="Help Button"
               class="w-[50px] h-[50px] mr-5 mt-5 hover:scale-110"
             />
           </button>
+
+          <!-- Help Modal -->
+          <div
+            v-if="showHelpModal"
+            class="fixed inset-0 z-500 flex items-center justify-center bg-black bg-opacity-50"
+          >
+            <div
+              class="relative w-full max-w-3xl p-6 bg-[#FEF9EF] rounded-lg shadow-lg"
+            >
+              <button
+                @click="closeHelpModal"
+                class="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+              >
+                <img
+                  :src="cancelicon"
+                  class="w-[50px] h-[50px] mr-5 mt-5 hover:scale-110"
+                />
+              </button>
+              <div class="flex items-center justify-between">
+                <button
+                  @click="prevPage"
+                  :disabled="currentPage === 0"
+                  :class="currentPage > 0 ? '' : 'invisible'"
+                  class="p-2 hover:scale-110"
+                >
+                  <img :src="nextlefticon" alt="Previous" class="w-10 h-10" />
+                </button>
+                <div class="flex justify-center items-center w-[500px] h-auto">
+                  <img
+                    :src="helpPages[currentPage]"
+                    alt="Help Page"
+                    class="w-full h-auto"
+                  />
+                </div>
+                <button
+                  @click="nextPage"
+                  :disabled="currentPage === helpPages.length - 1"
+                  :class="currentPage < helpPages.length - 1 ? '' : 'invisible'"
+                  class="p-2 hover:scale-110"
+                >
+                  <img :src="nextrighticon" alt="Next" class="w-10 h-10" />
+                </button>
+              </div>
+            </div>
+          </div>
+
           <button @click="modePage">
             <img
               :src="soundButton"
@@ -420,6 +498,10 @@ watch(
 @import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
 
+* {
+  user-select: none;
+}
+
 h1 {
   font-family: "Irish Grover", sans-serif;
   font-weight: 500;
@@ -435,10 +517,12 @@ h1 {
 }
 
 .incorrect-box {
-  background-color: #ff6b6b; /* Red color */
+  background-color: #ff6b6b;
+  /* Red color */
 }
 
 .correct-box {
-  background-color: #28a745; /* Green color (optional) */
+  background-color: #28a745;
+  /* Green color (optional) */
 }
 </style>
