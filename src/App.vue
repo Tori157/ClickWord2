@@ -76,6 +76,7 @@ const maxLevels = {
 };
 
 const nextLevel = () => {
+  usedHintIndexes.value.length = 0;
   if (level.value >= maxLevels[onMode.value]) {
     successMode();
     return;
@@ -161,9 +162,18 @@ const checkAnswer = () => {
 };
 
 const clearSelectAnswer = () => {
-  usedHintIndexes.value.length = 0;
+  // เก็บค่า hints ที่ใช้แล้วก่อน
+  const usedHints = usedHintIndexes.value.map(
+    (index) => selectedAnswer.value[index]
+  );
+
   selectedAnswer.value = Array(boxAnswerLength.value).fill("");
   clickedLetters.value = {};
+
+  // นำค่า hints ที่ใช้กลับไปวางในตำแหน่งเดิม
+  usedHintIndexes.value.forEach((index, i) => {
+    selectedAnswer.value[index] = usedHints[i];
+  });
 };
 
 const clearLevel = () => {
@@ -635,7 +645,7 @@ h1 {
   outline: none;
   opacity: 0.7;
   transition: opacity 0.2s;
-  transform: rotate(-90deg); /* หมุน slider ให้เป็นแนวตั้ง */
+  transform: rotate(-90deg);
 }
 
 .volume-icon img {
