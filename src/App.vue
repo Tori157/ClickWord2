@@ -19,6 +19,11 @@ import helppage4 from "./assets/images/helppage4.webp";
 import nextlefticon from "./assets/icons/nextlefticon.png";
 import nextrighticon from "./assets/icons/nextrighticon.png";
 import cancelicon from "./assets/icons/cancel.png";
+import volumeUp from "./assets/icons/volumeUp.png";
+import volumeDown from "./assets/icons/volumeDown.png";
+import selectLetterSound from "./assets/sounds/select.mp3";
+import successSound from "./assets/sounds/success.mp3";
+import clickButtonSound from "./assets/sounds/buttonclick.wav";
 
 import "./extensions/array";
 
@@ -35,6 +40,12 @@ const hints = ref(localStorage.getItem("hints") || 3);
 const usedHintIndexes = ref([]);
 const clickedLetters = ref({});
 const onMode = ref("");
+const isVolumeVisible = ref(false);
+const volume = ref(0.5);
+const selectAudio = new Audio(selectLetterSound);
+const successAudio = new Audio(successSound);
+const clickButtonAudio = new Audio(clickButtonSound);
+const volumeTimeout = ref(null);
 
 const startPage = () => {
   isVisible.value = 0;
@@ -76,7 +87,7 @@ const nextLevel = () => {
   filteredWordCollection.value =
     filteredWordCollection.value.filterByExcludeIds(playedIds);
   const randomIndex = Math.floor(
-    Math.random() * filteredWordCollection.value.length,
+    Math.random() * filteredWordCollection.value.length
   );
   const question = filteredWordCollection.value[randomIndex];
   currentWordId.value = question.id;
@@ -98,8 +109,9 @@ const selectLetter = (letter, index) => {
     filledBoxLength.value < selectedAnswer.value.length &&
     !clickedLetters.value[index]
   ) {
+    playSelectLetterSound();
     const firstEmptyIndex = selectedAnswer.value.findIndex(
-      (char) => char === "",
+      (char) => char === ""
     );
     if (firstEmptyIndex !== -1) {
       selectedAnswer.value[firstEmptyIndex] = letter;
@@ -124,11 +136,17 @@ const putHintOn = (letter, correctIndex) => {
 const checkAnswer = () => {
   const flattenedSelectedAnswer = selectedAnswer.value.flat();
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index],
+    (char, index) => char === flattenedSelectedAnswer[index]
   );
 
   if (isCorrect) {
     successPage();
+    playSuccessSound();
+    // เพื่อหยุดเสียงหลังจากเล่นแล้ว
+    setTimeout(() => {
+      successAudio.pause();
+      successAudio.currentTime = 0;
+    }, 1500);
     setTimeout(() => {
       playedIds.push(currentWordId.value);
       level.value += 1;
@@ -166,18 +184,18 @@ const splitWords = computed(() => {
 });
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length,
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length
 );
 
 const useHint = () => {
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = Array.from(
       { length: correctAnswer.value.length },
-      (_, i) => i,
+      (_, i) => i
     ).filter((e) => !usedHintIndexes.value.includes(e));
 
     const randomOfAvailable = Math.floor(
-      Math.random() * availableIndexes.length,
+      Math.random() * availableIndexes.length
     );
     const randomIndex = availableIndexes[randomOfAvailable];
 
@@ -192,14 +210,14 @@ watch(
     if (filledBoxLength.value >= correctAnswer.value.length) {
       checkAnswer();
     }
-  },
+  }
 );
 
 watch(
   () => hints.value,
   (newHints, _) => {
     localStorage.setItem("hints", newHints);
-  },
+  }
 );
 
 const showHelpModal = ref(false);
@@ -226,6 +244,43 @@ const prevPage = () => {
     currentPage.value--;
   }
 };
+
+const toggleSound = () => {
+  isVolumeVisible.value = !isVolumeVisible.value;
+  if (isVolumeVisible.value) {
+    clearTimeout(volumeTimeout.value);
+    volumeTimeout.value = setTimeout(() => {
+      isVolumeVisible.value = false;
+    }, 3000);
+  }
+};
+
+const playSelectLetterSound = () => {
+  selectAudio.currentTime = 0;
+  selectAudio.play();
+};
+
+const playSuccessSound = () => {
+  successAudio.play();
+};
+
+const playClickButtonSound = () => {
+  clickButtonAudio.play();
+};
+
+watch(volume, (newVolume) => {
+  selectAudio.volume = newVolume;
+  successAudio.volume = newVolume;
+  clickButtonAudio.volume = newVolume;
+
+  if (isVolumeVisible.value) {
+    // รีเซ็ต timeout เมื่อมีการเปลี่ยนแปลงระดับเสียง
+    clearTimeout(volumeTimeout.value);
+    volumeTimeout.value = setTimeout(() => {
+      isVolumeVisible.value = false;
+    }, 1000);
+  }
+});
 </script>
 
 <template>
@@ -238,7 +293,12 @@ const prevPage = () => {
       <h1 class="text-[150px] justify-start text-[#237C9D] mt-[-75px]">
         CLICK WORD
       </h1>
-      <button @click="modePage">
+      <button
+        @click="
+          modePage();
+          playClickButtonSound();
+        "
+      >
         <img
           :src="playButton"
           alt="Play Button"
@@ -277,24 +337,38 @@ const prevPage = () => {
       <h1 class="text-[130px] justify-start text-[#237C9D]">MODE</h1>
       <div class="flex flex-col gap-6">
         <button
-          @click="playOnMode('easy')"
+          @click="
+            playOnMode('easy');
+            playClickButtonSound();
+          "
           class="bg-[#19C3B2] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#20a396]"
         >
           Easy
         </button>
         <button
-          @click="playOnMode('medium')"
+          @click="
+            playOnMode('medium');
+            playClickButtonSound();
+          "
           class="bg-[#FFCB77] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ffb031]"
         >
           Medium
         </button>
         <button
-          @click="playOnMode('hard')"
+          @click="
+            playOnMode('hard');
+            playClickButtonSound();
+          "
           class="bg-[#FE6D73] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ee464c]"
         >
           Hard
         </button>
-        <button @click="startPage">
+        <button
+          @click="
+            startPage();
+            playClickButtonSound();
+          "
+        >
           <img
             :src="back"
             alt="Back Button"
@@ -372,13 +446,29 @@ const prevPage = () => {
             </div>
           </div>
 
-          <button @click="modePage">
+          <button @click="toggleSound">
             <img
               :src="soundButton"
               alt="Sound Button"
               class="w-[50px] h-[50px] mr-5 mt-5 hover:scale-110"
             />
           </button>
+          <div v-show="isVolumeVisible" class="volume-control">
+            <div class="volume-icon">
+              <img :src="volumeUp" alt="volume-up" />
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              v-model="volume"
+              class="volume-slider"
+            />
+            <div class="volume-icon">
+              <img :src="volumeDown" alt="volume-down" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -522,5 +612,34 @@ h1 {
 .correct-box {
   background-color: #28a745;
   /* Green color (optional) */
+}
+
+.volume-control {
+  width: 45px;
+  position: absolute;
+  top: 100px;
+  left: 20px;
+  background-color: transparent;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.volume-slider {
+  height: 140px;
+  background: #ddd;
+  border-radius: 5px;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  transform: rotate(-90deg); /* หมุน slider ให้เป็นแนวตั้ง */
+}
+
+.volume-icon img {
+  width: 24px;
+  height: 24px;
 }
 </style>
