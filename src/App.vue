@@ -27,7 +27,7 @@ const selectedWord = ref([])
 const selectedAnswer = ref([])
 const correctAnswer = ref([])
 const boxAnswerLength = ref(0)
-const hints = ref(3)
+const hints = ref(99999)
 const usedHintIndexes = ref([])
 const clickedLetters = ref({})
 const onMode = ref('')
@@ -69,11 +69,15 @@ const successPage = () => {
 const successMode = () => {
   isVisible.value = 4
 }
-
+const successCounted = {
+  easy: false,
+  medium: false,
+  hard: false,
+}
 const maxLevels = {
-  easy: 35,
-  medium: 35,
-  hard: 30,
+  easy: 3,
+  medium: 3,
+  hard: 2,
 }
 
 const nextLevel = () => {
@@ -155,23 +159,53 @@ const checkAnswer = () => {
       nextLevel()
       selectedAnswer.value = Array(boxAnswerLength.value).fill('')
     }, 1000)
-    success.value += 1
-    localStorage.setItem('userSuccess', success.value.toString())
-    if (onMode.value === 'easy') {
+
+    // Only increase success if within level limits and not already counted
+    if (
+      onMode.value === 'easy' &&
+      easyLevel.value <= maxLevels.easy &&
+      !successCounted.easy
+    ) {
+      success.value += 1
       easyLevel.value += 1
       level.value = easyLevel.value
       localStorage.setItem('easyLevel', easyLevel.value.toString())
-    }
-    if (onMode.value === 'medium') {
+      if (easyLevel.value > maxLevels.easy) {
+        successCounted.easy = true
+        easyLevel.value = 1 // Reset level to 1 after completing all easy levels
+        localStorage.setItem('easyLevel', '1')
+      }
+    } else if (
+      onMode.value === 'medium' &&
+      mediumLevel.value <= maxLevels.medium &&
+      !successCounted.medium
+    ) {
+      success.value += 1
       mediumLevel.value += 1
       level.value = mediumLevel.value
       localStorage.setItem('mediumLevel', mediumLevel.value.toString())
-    }
-    if (onMode.value === 'hard') {
+      if (mediumLevel.value > maxLevels.medium) {
+        successCounted.medium = true
+        mediumLevel.value = 1
+        localStorage.setItem('mediumLevel', '1')
+      }
+    } else if (
+      onMode.value === 'hard' &&
+      hardLevel.value <= maxLevels.hard &&
+      !successCounted.hard
+    ) {
+      success.value += 1
       hardLevel.value += 1
       level.value = hardLevel.value
       localStorage.setItem('hardLevel', hardLevel.value.toString())
+      if (hardLevel.value > maxLevels.hard) {
+        successCounted.hard = true
+        hardLevel.value = 1
+        localStorage.setItem('hardLevel', '1')
+      }
     }
+
+    localStorage.setItem('userSuccess', success.value.toString())
   } else {
     setTimeout(() => {
       clearSelectAnswer()
