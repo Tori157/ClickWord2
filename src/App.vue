@@ -23,8 +23,10 @@ import volumeUp from "./assets/icons/volumeUp.png";
 import volumeDown from "./assets/icons/volumeDown.png";
 import selectLetterSound from "./assets/sounds/select.mp3";
 import successSound from "./assets/sounds/success.mp3";
+import failSound from "./assets/sounds/fail.mp3";
 import clickButtonSound from "./assets/sounds/buttonclick.wav";
-
+import clearSound from "./assets/sounds/clear.wav";
+import hintSound from "./assets/sounds/hint.wav";
 import "./extensions/array";
 
 const isVisible = ref(0);
@@ -44,6 +46,9 @@ const isVolumeVisible = ref(false);
 const volume = ref(0.5);
 const selectAudio = new Audio(selectLetterSound);
 const successAudio = new Audio(successSound);
+const failAudio = new Audio(failSound);
+const clearAudio = new Audio(clearSound);
+const hintAudio = new Audio(hintSound);
 const clickButtonAudio = new Audio(clickButtonSound);
 const volumeTimeout = ref(null);
 
@@ -155,6 +160,7 @@ const checkAnswer = () => {
       selectedAnswer.value = Array(boxAnswerLength.value).fill("");
     }, 1000);
   } else {
+    playFailSound();
     setTimeout(() => {
       clearSelectAnswer();
     }, 500);
@@ -274,8 +280,21 @@ const playSuccessSound = () => {
   successAudio.play();
 };
 
+const playFailSound = () => {
+  failAudio.play();
+};
+
 const playClickButtonSound = () => {
   clickButtonAudio.play();
+};
+
+const playClearSound = () => {
+  clearAudio.play();
+};
+
+const playHintSound = () => {
+  hintAudio.currentTime = 0;
+  hintAudio.play();
 };
 
 watch(volume, (newVolume) => {
@@ -526,14 +545,26 @@ watch(volume, (newVolume) => {
 
       <div class="flex justify-center items-end mb-16 gap-10">
         <button
-          @click="clearSelectAnswer"
+          @click="
+            clearSelectAnswer();
+            playClearSound();
+          "
           class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black"
         >
           Clear
         </button>
         <button
-          @click="useHint"
-          class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black"
+          @click="
+            useHint();
+            playHintSound();
+          "
+          :disabled="hints === 0"
+          :class="[
+            'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56',
+            hints > 0
+              ? 'hover:bg-[#878787] focus:bg-black'
+              : 'opacity-50 cursor-not-allowed',
+          ]"
         >
           Hints ({{ hints }})
         </button>
@@ -626,9 +657,9 @@ h1 {
 
 .volume-control {
   width: 45px;
-  position: absolute;
-  top: 100px;
-  left: 20px;
+  position: fixed;
+  top: 170px;
+  right: 20px;
   background-color: transparent;
   padding: 10px;
   border-radius: 10px;
