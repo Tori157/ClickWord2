@@ -172,7 +172,7 @@
 </ol>
 
 <div align="center">
-  <h1>Demo Clip:</h1>
+  <h1>Demo Clip</h1>
   <p>A short video showing how the game works or demonstrating its features.</p>
 </div>
 
