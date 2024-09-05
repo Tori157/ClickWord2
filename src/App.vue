@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, reactive } from "vue";
 import playButton from "./assets/icons/play.png";
 import bulb from "./assets/icons/bulb.png";
 import prize from "./assets/icons/prize.png";
@@ -27,13 +27,18 @@ import failSound from "./assets/sounds/fail.mp3";
 import clickButtonSound from "./assets/sounds/buttonclick.wav";
 import clearSound from "./assets/sounds/clear.wav";
 import hintSound from "./assets/sounds/hint.wav";
+import backgroundMusic from "./assets/sounds/puzzle-game-bg-music.mp3";
+import QueueManager from "./class/QueueManager";
+
 import "./extensions/array";
 
 const isVisible = ref(0);
 const filteredWordCollection = ref([]);
 const playedIds = [];
 const currentWordId = ref(0);
-const level = ref(0);
+const level = reactive(
+  JSON.parse(localStorage.getItem("level")) ?? { easy: 1, medium: 1, hard: 1 },
+);
 const selectedWord = ref([]);
 const selectedAnswer = ref([]);
 const correctAnswer = ref([]);
@@ -50,7 +55,17 @@ const failAudio = new Audio(failSound);
 const clearAudio = new Audio(clearSound);
 const hintAudio = new Audio(hintSound);
 const clickButtonAudio = new Audio(clickButtonSound);
+const backgroundAudio = new Audio(backgroundMusic);
 const volumeTimeout = ref(null);
+
+const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
+const maxLevels = {
+  easy: 3,
+  medium: 3,
+  hard: 2,
+};
+
+const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
 
 const startPage = () => {
   isVisible.value = 0;
@@ -58,7 +73,6 @@ const startPage = () => {
 
 const modePage = () => {
   isVisible.value = 1;
-  clearLevel();
 };
 
 const gamePlayPage = () => {
@@ -74,11 +88,8 @@ const successMode = () => {
   hints.value += 5;
 };
 
-const maxLevels = {
-  easy: 35,
-  medium: 35,
-  hard: 30,
-};
+const saveToLocalStorage = (key, value) =>
+  localStorage.setItem(key, JSON.stringify(value));
 
 const getEmptySelectedAnswer = () =>
   selectedWord.value.map((_, i) => {
@@ -87,8 +98,10 @@ const getEmptySelectedAnswer = () =>
 
 const nextLevel = () => {
   usedHintIndexes.value.length = 0;
-  if (level.value >= maxLevels[onMode.value]) {
+  if (level[onMode.value] > maxLevels[onMode.value]) {
     successMode();
+    level[onMode.value] = 1;
+    saveToLocalStorage("level", level);
     return;
   }
 
@@ -97,10 +110,11 @@ const nextLevel = () => {
 
   filteredWordCollection.value =
     filteredWordCollection.value.filterByExcludeIds(playedIds);
-  const randomIndex = Math.floor(
-    Math.random() * filteredWordCollection.value.length,
+
+  const question = filteredWordCollection.value.find(
+    (word) => word.id === queueManager.getNext(onMode.value)?.id,
   );
-  const question = filteredWordCollection.value[randomIndex];
+
   currentWordId.value = question.id;
 
   selectedWord.value = question.word.split("").shuffle();
@@ -111,8 +125,33 @@ const nextLevel = () => {
 
 const playOnMode = (mode) => {
   onMode.value = mode;
-  filteredWordCollection.value = Questions.filterByMode(mode).shuffle();
+  playedIds.length = 0;
+  filteredWordCollection.value = Questions.filterBy(
+    "difficulty",
+    mode
+  ).shuffle();
   nextLevel();
+  restoreHints();
+};
+
+const restoreHints = () => {
+  saveHintsArray.length = 0;
+  usedHintIndexes.value.length = 0;
+
+  const levelName = onMode.value; 
+  const key = `testSave_${levelName}`;
+  const savedHints = localStorage.getItem(key);
+
+  if (savedHints) {
+    const savedHintsObject = JSON.parse(savedHints);
+    const hintsArray = savedHintsObject[currentWordId.value] || [];
+
+    hintsArray.forEach(hint => {
+      putHintOn(hint.letter, hint.index);
+    });
+    
+    saveHintsArray.push(...hintsArray);
+  }
 };
 
 const selectLetter = (letter, index) => {
@@ -171,10 +210,18 @@ const checkAnswer = () => {
     }, 1500);
     setTimeout(() => {
       playedIds.push(currentWordId.value);
-      level.value += 1;
       nextLevel();
       selectedAnswer.value = getEmptySelectedAnswer();
     }, 1000);
+
+    if (level[onMode.value] <= maxLevels[onMode.value]) {
+      level[onMode.value] += 1;
+      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1;
+    }
+
+    queueManager.dequeue(onMode.value);
+    saveToLocalStorage("level", level);
+    saveToLocalStorage("userSuccess", success.value);
   } else {
     playFailSound();
     setTimeout(() => {
@@ -210,10 +257,6 @@ const clearSelectAnswer = () => {
   });
 };
 
-const clearLevel = () => {
-  level.value = 0;
-};
-
 const splitWords = computed(() => {
   const rows = [];
   const perRow = Math.ceil(boxAnswerLength.value / 2);
@@ -231,6 +274,15 @@ const filledBoxLength = computed(
   () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length,
 );
 
+// Save already used hints
+const saveHints = {};
+const saveHintsArray = [];
+const saveHintsForLevel = (levelName) => {
+  const key = `testSave_${levelName}`;
+  // บันทึก saveHints ลงใน localStorage
+  localStorage.setItem(key, JSON.stringify(saveHints));
+};
+
 const useHint = () => {
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = Array.from(
@@ -242,6 +294,20 @@ const useHint = () => {
       Math.random() * availableIndexes.length,
     );
     const randomIndex = availableIndexes[randomOfAvailable];
+
+    const hint = {
+      index: randomIndex,
+      letter: correctAnswer.value[randomIndex]
+    };
+
+    if (!saveHints[currentWordId.value]) {
+      saveHints[currentWordId.value] = [];
+    }
+
+    saveHints[currentWordId.value].push(hint);
+
+    const levelName = onMode.value;
+    saveHintsForLevel(levelName);
 
     putHintOn(correctAnswer.value[randomIndex], randomIndex);
     hints.value -= 1;
@@ -325,10 +391,23 @@ const playHintSound = () => {
   hintAudio.play();
 };
 
-watch(volume, (newVolume) => {
+const playBackgroundMusic = () => {
+  backgroundAudio.play();
+  backgroundAudio.loop = true;
+};
+
+const setVolume = (newVolume) => {
   selectAudio.volume = newVolume;
   successAudio.volume = newVolume;
   clickButtonAudio.volume = newVolume;
+  failAudio.volume = newVolume;
+  clearAudio.volume = newVolume;
+  hintAudio.volume = newVolume;
+  backgroundAudio.volume = newVolume;
+};
+
+watch(volume, (newVolume) => {
+  setVolume(newVolume);
 
   if (isVolumeVisible.value) {
     // รีเซ็ต timeout เมื่อมีการเปลี่ยนแปลงระดับเสียง
@@ -354,6 +433,7 @@ watch(volume, (newVolume) => {
         @click="
           modePage();
           playClickButtonSound();
+          playBackgroundMusic();
         "
       >
         <img
@@ -370,7 +450,7 @@ watch(volume, (newVolume) => {
             class="w-20 h-20 mx-auto my-auto mb-1"
           />
           <h3 class="bg-[#19C3B2] text-[#FEF9EF] text-[20px] rounded-2xl p-3">
-            Success (0%)
+            Success ({{ success }}%)
           </h3>
         </div>
         <div class="flex flex-col item-center gap-2">
@@ -448,7 +528,7 @@ watch(volume, (newVolume) => {
             class="w-[50px] h-[50px] ml-5 mt-5 hover:scale-110"
           />
         </button>
-        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level + 1}` }}</h3>
+        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level[onMode]}` }}</h3>
         <div class="flex flex-col">
           <button @click="openHelpModal">
             <img
@@ -605,7 +685,7 @@ watch(volume, (newVolume) => {
       class="bg-[#227C9D] h-screen flex flex-col justify-start items-center"
     >
       <h2 class="text-white text-7xl mt-10 justify-start">
-        {{ `Level ${level + 1} completed !` }}
+        {{ `Level ${level[onMode] - 1} completed !` }}
       </h2>
       <img
         :src="loadSuccess"

@@ -3,9 +3,9 @@ Array.prototype.filterByExcludeIds = function (excludeIds) {
   return this.filter((item) => !excludeIds.includes(item.id));
 };
 
-Array.prototype.filterByMode = function (mode) {
+Array.prototype.filterBy = function (key, value) {
   if (this.length === 0) return [];
-  return this.filter((item) => item.difficulty === mode);
+  return this.filter((item) => item[key] === value);
 };
 
 Array.prototype.shuffle = function () {
