@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, reactive } from "vue";
 import playButton from "./assets/icons/play.png";
 import bulb from "./assets/icons/bulb.png";
 import prize from "./assets/icons/prize.png";
@@ -28,13 +28,17 @@ import clickButtonSound from "./assets/sounds/buttonclick.wav";
 import clearSound from "./assets/sounds/clear.wav";
 import hintSound from "./assets/sounds/hint.wav";
 import backgroundMusic from "./assets/sounds/puzzle-game-bg-music.mp3";
+import QueueManager from "./class/QueueManager";
+
 import "./extensions/array";
 
 const isVisible = ref(0);
 const filteredWordCollection = ref([]);
 const playedIds = [];
 const currentWordId = ref(0);
-const level = ref(0);
+const level = reactive(
+  JSON.parse(localStorage.getItem("level")) ?? { easy: 1, medium: 1, hard: 1 },
+);
 const selectedWord = ref([]);
 const selectedAnswer = ref([]);
 const correctAnswer = ref([]);
@@ -53,6 +57,15 @@ const hintAudio = new Audio(hintSound);
 const clickButtonAudio = new Audio(clickButtonSound);
 const backgroundAudio = new Audio(backgroundMusic);
 const volumeTimeout = ref(null);
+
+const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
+const maxLevels = {
+  easy: 3,
+  medium: 3,
+  hard: 2,
+};
+
+const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
 
 const startPage = () => {
   isVisible.value = 0;
@@ -76,16 +89,15 @@ const successMode = () => {
   hints.value += 5;
 };
 
-const maxLevels = {
-  easy: 35,
-  medium: 35,
-  hard: 30,
-};
+const saveToLocalStorage = (key, value) =>
+  localStorage.setItem(key, JSON.stringify(value));
 
 const nextLevel = () => {
   usedHintIndexes.value.length = 0;
-  if (level.value >= maxLevels[onMode.value]) {
+  if (level[onMode.value] > maxLevels[onMode.value]) {
     successMode();
+    level[onMode.value] = 1;
+    saveToLocalStorage("level", level);
     return;
   }
 
@@ -94,10 +106,11 @@ const nextLevel = () => {
 
   filteredWordCollection.value =
     filteredWordCollection.value.filterByExcludeIds(playedIds);
-  const randomIndex = Math.floor(
-    Math.random() * filteredWordCollection.value.length
+
+  const question = filteredWordCollection.value.find(
+    (word) => word.id === queueManager.getNext(onMode.value)?.id,
   );
-  const question = filteredWordCollection.value[randomIndex];
+
   currentWordId.value = question.id;
 
   selectedWord.value = question.word.split("").shuffle();
@@ -108,7 +121,11 @@ const nextLevel = () => {
 
 const playOnMode = (mode) => {
   onMode.value = mode;
-  filteredWordCollection.value = Questions.filterByMode(mode).shuffle();
+  playedIds.length = 0;
+  filteredWordCollection.value = Questions.filterBy(
+    "difficulty",
+    mode,
+  ).shuffle();
   nextLevel();
 };
 
@@ -157,10 +174,18 @@ const checkAnswer = () => {
     }, 1500);
     setTimeout(() => {
       playedIds.push(currentWordId.value);
-      level.value += 1;
       nextLevel();
       selectedAnswer.value = Array(boxAnswerLength.value).fill("");
     }, 1000);
+
+    if (level[onMode.value] <= maxLevels[onMode.value]) {
+      level[onMode.value] += 1;
+      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1;
+    }
+
+    queueManager.dequeue(onMode.value);
+    saveToLocalStorage("level", level);
+    saveToLocalStorage("userSuccess", success.value);
   } else {
     playFailSound();
     setTimeout(() => {
@@ -184,9 +209,15 @@ const clearSelectAnswer = () => {
   });
 };
 
-const clearLevel = () => {
-  level.value = 0;
-};
+// const clear = () => {
+//   level[onMode].value = 1;
+//   success.value = 0;
+//   level.easy = 1;
+//   level.medium = 1;
+//   level.hard = 1;
+//   localStorage.setItem("userLevel", "1");
+//   localStorage.setItem("userSuccess", "0");
+// };
 
 const splitWords = computed(() => {
   const rows = [];
@@ -358,7 +389,7 @@ watch(volume, (newVolume) => {
             class="w-20 h-20 mx-auto my-auto mb-1"
           />
           <h3 class="bg-[#19C3B2] text-[#FEF9EF] text-[20px] rounded-2xl p-3">
-            Success (0%)
+            Success ({{ success }}%)
           </h3>
         </div>
         <div class="flex flex-col item-center gap-2">
@@ -436,7 +467,7 @@ watch(volume, (newVolume) => {
             class="w-[50px] h-[50px] ml-5 mt-5 hover:scale-110"
           />
         </button>
-        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level + 1}` }}</h3>
+        <h3 class="mt-6 text-4xl text-black">{{ `Level ${level[onMode]}` }}</h3>
         <div class="flex flex-col">
           <button @click="openHelpModal">
             <img
@@ -593,7 +624,7 @@ watch(volume, (newVolume) => {
       class="bg-[#227C9D] h-screen flex flex-col justify-start items-center"
     >
       <h2 class="text-white text-7xl mt-10 justify-start">
-        {{ `Level ${level + 1} completed !` }}
+        {{ `Level ${level[onMode] - 1} completed !` }}
       </h2>
       <img
         :src="loadSuccess"
