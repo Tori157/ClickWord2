@@ -43,7 +43,7 @@ const selectedWord = ref([]);
 const selectedAnswer = ref([]);
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
-const hints = ref(localStorage.getItem("hints") || 3);
+const hints = ref(localStorage.getItem("hints") || 2222222);
 const usedHintIndexes = ref([]);
 const clickedLetters = ref({});
 const onMode = ref("");
@@ -128,7 +128,7 @@ const playOnMode = (mode) => {
   playedIds.length = 0;
   filteredWordCollection.value = Questions.filterBy(
     "difficulty",
-    mode
+    mode,
   ).shuffle();
   nextLevel();
   restoreHints();
@@ -138,7 +138,7 @@ const restoreHints = () => {
   saveHintsArray.length = 0;
   usedHintIndexes.value.length = 0;
 
-  const levelName = onMode.value; 
+  const levelName = onMode.value;
   const key = `testSave_${levelName}`;
   const savedHints = localStorage.getItem(key);
 
@@ -146,10 +146,10 @@ const restoreHints = () => {
     const savedHintsObject = JSON.parse(savedHints);
     const hintsArray = savedHintsObject[currentWordId.value] || [];
 
-    hintsArray.forEach(hint => {
+    hintsArray.forEach((hint) => {
       putHintOn(hint.letter, hint.index);
     });
-    
+
     saveHintsArray.push(...hintsArray);
   }
 };
@@ -161,7 +161,7 @@ const selectLetter = (letter, index) => {
   ) {
     playSelectLetterSound();
     const firstEmptyIndex = selectedAnswer.value.findIndex(
-      (char) => char.letter === "",
+      (char) => char === "",
     );
     if (firstEmptyIndex !== -1) {
       selectedAnswer.value[firstEmptyIndex] = { letter, index };
@@ -197,7 +197,8 @@ const putHintOn = (letter, correctIndex) => {
 const checkAnswer = () => {
   const flattenedSelectedAnswer = selectedAnswer.value.flat();
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index].letter,
+    (char, index) => char === flattenedSelectedAnswer[index],
+
   );
 
   if (isCorrect) {
@@ -233,7 +234,8 @@ const checkAnswer = () => {
 const clearSelectAnswer = () => {
   // เก็บค่า hints ที่ใช้แล้วก่อน
   const usedHints = usedHintIndexes.value.map(
-    (index) => selectedAnswer.value[index].letter,
+    (index) => selectedAnswer.value[index],
+
   );
   console.log(selectedAnswer.value);
 
@@ -271,7 +273,7 @@ const splitWords = computed(() => {
 });
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length,
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length,
 );
 
 // Save already used hints
@@ -297,7 +299,7 @@ const useHint = () => {
 
     const hint = {
       index: randomIndex,
-      letter: correctAnswer.value[randomIndex]
+      letter: correctAnswer.value[randomIndex],
     };
 
     if (!saveHints[currentWordId.value]) {
@@ -430,11 +432,7 @@ watch(volume, (newVolume) => {
         CLICK WORD
       </h1>
       <button
-        @click="
-          modePage();
-          playClickButtonSound();
-          playBackgroundMusic();
-        "
+        @click="modePage(), playClickButtonSound(), playBackgroundMusic()"
       >
         <img
           :src="playButton"
@@ -474,38 +472,24 @@ watch(volume, (newVolume) => {
       <h1 class="text-[130px] justify-start text-[#237C9D]">MODE</h1>
       <div class="flex flex-col gap-6">
         <button
-          @click="
-            playOnMode('easy');
-            playClickButtonSound();
-          "
+          @click="playOnMode('easy'), playClickButtonSound()"
           class="bg-[#19C3B2] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#20a396]"
         >
           Easy
         </button>
         <button
-          @click="
-            playOnMode('medium');
-            playClickButtonSound();
-          "
+          @click="playOnMode('medium'), playClickButtonSound()"
           class="bg-[#FFCB77] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ffb031]"
         >
           Medium
         </button>
         <button
-          @click="
-            playOnMode('hard');
-            playClickButtonSound();
-          "
+          @click="playOnMode('hard'), playClickButtonSound()"
           class="bg-[#FE6D73] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ee464c]"
         >
           Hard
         </button>
-        <button
-          @click="
-            startPage();
-            playClickButtonSound();
-          "
-        >
+        <button @click="startPage(), playClickButtonSound()">
           <img
             :src="back"
             alt="Back Button"
@@ -653,19 +637,13 @@ watch(volume, (newVolume) => {
 
       <div class="flex justify-center items-end mb-16 gap-10">
         <button
-          @click="
-            clearSelectAnswer();
-            playClearSound();
-          "
+          @click="clearSelectAnswer(), playClearSound()"
           class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black"
         >
           Clear
         </button>
         <button
-          @click="
-            useHint();
-            playHintSound();
-          "
+          @click="useHint(), playHintSound()"
           :disabled="hints === 0"
           :class="[
             'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56',
