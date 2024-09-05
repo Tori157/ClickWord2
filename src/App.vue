@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 import playButton from "./assets/icons/play.png";
 import bulb from "./assets/icons/bulb.png";
 import prize from "./assets/icons/prize.png";
@@ -314,10 +314,6 @@ const setVolume = (newVolume) => {
   backgroundAudio.volume = newVolume;
 };
 
-onMounted(() => {
-  playBackgroundMusic();
-});
-
 watch(volume, (newVolume) => {
   setVolume(newVolume);
 
@@ -345,6 +341,7 @@ watch(volume, (newVolume) => {
         @click="
           modePage();
           playClickButtonSound();
+          playBackgroundMusic();
         "
       >
         <img
