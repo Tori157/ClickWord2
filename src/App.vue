@@ -73,7 +73,6 @@ const startPage = () => {
 
 const modePage = () => {
   isVisible.value = 1;
-  clearLevel();
 };
 
 const gamePlayPage = () => {
