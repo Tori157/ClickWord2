@@ -395,7 +395,7 @@ watch(volume, (newVolume) => {
   }
 });
 
-const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
+const titlegames = ['c', 'l', 'i', 'c', 'k', ' ', ' ', 'w', 'o', 'r', 'd'];
 </script>
 
 <template>
@@ -405,7 +405,17 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
       v-if="isVisible === 0"
       class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen"
     >
-      <h1 class="titles flex text-[150px] text-[#237C9D]">
+      <div class="waviy titles text-[150px] text-[#237C9D]">
+        <span
+          v-for="(char, index) in titlegames"
+          class="mr-6"
+          :key="index"
+          :style="`--i: ${index + 1}`"
+        >
+          {{ char }}
+        </span>
+      </div>
+      <!-- <h1 class="titles flex text-[150px] text-[#237C9D] overflow-hidden">
         <span
           v-for="(titlegame, index) in titlegames"
           :key="index"
@@ -415,7 +425,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
         >
           {{ titlegame }}
         </span>
-      </h1>
+      </h1> -->
       <button
         @click="
           modePage();
@@ -426,7 +436,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
         <img
           :src="playButton"
           alt="Play Button"
-          class="w-60 h-60 mx-auto mb-[50px] mt-10 hover:scale-110"
+          class="w-60 h-60 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
       <div class="flex gap-80 mt-10">
@@ -465,7 +475,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
             playOnMode('easy');
             playClickButtonSound();
           "
-          class="bg-[#19C3B2] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#20a396]"
+          class="bg-[#19C3B2] text-[#FEF9EF] text-[40px] rounded-2xl px-8 transition duration-300 ease-in-out transform hover:scale-110 hover:bg-[#20a396]"
         >
           Easy
         </button>
@@ -474,7 +484,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
             playOnMode('medium');
             playClickButtonSound();
           "
-          class="bg-[#FFCB77] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ffb031]"
+          class="bg-[#FFCB77] text-[#FEF9EF] text-[40px] rounded-2xl px-8 transition duration-300 ease-in-out transform hover:scale-110 hover:bg-[#ffb031]"
         >
           Medium
         </button>
@@ -483,7 +493,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
             playOnMode('hard');
             playClickButtonSound();
           "
-          class="bg-[#FE6D73] text-[#FEF9EF] text-[40px] rounded-2xl px-8 hover:scale-110 hover:bg-[#ee464c]"
+          class="bg-[#FE6D73] text-[#FEF9EF] text-[40px] rounded-2xl px-8 transition duration-300 ease-in-out transform hover:scale-110 hover:bg-[#ee464c]"
         >
           Hard
         </button>
@@ -496,7 +506,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
           <img
             :src="back"
             alt="Back Button"
-            class="w-20 h-20 mx-auto my-auto mb-1 mt-16 hover:scale-150"
+            class="w-20 h-20 mx-auto my-auto mb-1 mt-16 transition duration-300 ease-in-out transform hover:scale-150"
           />
         </button>
       </div>
@@ -512,7 +522,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
           <img
             :src="homeButton"
             alt="Home Button"
-            class="w-[50px] h-[50px] ml-5 mt-5 hover:scale-110"
+            class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
           />
         </button>
         <h3 class="mt-6 text-4xl text-black">{{ `Level ${level[onMode]}` }}</h3>
@@ -521,7 +531,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
             <img
               :src="helpButton"
               alt="Help Button"
-              class="w-[50px] h-[50px] mr-5 mt-5 hover:scale-110"
+              class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
             />
           </button>
 
@@ -539,7 +549,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
               >
                 <img
                   :src="cancelicon"
-                  class="w-[50px] h-[50px] mr-5 mt-5 hover:scale-110"
+                  class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
                 />
               </button>
               <div class="flex items-center justify-between">
@@ -547,7 +557,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
                   @click="prevPage"
                   :disabled="currentPage === 0"
                   :class="currentPage > 0 ? '' : 'invisible'"
-                  class="p-2 hover:scale-110"
+                  class="p-2 transition duration-300 ease-in-out transform hover:scale-110"
                 >
                   <img :src="nextlefticon" alt="Previous" class="w-10 h-10" />
                 </button>
@@ -562,7 +572,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
                   @click="nextPage"
                   :disabled="currentPage === helpPages.length - 1"
                   :class="currentPage < helpPages.length - 1 ? '' : 'invisible'"
-                  class="p-2 hover:scale-110"
+                  class="p-2 transition duration-300 ease-in-out transform hover:scale-110"
                 >
                   <img :src="nextrighticon" alt="Next" class="w-10 h-10" />
                 </button>
@@ -574,7 +584,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
             <img
               :src="soundButton"
               alt="Sound Button"
-              class="w-[50px] h-[50px] mr-5 mt-5 hover:scale-110"
+              class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
             />
           </button>
           <div v-show="isVolumeVisible" class="volume-control">
@@ -649,7 +659,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
             clearSelectAnswer();
             playClearSound();
           "
-          class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black"
+          class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black transition duration-300 ease-in-out transform hover:scale-110"
         >
           Clear
         </button>
@@ -660,7 +670,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
           "
           :disabled="hints === 0"
           :class="[
-            'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56',
+            'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 transition duration-300 ease-in-out transform hover:scale-110',
             hints > 0
               ? 'hover:bg-[#878787] focus:bg-black'
               : 'opacity-50 cursor-not-allowed'
@@ -729,6 +739,9 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
 
 * {
   user-select: none;
+  font-family: 'Itim', cursive;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .titles {
@@ -739,22 +752,6 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
   /* เงาที่ตัวอักษร */
   margin-right: 5px; /* เพิ่มช่องว่างระหว่างตัวอักษร */
   letter-spacing: 5px; /* เพิ่มช่องว่างระหว่างตัวอักษร */
-}
-
-* {
-  font-family: 'Itim', cursive;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.incorrect-box {
-  background-color: #ff6b6b;
-  /* Red color */
-}
-
-.correct-box {
-  background-color: #28a745;
-  /* Green color (optional) */
 }
 
 .volume-control {
@@ -831,56 +828,21 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
   animation: shake 1.5s; /* สั่น */
 }
 
-.titlegame {
+.waviy {
+  position: relative;
+}
+.waviy span {
+  position: relative;
   display: inline-block;
-  opacity: 0; /* เริ่มด้วยการซ่อนตัวอักษร */
-  animation: enter-exit 5s infinite; /* แอนิเมชันแบบวนซ้ำ */
-  transform: none;
+  text-transform: uppercase;
+  animation: flip 4s infinite;
+  animation-delay: calc(0.2s * var(--i));
+  font-family: 'Irish Grover', sans-serif;
 }
-
-.titlegame:nth-child(6) {
-  margin-right: 60px; /* เพิ่มช่องว่างระหว่างคำ "CLICK" และ "WORD" */
-}
-
-@keyframes enter-exit {
-  0% {
-    transform: translateX(-100vw); /* เริ่มจากนอกจอด้านซ้าย */
-    opacity: 0;
+@keyframes flip {
+  0%,
+  50% {
+    transform: rotateY(360deg);
   }
-  20% {
-    transform: translateX(0); /* เข้ามาถึงตรงกลางจอ */
-    opacity: 1;
-  }
-  90% {
-    transform: translateX(
-      0
-    ); /* หยุดค้างที่กลางจอเป็นเวลา 5 วินาที (30% ถึง 80%) */
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100vw); /* ออกจากจอไปทางขวา */
-    opacity: 0;
-  }
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow-x: hidden; /* ป้องกันการเลื่อนแนวนอน */
-}
-
-.container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
 }
 </style>
