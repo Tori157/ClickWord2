@@ -27,6 +27,7 @@ import failSound from "./assets/sounds/fail.mp3";
 import clickButtonSound from "./assets/sounds/buttonclick.wav";
 import clearSound from "./assets/sounds/clear.wav";
 import hintSound from "./assets/sounds/hint.wav";
+import backgroundMusic from "./assets/sounds/puzzle-game-bg-music.mp3";
 import QueueManager from "./class/QueueManager";
 
 import "./extensions/array";
@@ -54,6 +55,7 @@ const failAudio = new Audio(failSound);
 const clearAudio = new Audio(clearSound);
 const hintAudio = new Audio(hintSound);
 const clickButtonAudio = new Audio(clickButtonSound);
+const backgroundAudio = new Audio(backgroundMusic);
 const volumeTimeout = ref(null);
 
 const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
@@ -71,7 +73,6 @@ const startPage = () => {
 
 const modePage = () => {
   isVisible.value = 1;
-  clearLevel();
 };
 
 const gamePlayPage = () => {
@@ -328,10 +329,23 @@ const playHintSound = () => {
   hintAudio.play();
 };
 
-watch(volume, (newVolume) => {
+const playBackgroundMusic = () => {
+  backgroundAudio.play();
+  backgroundAudio.loop = true;
+};
+
+const setVolume = (newVolume) => {
   selectAudio.volume = newVolume;
   successAudio.volume = newVolume;
   clickButtonAudio.volume = newVolume;
+  failAudio.volume = newVolume;
+  clearAudio.volume = newVolume;
+  hintAudio.volume = newVolume;
+  backgroundAudio.volume = newVolume;
+};
+
+watch(volume, (newVolume) => {
+  setVolume(newVolume);
 
   if (isVolumeVisible.value) {
     // รีเซ็ต timeout เมื่อมีการเปลี่ยนแปลงระดับเสียง
@@ -357,6 +371,7 @@ watch(volume, (newVolume) => {
         @click="
           modePage();
           playClickButtonSound();
+          playBackgroundMusic();
         "
       >
         <img
