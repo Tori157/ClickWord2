@@ -835,6 +835,7 @@ const titlegames = ['C', 'L', 'I', 'C', 'K', ' ', 'W', 'O', 'R', 'D'];
   display: inline-block;
   opacity: 0; /* เริ่มด้วยการซ่อนตัวอักษร */
   animation: enter-exit 5s infinite; /* แอนิเมชันแบบวนซ้ำ */
+  transform: none;
 }
 
 .titlegame:nth-child(6) {
