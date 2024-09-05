@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import playButton from "./assets/icons/play.png";
 import bulb from "./assets/icons/bulb.png";
 import prize from "./assets/icons/prize.png";
@@ -27,6 +27,7 @@ import failSound from "./assets/sounds/fail.mp3";
 import clickButtonSound from "./assets/sounds/buttonclick.wav";
 import clearSound from "./assets/sounds/clear.wav";
 import hintSound from "./assets/sounds/hint.wav";
+import backgroundMusic from "./assets/sounds/puzzle-game-bg-music.mp3";
 import "./extensions/array";
 
 const isVisible = ref(0);
@@ -50,6 +51,7 @@ const failAudio = new Audio(failSound);
 const clearAudio = new Audio(clearSound);
 const hintAudio = new Audio(hintSound);
 const clickButtonAudio = new Audio(clickButtonSound);
+const backgroundAudio = new Audio(backgroundMusic);
 const volumeTimeout = ref(null);
 
 const startPage = () => {
@@ -297,10 +299,27 @@ const playHintSound = () => {
   hintAudio.play();
 };
 
-watch(volume, (newVolume) => {
+const playBackgroundMusic = () => {
+  backgroundAudio.play();
+  backgroundAudio.loop = true;
+};
+
+const setVolume = (newVolume) => {
   selectAudio.volume = newVolume;
   successAudio.volume = newVolume;
   clickButtonAudio.volume = newVolume;
+  failAudio.volume = newVolume;
+  clearAudio.volume = newVolume;
+  hintAudio.volume = newVolume;
+  backgroundAudio.volume = newVolume;
+};
+
+onMounted(() => {
+  playBackgroundMusic();
+});
+
+watch(volume, (newVolume) => {
+  setVolume(newVolume);
 
   if (isVolumeVisible.value) {
     // รีเซ็ต timeout เมื่อมีการเปลี่ยนแปลงระดับเสียง
