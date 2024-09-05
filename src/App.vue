@@ -123,9 +123,30 @@ const playOnMode = (mode) => {
   playedIds.length = 0;
   filteredWordCollection.value = Questions.filterBy(
     "difficulty",
-    mode,
+    mode
   ).shuffle();
   nextLevel();
+  restoreHints();
+};
+
+const restoreHints = () => {
+  saveHintsArray.length = 0;
+  usedHintIndexes.value.length = 0;
+
+  const levelName = onMode.value; 
+  const key = `testSave_${levelName}`;
+  const savedHints = localStorage.getItem(key);
+
+  if (savedHints) {
+    const savedHintsObject = JSON.parse(savedHints);
+    const hintsArray = savedHintsObject[currentWordId.value] || [];
+
+    hintsArray.forEach(hint => {
+      putHintOn(hint.letter, hint.index);
+    });
+    
+    saveHintsArray.push(...hintsArray);
+  }
 };
 
 const selectLetter = (letter, index) => {
@@ -208,16 +229,6 @@ const clearSelectAnswer = () => {
   });
 };
 
-// const clear = () => {
-//   level[onMode].value = 1;
-//   success.value = 0;
-//   level.easy = 1;
-//   level.medium = 1;
-//   level.hard = 1;
-//   localStorage.setItem("userLevel", "1");
-//   localStorage.setItem("userSuccess", "0");
-// };
-
 const splitWords = computed(() => {
   const rows = [];
   const perRow = Math.ceil(boxAnswerLength.value / 2);
@@ -235,6 +246,15 @@ const filledBoxLength = computed(
   () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length
 );
 
+// Save already used hints
+const saveHints = {};
+const saveHintsArray = [];
+const saveHintsForLevel = (levelName) => {
+  const key = `testSave_${levelName}`;
+  // บันทึก saveHints ลงใน localStorage
+  localStorage.setItem(key, JSON.stringify(saveHints));
+};
+
 const useHint = () => {
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = Array.from(
@@ -246,6 +266,20 @@ const useHint = () => {
       Math.random() * availableIndexes.length
     );
     const randomIndex = availableIndexes[randomOfAvailable];
+
+    const hint = {
+      index: randomIndex,
+      letter: correctAnswer.value[randomIndex]
+    };
+
+    if (!saveHints[currentWordId.value]) {
+      saveHints[currentWordId.value] = [];
+    }
+
+    saveHints[currentWordId.value].push(hint);
+
+    const levelName = onMode.value;
+    saveHintsForLevel(levelName);
 
     putHintOn(correctAnswer.value[randomIndex], randomIndex);
     hints.value -= 1;
