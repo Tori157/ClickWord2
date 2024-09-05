@@ -91,6 +91,11 @@ const successMode = () => {
 const saveToLocalStorage = (key, value) =>
   localStorage.setItem(key, JSON.stringify(value));
 
+const getEmptySelectedAnswer = () =>
+  selectedWord.value.map((_, i) => {
+    return { letter: "" };
+  });
+
 const nextLevel = () => {
   usedHintIndexes.value.length = 0;
   if (level[onMode.value] > maxLevels[onMode.value]) {
@@ -115,7 +120,7 @@ const nextLevel = () => {
   selectedWord.value = question.word.split("").shuffle();
   boxAnswerLength.value = selectedWord.value.length;
   correctAnswer.value = question.correctAnswer.split("");
-  selectedAnswer.value = Array(boxAnswerLength.value).fill("");
+  selectedAnswer.value = getEmptySelectedAnswer();
 };
 
 const playOnMode = (mode) => {
@@ -159,7 +164,7 @@ const selectLetter = (letter, index) => {
       (char) => char === "",
     );
     if (firstEmptyIndex !== -1) {
-      selectedAnswer.value[firstEmptyIndex] = letter;
+      selectedAnswer.value[firstEmptyIndex] = { letter, index };
       clickedLetters.value[index] = true;
     }
   }
@@ -167,13 +172,24 @@ const selectLetter = (letter, index) => {
 
 const putHintOn = (letter, correctIndex) => {
   if (filledBoxLength.value < selectedAnswer.value.length) {
-    selectedAnswer.value[correctIndex] = letter;
     usedHintIndexes.value.push(correctIndex);
+
     const clickedIndex = splitWords.value
       .flat()
       .findIndex((e, i) => letter === e.letter && !clickedLetters.value[i]);
+
+    if (selectedAnswer.value[correctIndex].letter !== letter) {
+      delete clickedLetters.value[selectedAnswer.value[correctIndex].index];
+    }
+
+    selectedAnswer.value[correctIndex].letter = letter;
+
     if (clickedIndex !== -1) {
-      clickedLetters.value[clickedIndex] = true;
+      clickedLetters.value = {
+        ...clickedLetters.value,
+        [clickedIndex]: true,
+      };
+      selectedAnswer.value[correctIndex].index = clickedIndex;
     }
   }
 };
@@ -182,6 +198,7 @@ const checkAnswer = () => {
   const flattenedSelectedAnswer = selectedAnswer.value.flat();
   const isCorrect = correctAnswer.value.every(
     (char, index) => char === flattenedSelectedAnswer[index],
+
   );
 
   if (isCorrect) {
@@ -195,7 +212,7 @@ const checkAnswer = () => {
     setTimeout(() => {
       playedIds.push(currentWordId.value);
       nextLevel();
-      selectedAnswer.value = Array(boxAnswerLength.value).fill("");
+      selectedAnswer.value = getEmptySelectedAnswer();
     }, 1000);
 
     if (level[onMode.value] <= maxLevels[onMode.value]) {
@@ -218,14 +235,27 @@ const clearSelectAnswer = () => {
   // เก็บค่า hints ที่ใช้แล้วก่อน
   const usedHints = usedHintIndexes.value.map(
     (index) => selectedAnswer.value[index],
-  );
 
-  selectedAnswer.value = Array(boxAnswerLength.value).fill("");
-  clickedLetters.value = {};
+  );
+  console.log(selectedAnswer.value);
+
+  selectedAnswer.value.forEach((item) => {
+    if (item.hasOwnProperty("letter")) {
+      item.letter = "";
+    }
+  });
+  const selectedHintIndexes = [];
 
   // นำค่า hints ที่ใช้กลับไปวางในตำแหน่งเดิม
   usedHintIndexes.value.forEach((index, i) => {
-    selectedAnswer.value[index] = usedHints[i];
+    selectedAnswer.value[index].letter = usedHints[i];
+    selectedHintIndexes.push(selectedAnswer.value[index].index);
+  });
+
+  Object.keys(clickedLetters.value).forEach((key) => {
+    if (!selectedHintIndexes.includes(Number(key))) {
+      delete clickedLetters.value[key];
+    }
   });
 };
 
@@ -594,13 +624,13 @@ watch(volume, (newVolume) => {
             :class="[
               usedHintIndexes.includes(index)
                 ? 'hinted-box'
-                : !item
+                : !item.letter
                   ? 'unfilled-box'
                   : 'filled-box',
             ]"
             class="box-base"
           >
-            {{ item.toUpperCase() }}
+            {{ item.letter.toUpperCase() }}
           </div>
         </div>
       </div>
