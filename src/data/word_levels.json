@@ -601,33 +601,33 @@
   },
   {
     "id": 101,
-    "difficulty": "medium",
-    "word": "banana",
-    "correctAnswer": "banana"
+    "difficulty": "easy",
+    "word": "salt",
+    "correctAnswer": "salt"
   },
   {
     "id": 102,
-    "difficulty": "medium",
-    "word": "artist",
-    "correctAnswer": "artist"
+    "difficulty": "easy",
+    "word": "duck",
+    "correctAnswer": "duck"
   },
   {
     "id": 103,
-    "difficulty": "medium",
-    "word": "pretty",
-    "correctAnswer": "pretty"
+    "difficulty": "easy",
+    "word": "lamp",
+    "correctAnswer": "lamp"
   },
   {
     "id": 104,
-    "difficulty": "medium",
-    "word": "doctor",
-    "correctAnswer": "doctor"
+    "difficulty": "easy",
+    "word": "heat",
+    "correctAnswer": "heat"
   },
   {
     "id": 105,
-    "difficulty": "medium",
-    "word": "winter",
-    "correctAnswer": "winter"
+    "difficulty": "easy",
+    "word": "peak",
+    "correctAnswer": "peak"
   },
   {
     "id": 106,
@@ -1201,69 +1201,69 @@
   },
   {
     "id": 201,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "word": "laptop",
     "correctAnswer": "laptop"
   },
   {
     "id": 201,
-    "difficulty": "hard",
-    "word": "analysis",
-    "correctAnswer": "analysis"
+    "difficulty": "medium",
+    "word": "banana",
+    "correctAnswer": "banana"
   },
   {
     "id": 202,
-    "difficulty": "hard",
-    "word": "anything",
-    "correctAnswer": "anything"
+    "difficulty": "medium",
+    "word": "artist",
+    "correctAnswer": "artist"
   },
   {
     "id": 203,
-    "difficulty": "hard",
-    "word": "approach",
-    "correctAnswer": "approach"
+    "difficulty": "medium",
+    "word": "pretty",
+    "correctAnswer": "pretty"
   },
   {
     "id": 204,
-    "difficulty": "hard",
-    "word": "articles",
-    "correctAnswer": "articles"
+    "difficulty": "medium",
+    "word": "doctor",
+    "correctAnswer": "doctor"
   },
   {
     "id": 205,
-    "difficulty": "hard",
-    "word": "audience",
-    "correctAnswer": "audience"
+    "difficulty": "medium",
+    "word": "winter",
+    "correctAnswer": "winter"
   },
   {
     "id": 206,
-    "difficulty": "hard",
-    "word": "bachelor",
-    "correctAnswer": "bachelor"
+    "difficulty": "medium",
+    "word": "marble",
+    "correctAnswer": "marble"
   },
   {
     "id": 207,
-    "difficulty": "hard",
-    "word": "backpack",
-    "correctAnswer": "backpack"
+    "difficulty": "medium",
+    "word": "travel",
+    "correctAnswer": "travel"
   },
   {
     "id": 208,
-    "difficulty": "hard",
-    "word": "behavior",
-    "correctAnswer": "behavior"
+    "difficulty": "medium",
+    "word": "forget",
+    "correctAnswer": "forget"
   },
   {
     "id": 209,
-    "difficulty": "hard",
-    "word": "birthday",
-    "correctAnswer": "birthday"
+    "difficulty": "medium",
+    "word": "jungle",
+    "correctAnswer": "jungle"
   },
   {
     "id": 210,
-    "difficulty": "hard",
-    "word": "category",
-    "correctAnswer": "category"
+    "difficulty": "medium",
+    "word": "honest",
+    "correctAnswer": "honest"
   },
   {
     "id": 211,
