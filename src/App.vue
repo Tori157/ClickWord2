@@ -67,7 +67,7 @@ const selectedAnswer = computed(() => {
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
 
-const hints = ref(localStorage.getItem("hints") || 2222222);
+const hints = ref(localStorage.getItem("hints") || 3);
 const answerHistory = JSON.parse(localStorage.getItem("answerHistory")) || {};
 const onMode = ref("");
 
@@ -260,6 +260,8 @@ const applyHint = () => {
       reserved: true,
       useHint: true,
     });
+
+    saveAnswerHistory();
 
     hints.value -= 1;
   }
