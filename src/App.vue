@@ -10,7 +10,6 @@ import soundButton from "./assets/icons/soundButton.png";
 import loadSuccess from "./assets/icons/loadPhoto.png";
 import levelSuccess from "./assets/icons/level-up-photo.png";
 import continueButton from "./assets/icons/continue.png";
-import prizePhoto from "./assets/icons/prizePhoto.png";
 import Questions from "./data/word_levels.json";
 import helppage1 from "./assets/images/helppage1.webp";
 import helppage2 from "./assets/images/helppage2.webp";
@@ -34,19 +33,45 @@ import "./extensions/array";
 
 const isVisible = ref(0);
 const filteredWordCollection = ref([]);
-const playedIds = [];
-const currentWordId = ref(0);
 const level = reactive(
   JSON.parse(localStorage.getItem("level")) ?? { easy: 1, medium: 1, hard: 1 },
 );
 const selectedWord = ref([]);
-const selectedAnswer = ref([]);
+const selectedAnswer = computed(() => {
+  const mapped = selectedWord.value.map((ans) => ({
+    ...ans,
+    letter: ans.reserved ? ans.letter : "",
+  }));
+
+  const fixedElements = mapped.filter((ans) => ans.useHint);
+  const sortableElements = mapped.filter((ans) => !ans.useHint);
+
+  const sortedElements = sortableElements.toSorted((a, b) => {
+    const orderA = a.order === undefined ? Infinity : a.order;
+    const orderB = b.order === undefined ? Infinity : b.order;
+    return orderA - orderB;
+  });
+
+  const result = Array(mapped.length).fill(null);
+  fixedElements.forEach((el) => {
+    result[el.pos] = el;
+  });
+
+  sortedElements.forEach((el) => {
+    const emptyIndex = result.findIndex((item) => item === null);
+    result[emptyIndex] = el;
+  });
+
+  return result;
+});
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
+
 const hints = ref(localStorage.getItem("hints") || 2222222);
-const usedHintIndexes = ref([]);
-const clickedLetters = ref({});
+const answerHistory = JSON.parse(localStorage.getItem("answerHistory")) || {};
 const onMode = ref("");
+
+// Audio
 const isVolumeVisible = ref(false);
 const volume = ref(0.5);
 const selectAudio = new Audio(selectLetterSound);
@@ -60,9 +85,9 @@ const volumeTimeout = ref(null);
 
 const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
 const maxLevels = {
-  easy: 3,
-  medium: 3,
-  hard: 2,
+  easy: 35,
+  medium: 35,
+  hard: 30,
 };
 
 const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
@@ -91,13 +116,7 @@ const successMode = () => {
 const saveToLocalStorage = (key, value) =>
   localStorage.setItem(key, JSON.stringify(value));
 
-const getEmptySelectedAnswer = () =>
-  selectedWord.value.map((_, i) => {
-    return { letter: "" };
-  });
-
 const nextLevel = () => {
-  usedHintIndexes.value.length = 0;
   if (level[onMode.value] > maxLevels[onMode.value]) {
     successMode();
     level[onMode.value] = 1;
@@ -106,99 +125,68 @@ const nextLevel = () => {
   }
 
   gamePlayPage();
-  clearSelectAnswer();
-
-  filteredWordCollection.value =
-    filteredWordCollection.value.filterByExcludeIds(playedIds);
 
   const question = filteredWordCollection.value.find(
     (word) => word.id === queueManager.getNext(onMode.value)?.id,
   );
 
-  currentWordId.value = question.id;
+  const answerHistory = JSON.parse(localStorage.getItem("answerHistory"));
+  const currentWordId = queueManager.getNext(onMode.value)?.id;
 
-  selectedWord.value = question.word.split("").shuffle();
+  if (
+    answerHistory &&
+    Object.keys(answerHistory).map(Number).includes(currentWordId)
+  ) {
+    selectedWord.value = answerHistory[currentWordId];
+  } else {
+    selectedWord.value = question.word
+      .split("")
+      .map((letter, index) => ({ letter, pos: index }))
+      .shuffle();
+  }
+
   boxAnswerLength.value = selectedWord.value.length;
   correctAnswer.value = question.correctAnswer.split("");
-  selectedAnswer.value = getEmptySelectedAnswer();
 };
 
 const playOnMode = (mode) => {
   onMode.value = mode;
-  playedIds.length = 0;
   filteredWordCollection.value = Questions.filterBy(
     "difficulty",
     mode,
   ).shuffle();
   nextLevel();
-  restoreHints();
 };
 
-const restoreHints = () => {
-  saveHintsArray.length = 0;
-  usedHintIndexes.value.length = 0;
+const findIndexOfFirstEmpty = (arr, key) => arr.findIndex((e) => !e[key]);
 
-  const levelName = onMode.value;
-  const key = `testSave_${levelName}`;
-  const savedHints = localStorage.getItem(key);
+const saveAnswerHistory = () => {
+  answerHistory[queueManager.getNext(onMode.value).id] = selectedWord.value;
+  saveToLocalStorage("answerHistory", answerHistory);
+};
 
-  if (savedHints) {
-    const savedHintsObject = JSON.parse(savedHints);
-    const hintsArray = savedHintsObject[currentWordId.value] || [];
+const selectLetter = (index) => {
+  if (filledBoxLength.value < selectedAnswer.value.length) {
+    const indexOfFirstEmpty = findIndexOfFirstEmpty(
+      selectedAnswer.value,
+      "letter",
+    );
 
-    hintsArray.forEach((hint) => {
-      putHintOn(hint.letter, hint.index);
+    Object.assign(selectedWord.value[index], {
+      reserved: true,
+      order: indexOfFirstEmpty,
     });
 
-    saveHintsArray.push(...hintsArray);
-  }
-};
+    saveAnswerHistory();
 
-const selectLetter = (letter, index) => {
-  if (
-    filledBoxLength.value < selectedAnswer.value.length &&
-    !clickedLetters.value[index]
-  ) {
     playSelectLetterSound();
-    const firstEmptyIndex = selectedAnswer.value.findIndex(
-      (char) => char === "",
-    );
-    if (firstEmptyIndex !== -1) {
-      selectedAnswer.value[firstEmptyIndex] = { letter, index };
-      clickedLetters.value[index] = true;
-    }
-  }
-};
-
-const putHintOn = (letter, correctIndex) => {
-  if (filledBoxLength.value < selectedAnswer.value.length) {
-    usedHintIndexes.value.push(correctIndex);
-
-    const clickedIndex = splitWords.value
-      .flat()
-      .findIndex((e, i) => letter === e.letter && !clickedLetters.value[i]);
-
-    if (selectedAnswer.value[correctIndex].letter !== letter) {
-      delete clickedLetters.value[selectedAnswer.value[correctIndex].index];
-    }
-
-    selectedAnswer.value[correctIndex].letter = letter;
-
-    if (clickedIndex !== -1) {
-      clickedLetters.value = {
-        ...clickedLetters.value,
-        [clickedIndex]: true,
-      };
-      selectedAnswer.value[correctIndex].index = clickedIndex;
-    }
   }
 };
 
 const checkAnswer = () => {
   const flattenedSelectedAnswer = selectedAnswer.value.flat();
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index],
-
+    (char, index) => char === flattenedSelectedAnswer[index].letter,
   );
 
   if (isCorrect) {
@@ -210,9 +198,8 @@ const checkAnswer = () => {
       successAudio.currentTime = 0;
     }, 1500);
     setTimeout(() => {
-      playedIds.push(currentWordId.value);
+      localStorage.removeItem("answerHistory");
       nextLevel();
-      selectedAnswer.value = getEmptySelectedAnswer();
     }, 1000);
 
     if (level[onMode.value] <= maxLevels[onMode.value]) {
@@ -227,91 +214,53 @@ const checkAnswer = () => {
     playFailSound();
     setTimeout(() => {
       clearSelectAnswer();
+      localStorage.removeItem("answerHistory");
     }, 500);
   }
 };
 
 const clearSelectAnswer = () => {
-  // เก็บค่า hints ที่ใช้แล้วก่อน
-  const usedHints = usedHintIndexes.value.map(
-    (index) => selectedAnswer.value[index],
-
-  );
-  console.log(selectedAnswer.value);
-
-  selectedAnswer.value.forEach((item) => {
-    if (item.hasOwnProperty("letter")) {
-      item.letter = "";
+  selectedWord.value.forEach((ans) => {
+    if (!ans.useHint) {
+      delete ans.reserved;
+      delete ans.order;
     }
   });
-  const selectedHintIndexes = [];
-
-  // นำค่า hints ที่ใช้กลับไปวางในตำแหน่งเดิม
-  usedHintIndexes.value.forEach((index, i) => {
-    selectedAnswer.value[index].letter = usedHints[i];
-    selectedHintIndexes.push(selectedAnswer.value[index].index);
-  });
-
-  Object.keys(clickedLetters.value).forEach((key) => {
-    if (!selectedHintIndexes.includes(Number(key))) {
-      delete clickedLetters.value[key];
-    }
-  });
+  saveAnswerHistory();
 };
 
 const splitWords = computed(() => {
   const rows = [];
   const perRow = Math.ceil(boxAnswerLength.value / 2);
-  selectedWord.value.forEach((letter, index) => {
+  selectedWord.value.forEach((ans, index) => {
     const rowIndex = Math.floor(index / perRow);
     if (!rows[rowIndex]) {
       rows[rowIndex] = [];
     }
-    rows[rowIndex].push({ letter, index });
+    rows[rowIndex].push({ ...ans, index });
   });
   return rows;
 });
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l)).length,
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length,
 );
 
-// Save already used hints
-const saveHints = {};
-const saveHintsArray = [];
-const saveHintsForLevel = (levelName) => {
-  const key = `testSave_${levelName}`;
-  // บันทึก saveHints ลงใน localStorage
-  localStorage.setItem(key, JSON.stringify(saveHints));
-};
-
-const useHint = () => {
+const applyHint = () => {
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
-    const availableIndexes = Array.from(
-      { length: correctAnswer.value.length },
-      (_, i) => i,
-    ).filter((e) => !usedHintIndexes.value.includes(e));
-
+    const availableIndexes = selectedWord.value
+      .map((ans, i) => (!ans.useHint ? i : -1))
+      .filter((i) => i !== -1);
     const randomOfAvailable = Math.floor(
       Math.random() * availableIndexes.length,
     );
     const randomIndex = availableIndexes[randomOfAvailable];
 
-    const hint = {
-      index: randomIndex,
-      letter: correctAnswer.value[randomIndex],
-    };
+    Object.assign(selectedWord.value[randomIndex], {
+      reserved: true,
+      useHint: true,
+    });
 
-    if (!saveHints[currentWordId.value]) {
-      saveHints[currentWordId.value] = [];
-    }
-
-    saveHints[currentWordId.value].push(hint);
-
-    const levelName = onMode.value;
-    saveHintsForLevel(levelName);
-
-    putHintOn(correctAnswer.value[randomIndex], randomIndex);
     hints.value -= 1;
   }
 };
@@ -327,8 +276,8 @@ watch(
 
 watch(
   () => hints.value,
-  (newHints, _) => {
-    localStorage.setItem("hints", newHints);
+  () => {
+    saveToLocalStorage("hints", hints.value);
   },
 );
 
@@ -602,8 +551,8 @@ watch(volume, (newVolume) => {
           <button
             v-for="item in row"
             :key="item.index"
-            @click="selectLetter(item.letter, item.index)"
-            :disabled="clickedLetters[item.index]"
+            @click="selectLetter(item.index)"
+            :disabled="item.reserved"
             :class="[
               'text-[40px]',
               'text-[#FEF9EF]',
@@ -611,7 +560,7 @@ watch(volume, (newVolume) => {
               'w-20',
               'h-20',
               'hover:bg-[#09897c]',
-              clickedLetters[item.index] ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
+              item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
             ]"
           >
             {{ item.letter.toUpperCase() }}
@@ -622,7 +571,7 @@ watch(volume, (newVolume) => {
             v-for="(item, index) in selectedAnswer"
             :key="index"
             :class="[
-              usedHintIndexes.includes(index)
+              item.useHint
                 ? 'hinted-box'
                 : !item.letter
                   ? 'unfilled-box'
@@ -643,7 +592,7 @@ watch(volume, (newVolume) => {
           Clear
         </button>
         <button
-          @click="useHint(), playHintSound()"
+          @click="applyHint(), playHintSound()"
           :disabled="hints === 0"
           :class="[
             'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56',
