@@ -16,6 +16,7 @@ import helppage1 from './assets/images/helppage1.webp';
 import helppage2 from './assets/images/helppage2.webp';
 import helppage3 from './assets/images/helppage3.webp';
 import helppage4 from './assets/images/helppage4.webp';
+import helppage5 from './assets/images/helppage5.webp';
 import nextlefticon from './assets/icons/nextlefticon.png';
 import nextrighticon from './assets/icons/nextrighticon.png';
 import cancelicon from './assets/icons/cancel.png';
@@ -41,7 +42,7 @@ const selectedWord = ref([]);
 const selectedAnswer = computed(() => {
   const mapped = selectedWord.value.map((ans) => ({
     ...ans,
-    letter: ans.reserved ? ans.letter : "",
+    letter: ans.reserved ? ans.letter : ''
   }));
 
   const fixedElements = mapped.filter((ans) => ans.useHint);
@@ -68,9 +69,9 @@ const selectedAnswer = computed(() => {
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
 
-const hints = ref(localStorage.getItem("hints") || 3);
-const answerHistory = JSON.parse(localStorage.getItem("answerHistory")) || {};
-const onMode = ref("");
+const hints = ref(localStorage.getItem('hints') || 3);
+const answerHistory = JSON.parse(localStorage.getItem('answerHistory')) || {};
+const onMode = ref('');
 
 // Audio
 const isVolumeVisible = ref(false);
@@ -89,7 +90,7 @@ const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const maxLevels = {
   easy: 35,
   medium: 35,
-  hard: 30,
+  hard: 30
 };
 
 const queueManager = new QueueManager('wordQueue', Questions, maxLevels);
@@ -132,7 +133,7 @@ const nextLevel = () => {
     (word) => word.id === queueManager.getNext(onMode.value)?.id
   );
 
-  const answerHistory = JSON.parse(localStorage.getItem("answerHistory"));
+  const answerHistory = JSON.parse(localStorage.getItem('answerHistory'));
   const currentWordId = queueManager.getNext(onMode.value)?.id;
 
   if (
@@ -142,20 +143,20 @@ const nextLevel = () => {
     selectedWord.value = answerHistory[currentWordId];
   } else {
     selectedWord.value = question.word
-      .split("")
+      .split('')
       .map((letter, index) => ({ letter, pos: index }))
       .shuffle();
   }
 
   boxAnswerLength.value = selectedWord.value.length;
-  correctAnswer.value = question.correctAnswer.split("");
+  correctAnswer.value = question.correctAnswer.split('');
 };
 
 const playOnMode = (mode) => {
   onMode.value = mode;
   filteredWordCollection.value = Questions.filterBy(
-    "difficulty",
-    mode,
+    'difficulty',
+    mode
   ).shuffle();
   nextLevel();
 };
@@ -163,23 +164,23 @@ const playOnMode = (mode) => {
 const findIndexOfFirstEmpty = (arr, key) => arr.findIndex((e) => !e[key]);
 
 const saveAnswerHistory = () => {
-  answerHistory[queueManager.getNext(onMode.value).id] = selectedWord.value;
-  saveToLocalStorage("answerHistory", answerHistory);
+  if (selectedWord.value.useHint) {
+    answerHistory[queueManager.getNext(onMode.value).id] = selectedWord.value;
+    saveToLocalStorage('answerHistory', answerHistory);
+  }
 };
 
 const selectLetter = (index) => {
   if (filledBoxLength.value < selectedAnswer.value.length) {
     const indexOfFirstEmpty = findIndexOfFirstEmpty(
       selectedAnswer.value,
-      "letter",
+      'letter'
     );
 
     Object.assign(selectedWord.value[index], {
       reserved: true,
-      order: indexOfFirstEmpty,
+      order: indexOfFirstEmpty
     });
-
-    saveAnswerHistory();
 
     playSelectLetterSound();
   }
@@ -188,7 +189,7 @@ const selectLetter = (index) => {
 const checkAnswer = () => {
   const flattenedSelectedAnswer = selectedAnswer.value.flat();
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index].letter,
+    (char, index) => char === flattenedSelectedAnswer[index].letter
   );
 
   if (isCorrect) {
@@ -199,17 +200,18 @@ const checkAnswer = () => {
       successAudio.pause();
       successAudio.currentTime = 0;
       successPage();
+      if (level[onMode.value] <= maxLevels[onMode.value]) {
+        level[onMode.value] += 1;
+        success.value += queueManager.isFirstRoundCompleted(onMode.value)
+          ? 0
+          : 1;
+      }
     }, 1900);
     setTimeout(() => {
-      localStorage.removeItem("answerHistory");
+      localStorage.removeItem('answerHistory');
       nextLevel();
       selectedAnswerStatus.value = '';
     }, 3000);
-
-    if (level[onMode.value] <= maxLevels[onMode.value]) {
-      level[onMode.value] += 1;
-      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1;
-    }
 
     queueManager.dequeue(onMode.value);
     saveToLocalStorage('level', level);
@@ -220,7 +222,7 @@ const checkAnswer = () => {
     setTimeout(() => {
       clearSelectAnswer();
       selectedAnswerStatus.value = '';
-      localStorage.removeItem("answerHistory");
+      localStorage.removeItem('answerHistory');
     }, 1900);
   }
 };
@@ -249,7 +251,7 @@ const splitWords = computed(() => {
 });
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length,
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length
 );
 
 const applyHint = () => {
@@ -258,13 +260,13 @@ const applyHint = () => {
       .map((ans, i) => (!ans.useHint ? i : -1))
       .filter((i) => i !== -1);
     const randomOfAvailable = Math.floor(
-      Math.random() * availableIndexes.length,
+      Math.random() * availableIndexes.length
     );
     const randomIndex = availableIndexes[randomOfAvailable];
 
     Object.assign(selectedWord.value[randomIndex], {
       reserved: true,
-      useHint: true,
+      useHint: true
     });
 
     saveAnswerHistory();
@@ -279,19 +281,19 @@ watch(
     if (filledBoxLength.value >= correctAnswer.value.length) {
       checkAnswer();
     }
-  },
+  }
 );
 
 watch(
   () => hints.value,
   () => {
-    saveToLocalStorage("hints", hints.value);
-  },
+    saveToLocalStorage('hints', hints.value);
+  }
 );
 
 const showHelpModal = ref(false);
 const currentPage = ref(0);
-const helpPages = [helppage1, helppage2, helppage3, helppage4];
+const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5];
 
 const openHelpModal = () => {
   currentPage.value = 0;
@@ -588,7 +590,7 @@ const titlegames = ['c', 'l', 'i', 'c', 'k', ' ', ' ', 'w', 'o', 'r', 'd'];
               'w-20',
               'h-20',
               'hover:bg-[#09897c]',
-              item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
+              item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]'
             ]"
           >
             {{ item.letter.toUpperCase() }}
