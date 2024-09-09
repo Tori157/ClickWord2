@@ -1,48 +1,48 @@
 <script setup>
-import { ref, computed, watch, reactive } from "vue";
-import playButton from "./assets/icons/play.png";
-import bulb from "./assets/icons/bulb.png";
-import prize from "./assets/icons/prize.png";
-import back from "./assets/icons/back.png";
-import homeButton from "./assets/icons/HomeButton.png";
-import helpButton from "./assets/icons/helpButton.png";
-import soundButton from "./assets/icons/soundButton.png";
-import loadSuccess from "./assets/icons/loadPhoto.png";
-import levelSuccess from "./assets/icons/level-up-photo.png";
-import continueButton from "./assets/icons/continue.png";
-import prizePhoto from "./assets/icons/prizePhoto.png";
-import Questions from "./data/word_levels.json";
-import helppage1 from "./assets/images/helppage1.webp";
-import helppage2 from "./assets/images/helppage2.webp";
-import helppage3 from "./assets/images/helppage3.webp";
-import helppage4 from "./assets/images/helppage4.webp";
-import helppage5 from "./assets/images/helppage5.webp";
-import nextlefticon from "./assets/icons/nextlefticon.png";
-import nextrighticon from "./assets/icons/nextrighticon.png";
-import cancelicon from "./assets/icons/cancel.png";
-import volumeUp from "./assets/icons/volumeUp.png";
-import volumeDown from "./assets/icons/volumeDown.png";
-import selectLetterSound from "./assets/sounds/select.mp3";
-import successSound from "./assets/sounds/success.mp3";
-import failSound from "./assets/sounds/fail.mp3";
-import clickButtonSound from "./assets/sounds/buttonclick.wav";
-import clearSound from "./assets/sounds/clear.wav";
-import hintSound from "./assets/sounds/hint.wav";
-import backgroundMusic from "./assets/sounds/puzzle-game-bg-music.mp3";
-import QueueManager from "./class/QueueManager";
+import { ref, computed, watch, reactive } from 'vue';
+import playButton from './assets/icons/play.png';
+import bulb from './assets/icons/bulb.png';
+import prize from './assets/icons/prize.png';
+import back from './assets/icons/back.png';
+import homeButton from './assets/icons/HomeButton.png';
+import helpButton from './assets/icons/helpButton.png';
+import soundButton from './assets/icons/soundButton.png';
+import loadSuccess from './assets/icons/loadPhoto.png';
+import levelSuccess from './assets/icons/level-up-photo.png';
+import continueButton from './assets/icons/continue.png';
+import prizePhoto from './assets/icons/prizePhoto.png';
+import Questions from './data/word_levels.json';
+import helppage1 from './assets/images/helppage1.webp';
+import helppage2 from './assets/images/helppage2.webp';
+import helppage3 from './assets/images/helppage3.webp';
+import helppage4 from './assets/images/helppage4.webp';
+import helppage5 from './assets/images/helppage5.webp';
+import nextlefticon from './assets/icons/nextlefticon.png';
+import nextrighticon from './assets/icons/nextrighticon.png';
+import cancelicon from './assets/icons/cancel.png';
+import volumeUp from './assets/icons/volumeUp.png';
+import volumeDown from './assets/icons/volumeDown.png';
+import selectLetterSound from './assets/sounds/select.mp3';
+import successSound from './assets/sounds/success.mp3';
+import failSound from './assets/sounds/fail.mp3';
+import clickButtonSound from './assets/sounds/buttonclick.wav';
+import clearSound from './assets/sounds/clear.wav';
+import hintSound from './assets/sounds/hint.wav';
+import backgroundMusic from './assets/sounds/puzzle-game-bg-music.mp3';
+import QueueManager from './class/QueueManager';
 
-import "./extensions/array";
+import './extensions/array';
 
 const isVisible = ref(0);
 const filteredWordCollection = ref([]);
 const level = reactive(
-  JSON.parse(localStorage.getItem("level")) ?? { easy: 1, medium: 1, hard: 1 },
+  JSON.parse(localStorage.getItem('level')) ?? { easy: 1, medium: 1, hard: 1 }
 );
 const selectedWord = ref([]);
 const selectedAnswer = computed(() => {
   const mapped = selectedWord.value.map((ans) => ({
     ...ans,
-    letter: ans.reserved ? ans.letter : "",
+    letter: ans.reserved ? ans.letter : ''
   }));
 
   const fixedElements = mapped.filter((ans) => ans.useHint);
@@ -69,9 +69,9 @@ const selectedAnswer = computed(() => {
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
 
-const hints = ref(localStorage.getItem("hints") || 3);
-const answerHistory = JSON.parse(localStorage.getItem("answerHistory")) || {};
-const onMode = ref("");
+const hints = ref(localStorage.getItem('hints') || 3);
+const answerHistory = JSON.parse(localStorage.getItem('answerHistory')) || {};
+const onMode = ref('');
 
 // Audio
 const isVolumeVisible = ref(false);
@@ -84,16 +84,16 @@ const hintAudio = new Audio(hintSound);
 const clickButtonAudio = new Audio(clickButtonSound);
 const backgroundAudio = new Audio(backgroundMusic);
 const volumeTimeout = ref(null);
-const selectedAnswerStatus = ref("");
+const selectedAnswerStatus = ref('');
 
-const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
+const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const maxLevels = {
   easy: 35,
   medium: 35,
-  hard: 30,
+  hard: 30
 };
 
-const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
+const queueManager = new QueueManager('wordQueue', Questions, maxLevels);
 
 const startPage = () => {
   isVisible.value = 0;
@@ -116,6 +116,10 @@ const successMode = () => {
   hints.value += 5;
 };
 
+const completedPage = () => {
+  isVisible.value = 6;
+};
+
 const saveToLocalStorage = (key, value) =>
   localStorage.setItem(key, JSON.stringify(value));
 
@@ -123,17 +127,18 @@ const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
     successMode();
     level[onMode.value] = 1;
-    saveToLocalStorage("level", level);
+    saveToLocalStorage('level', level);
+
     return;
   }
 
   gamePlayPage();
 
   const question = filteredWordCollection.value.find(
-    (word) => word.id === queueManager.getNext(onMode.value)?.id,
+    (word) => word.id === queueManager.getNext(onMode.value)?.id
   );
 
-  const answerHistory = JSON.parse(localStorage.getItem("answerHistory"));
+  const answerHistory = JSON.parse(localStorage.getItem('answerHistory'));
   const currentWordId = queueManager.getNext(onMode.value)?.id;
 
   if (
@@ -143,20 +148,20 @@ const nextLevel = () => {
     selectedWord.value = answerHistory[currentWordId];
   } else {
     selectedWord.value = question.word
-      .split("")
+      .split('')
       .map((letter, index) => ({ letter, pos: index }))
       .shuffle();
   }
 
   boxAnswerLength.value = selectedWord.value.length;
-  correctAnswer.value = question.correctAnswer.split("");
+  correctAnswer.value = question.correctAnswer.split('');
 };
 
 const playOnMode = (mode) => {
   onMode.value = mode;
   filteredWordCollection.value = Questions.filterBy(
-    "difficulty",
-    mode,
+    'difficulty',
+    mode
   ).shuffle();
   nextLevel();
 };
@@ -171,22 +176,22 @@ const saveAnswerHistory = () => {
       } else {
         return { ...ans, reserved: false };
       }
-    },
+    }
   );
 
-  saveToLocalStorage("answerHistory", answerHistory);
+  saveToLocalStorage('answerHistory', answerHistory);
 };
 
 const selectLetter = (index) => {
   if (filledBoxLength.value < selectedAnswer.value.length) {
     const indexOfFirstEmpty = findIndexOfFirstEmpty(
       selectedAnswer.value,
-      "letter",
+      'letter'
     );
 
     Object.assign(selectedWord.value[index], {
       reserved: true,
-      order: indexOfFirstEmpty,
+      order: indexOfFirstEmpty
     });
 
     playSelectLetterSound();
@@ -196,11 +201,11 @@ const selectLetter = (index) => {
 const checkAnswer = () => {
   const flattenedSelectedAnswer = selectedAnswer.value.flat();
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index].letter,
+    (char, index) => char === flattenedSelectedAnswer[index].letter
   );
 
   if (isCorrect) {
-    selectedAnswerStatus.value = "correct";
+    selectedAnswerStatus.value = 'correct';
     playSuccessSound();
     // เพื่อหยุดเสียงหลังจากเล่นแล้ว
     setTimeout(() => {
@@ -215,21 +220,27 @@ const checkAnswer = () => {
       }
     }, 1900);
     setTimeout(() => {
-      localStorage.removeItem("answerHistory");
+      localStorage.removeItem('answerHistory');
       nextLevel();
-      selectedAnswerStatus.value = "";
+      selectedAnswerStatus.value = '';
+      if (success.value === 100) {
+        completedPage();
+        setTimeout(() => {
+          startPage();
+        }, 1900);
+      }
     }, 3000);
 
     queueManager.dequeue(onMode.value);
-    saveToLocalStorage("level", level);
-    saveToLocalStorage("userSuccess", success.value);
+    saveToLocalStorage('level', level);
+    saveToLocalStorage('userSuccess', success.value);
   } else {
-    selectedAnswerStatus.value = "incorrect";
+    selectedAnswerStatus.value = 'incorrect';
     playFailSound();
     setTimeout(() => {
       clearSelectAnswer();
-      selectedAnswerStatus.value = "";
-      localStorage.removeItem("answerHistory");
+      selectedAnswerStatus.value = '';
+      localStorage.removeItem('answerHistory');
     }, 1900);
   }
 };
@@ -258,7 +269,7 @@ const splitWords = computed(() => {
 });
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length,
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length
 );
 
 const applyHint = () => {
@@ -267,13 +278,13 @@ const applyHint = () => {
       .map((ans, i) => (!ans.useHint ? i : -1))
       .filter((i) => i !== -1);
     const randomOfAvailable = Math.floor(
-      Math.random() * availableIndexes.length,
+      Math.random() * availableIndexes.length
     );
     const randomIndex = availableIndexes[randomOfAvailable];
 
     Object.assign(selectedWord.value[randomIndex], {
       reserved: true,
-      useHint: true,
+      useHint: true
     });
 
     saveAnswerHistory();
@@ -288,14 +299,14 @@ watch(
     if (filledBoxLength.value >= correctAnswer.value.length) {
       checkAnswer();
     }
-  },
+  }
 );
 
 watch(
   () => hints.value,
   () => {
-    saveToLocalStorage("hints", hints.value);
-  },
+    saveToLocalStorage('hints', hints.value);
+  }
 );
 
 const showHelpModal = ref(false);
@@ -386,8 +397,8 @@ watch(volume, (newVolume) => {
   }
 });
 
-const titlegames = ["c", "l", "i", "c", "k", " ", " ", "w", "o", "r", "d"];
-const modgames = ["m", "o", "d", "e"];
+const titlegames = ['c', 'l', 'i', 'c', 'k', ' ', ' ', 'w', 'o', 'r', 'd'];
+const modgames = ['m', 'o', 'd', 'e'];
 </script>
 
 <template>
@@ -407,7 +418,7 @@ const modgames = ["m", "o", "d", "e"];
           {{ char }}
         </span>
       </div>
-
+      
       <div class="z-50 absolute top-0 right-0">
         <div class="flex flex-col">
           <button @click="openHelpModal">
@@ -577,7 +588,7 @@ const modgames = ["m", "o", "d", "e"];
               'w-20',
               'h-20',
               'hover:bg-[#09897c]',
-              item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
+              item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]'
             ]"
           >
             {{ item.letter.toUpperCase() }}
@@ -597,7 +608,7 @@ const modgames = ["m", "o", "d", "e"];
                 ? 'correct-box'
                 : selectedAnswerStatus === 'incorrect'
                   ? 'incorrect-box'
-                  : '',
+                  : ''
             ]"
             class="box-base"
           >
@@ -620,7 +631,7 @@ const modgames = ["m", "o", "d", "e"];
             'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 transition duration-300 ease-in-out transform hover:scale-110',
             hints > 0
               ? 'hover:bg-[#878787] focus:bg-black'
-              : 'opacity-50 cursor-not-allowed',
+              : 'opacity-50 cursor-not-allowed'
           ]"
         >
           Hints ({{ hints }})
@@ -671,12 +682,19 @@ const modgames = ["m", "o", "d", "e"];
     </div>
 
     <!-- Final Page -->
-    <!-- <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-between items-center">
-      <h2 class="text-white text-7xl mt-10 ">Congratulations !</h2>
-      <h2 class="text-white text-2xl mt-10 ">You success 100% in this game</h2>
- 
-      <img :src="prizePhoto" alt="Prize" class=" w-[1500px] h-[800px] items-end mt-[-100px]">
-     </div> -->
+    <div
+      v-if="isVisible === 6"
+      class="bg-[#227C9D] h-screen flex flex-col justify-between items-center"
+    >
+      <h2 class="text-white text-7xl mt-10">Congratulations !</h2>
+      <h2 class="text-white text-2xl mt-10">You success 100% in this game</h2>
+
+      <img
+        :src="prizePhoto"
+        alt="Prize"
+        class="w-[1500px] h-[800px] items-end mt-[-100px]"
+      />
+    </div>
 
     <!-- Help Modal -->
     <div
@@ -743,18 +761,18 @@ const modgames = ["m", "o", "d", "e"];
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
 
 * {
   user-select: none;
-  font-family: "Itim", cursive;
+  font-family: 'Itim', cursive;
   font-weight: 400;
   font-style: normal;
 }
 
 .titles {
-  font-family: "Irish Grover", sans-serif;
+  font-family: 'Irish Grover', sans-serif;
   font-weight: 500;
   font-style: normal;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -842,7 +860,7 @@ const modgames = ["m", "o", "d", "e"];
   text-transform: uppercase;
   animation: flip 4s infinite;
   animation-delay: calc(0.2s * var(--i));
-  font-family: "Irish Grover", sans-serif;
+  font-family: 'Irish Grover', sans-serif;
 }
 @keyframes flip {
   0%,
