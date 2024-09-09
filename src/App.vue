@@ -214,9 +214,6 @@ const checkAnswer = () => {
       successPage();
       if (level[onMode.value] <= maxLevels[onMode.value]) {
         level[onMode.value] += 1;
-        success.value += queueManager.isFirstRoundCompleted(onMode.value)
-          ? 0
-          : 1;
       }
     }, 1900);
     setTimeout(() => {
@@ -230,6 +227,10 @@ const checkAnswer = () => {
         }, 1900);
       }
     }, 3000);
+
+    if (level[onMode.value] <= maxLevels[onMode.value]) {
+      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1;
+    }
 
     queueManager.dequeue(onMode.value);
     saveToLocalStorage('level', level);
@@ -418,7 +419,7 @@ const modgames = ['m', 'o', 'd', 'e'];
           {{ char }}
         </span>
       </div>
-      
+
       <div class="z-50 absolute top-0 right-0">
         <div class="flex flex-col">
           <button @click="openHelpModal">
