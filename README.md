@@ -21,55 +21,62 @@
         <td><b>PHUTHON PHETYOTHA</b></td>
         <td>
           <ul>
-            <li>P1</li>
+            <li>Data collection</li>
+            <li>Sound effect</li>
           </ul>
         </td>
-        <td>%</td>
-        <td><img src=""></td>
+        <td>20%</td>
+        <td><img src="/readme_src/avatar/guy.png"></td>
       </tr>
       <tr>
         <td>65130500101</td>
         <td><b>THANNAPAT KHAMJUN</b></td>
         <td>
           <ul>
-            <li>P2</li>
+            <li>Implement local storage</li>
+            <li>Clear function</li>
           </ul>
         </td>
-        <td>%</td>
-        <td><img src=""></td>
+        <td>20%</td>
+        <td><img src="/readme_src/avatar/pat.png"></td>
       </tr>
       <tr>
         <td>65130500112</td>
         <td><b>PUTTINAT LERTWECH</b></td>
         <td>
           <ul>
-            <li>P3</li>
+            <li>Tutorial page</li>
+            <li>Quiz word setup</li>
+            <li>Animation</li>
           </ul>
         </td>
-        <td>%</td>
-        <td><img src=""></td>
+        <td>20%</td>
+        <td><img src="/readme_src/avatar/nine.png"></td>
       </tr>
       <tr>
         <td>65130500115</td>
         <td><b>LALITA BENJAMANUKUL</b></td>
         <td>
           <ul>
-            <li>P4</li>
+            <li>Hint Feature</li>
+            <li>Fix and refactor code overall</li>
+            <li>Readme</li>
           </ul>
         </td>
-        <td>%</td>
-        <td><img src=""></td>
+        <td>20%</td>
+        <td><img src="/readme_src/avatar/namfon.png"></td>
       </tr>
       <tr>
         <td>65130500117</td>
         <td><b>WARISA THAIAMTHONG</b></td>
         <td>
           <ul>
-            <li>P5</li>
+            <li>Answer validator</li>
+            <li>UI image asset</li>
           </ul>
         </td>
-        <td>%</td>
-        <td><img src=""></td>
+        <td>20%</td>
+        <td><img src="/readme_src/avatar/garfair.png"></td>
       </tr>
     </tbody>
   </table>
@@ -85,7 +92,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="" width="450px"></td>
+      <td><img src="/readme_src/screenshot/startPage.png" width="450px"></td>
       <td> 
         <ul>
             <li><b>Success:</b> Track the success rate of the game, with each level completed by players in that mode contributing towards a total of 100%.</li>
@@ -100,7 +107,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="" width="450px"></td>
+      <td><img src="/readme_src/screenshot/modeSelection.png" width="450px"></td>
       <td>
       Our game has 3 modes:
         <ul>
@@ -117,7 +124,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="" width="450px"></td>
+      <td><img src="/readme_src/screenshot/gameSection.png" width="450px"></td>
       <td>
         <ul>
           <li><b>Level:</b> Show which level the player is currently playing.</li>
