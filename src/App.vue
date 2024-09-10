@@ -205,41 +205,41 @@ const checkAnswer = () => {
   const isCorrect = correctAnswer.value.every(
     (char, index) => char === selectedAnswer.value[index].letter,
   );
-
   if (isCorrect) {
     selectedAnswerStatus.value = "correct";
+    const isLevelWithinMax = level[onMode.value] <= maxLevels[onMode.value];
     playSuccessSound();
-    // เพื่อหยุดเสียงหลังจากเล่นแล้ว
     setTimeout(() => {
       successAudio.pause();
       successAudio.currentTime = 0;
       navigateTo(PAGE_NAME.LEVEL_COMPLETE);
-      if (level[onMode.value] <= maxLevels[onMode.value]) {
+      if (isLevelWithinMax) {
         level[onMode.value] += 1;
         saveToLocalStorage("level", level);
       }
     }, 1900);
     setTimeout(() => {
       localStorage.removeItem("answerHistory");
-      nextLevel();
-      selectedAnswerStatus.value = "";
-      if (Math.round(success.value) === 100 && !completedGame()) {
+      if (
+        queueManager.isFirstRoundCompleted(onMode.value) &&
+        isLevelWithinMax
+      ) {
+        success.value += 1;
+      }
+      saveToLocalStorage("userSuccess", success.value);
+      const isSuccessPendingCompletion =
+        Math.round(success.value) === 100 && !completedGame();
+      if (isSuccessPendingCompletion) {
         navigateTo(PAGE_NAME.FINAL);
+        hints.value += 5;
         setTimeout(() => {
           navigateTo(PAGE_NAME.HOME);
         }, 1900);
       }
       queueManager.dequeue(onMode.value);
+      if (!isSuccessPendingCompletion) nextLevel();
+      selectedAnswerStatus.value = "";
     }, 3000);
-
-    if (level[onMode.value] <= maxLevels[onMode.value]) {
-      success.value += queueManager.isFirstRoundCompleted(onMode.value)
-        ? 0
-        : (1 / totalLevels) * 100;
-    }
-
-    saveToLocalStorage("level", level);
-    saveToLocalStorage("userSuccess", success.value);
   } else {
     selectedAnswerStatus.value = "incorrect";
     playFailSound();
