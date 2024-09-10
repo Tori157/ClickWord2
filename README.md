@@ -34,7 +34,7 @@
         <td>
           <ul>
             <li>Implement local storage</li>
-            <li>Clear function</li>
+            <li>Clear feature</li>
           </ul>
         </td>
         <td>20%</td>
@@ -58,7 +58,7 @@
         <td><b>LALITA BENJAMANUKUL</b></td>
         <td>
           <ul>
-            <li>Hint Feature</li>
+            <li>Hint feature</li>
             <li>Fix and refactor code overall</li>
             <li>Readme</li>
           </ul>
