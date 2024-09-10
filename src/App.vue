@@ -116,6 +116,10 @@ const successMode = () => {
   hints.value += 5;
 };
 
+const completedPage = () => {
+  isVisible.value = 6;
+};
+
 const saveToLocalStorage = (key, value) =>
   localStorage.setItem(key, JSON.stringify(value));
 
@@ -124,6 +128,7 @@ const nextLevel = () => {
     successMode();
     level[onMode.value] = 1;
     saveToLocalStorage("level", level);
+
     return;
   }
 
@@ -209,16 +214,23 @@ const checkAnswer = () => {
       successPage();
       if (level[onMode.value] <= maxLevels[onMode.value]) {
         level[onMode.value] += 1;
-        success.value += queueManager.isFirstRoundCompleted(onMode.value)
-          ? 0
-          : 1;
       }
     }, 1900);
     setTimeout(() => {
       localStorage.removeItem("answerHistory");
       nextLevel();
       selectedAnswerStatus.value = "";
+      if (success.value === 100) {
+        completedPage();
+        setTimeout(() => {
+          startPage();
+        }, 1900);
+      }
     }, 3000);
+
+    if (level[onMode.value] <= maxLevels[onMode.value]) {
+      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1;
+    }
 
     queueManager.dequeue(onMode.value);
     saveToLocalStorage("level", level);
@@ -671,12 +683,19 @@ const modgames = ["m", "o", "d", "e"];
     </div>
 
     <!-- Final Page -->
-    <!-- <div v-if="isVisible === 3" class="bg-[#227C9D] h-screen flex flex-col justify-between items-center">
-      <h2 class="text-white text-7xl mt-10 ">Congratulations !</h2>
-      <h2 class="text-white text-2xl mt-10 ">You success 100% in this game</h2>
- 
-      <img :src="prizePhoto" alt="Prize" class=" w-[1500px] h-[800px] items-end mt-[-100px]">
-     </div> -->
+    <div
+      v-if="isVisible === 6"
+      class="bg-[#227C9D] h-screen flex flex-col justify-between items-center"
+    >
+      <h2 class="text-white text-7xl mt-10">Congratulations !</h2>
+      <h2 class="text-white text-2xl mt-10">You success 100% in this game</h2>
+
+      <img
+        :src="prizePhoto"
+        alt="Prize"
+        class="w-[1500px] h-[800px] items-end mt-[-100px]"
+      />
+    </div>
 
     <!-- Help Modal -->
     <div
