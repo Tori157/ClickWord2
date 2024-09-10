@@ -109,7 +109,6 @@ const maxLevels = {
   medium: 35,
   hard: 30,
 };
-const totalLevels = Object.values(maxLevels).reduce((acc, a) => acc + a, 0);
 
 const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
 
