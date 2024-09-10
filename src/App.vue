@@ -105,9 +105,9 @@ const selectedAnswerStatus = ref("");
 
 const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
 const maxLevels = {
-  easy: 35,
-  medium: 35,
-  hard: 30,
+  easy: 1,
+  medium: 1,
+  hard: 1,
 };
 const totalLevels = Object.values(maxLevels).reduce((acc, a) => acc + a, 0);
 
@@ -115,6 +115,13 @@ const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
 
 const saveToLocalStorage = (key, value) =>
   localStorage.setItem(key, JSON.stringify(value));
+
+const completedGame = () => {
+  const firstRoundCompleted = JSON.parse(localStorage.getItem("firstRoundCompleted"))
+  if (firstRoundCompleted) {
+    return Object.values(firstRoundCompleted).every((key) => key)
+  }
+}
 
 const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
@@ -214,12 +221,13 @@ const checkAnswer = () => {
       localStorage.removeItem("answerHistory");
       nextLevel();
       selectedAnswerStatus.value = "";
-      if (Math.round(success.value) === 100) {
+      if (Math.round(success.value) === 100 && !completedGame()) {
         navigateTo(PAGE_NAME.FINAL);
         setTimeout(() => {
           navigateTo(PAGE_NAME.HOME);
         }, 1900);
       }
+      queueManager.dequeue(onMode.value);
     }, 3000);
 
     if (level[onMode.value] <= maxLevels[onMode.value]) {
@@ -228,7 +236,6 @@ const checkAnswer = () => {
         : (1 / totalLevels) * 100;
     }
 
-    queueManager.dequeue(onMode.value);
     saveToLocalStorage("level", level);
     saveToLocalStorage("userSuccess", success.value);
   } else {
@@ -451,7 +458,7 @@ const modeGameTitle = ["m", "o", "d", "e"];
             />
           </button>
 
-          <button @click="toggleSound(), playBackgroundMusic()">
+          <button @click="toggleSound()">
             <img
               :src="soundButton"
               alt="Sound Button"
@@ -461,7 +468,7 @@ const modeGameTitle = ["m", "o", "d", "e"];
         </div>
       </div>
 
-      <button @click="navigateTo(PAGE_NAME.MODE), playClickButtonSound()">
+      <button @click="navigateTo(PAGE_NAME.MODE), playClickButtonSound(), playBackgroundMusic()">
         <img
           :src="playButton"
           alt="Play Button"

@@ -207,19 +207,31 @@
 </div>
 
 - **Game Design**
-  - [Infinite Word Search Crossy](https://www.flaticon.com/)
+  - [Infinite Word Search Crossy](https://apps.apple.com/us/app/infinite-word-search-crossy/id1130710966)
 
 - **Images**
-  - Icons
-    - using [Flaticon](https://www.flaticon.com/)
-  - Avatars
-    - using [Recraft](https://www.recraft.ai/)
+  - Icons from [Flaticon](https://www.flaticon.com/)
+  - Avatars from [Recraft](https://www.recraft.ai/)
 
 - **Animation**
-  - using [Tailwindcss](https://tailwindcss.com/) and [Codepen io](https://codepen.io/alvarotrigo/pen/bGrXmwM)
+  - from [Tailwindcss](https://tailwindcss.com/) and [Codepen io](https://codepen.io/alvarotrigo/pen/bGrXmwM)
 
 - **Sound Effects and Background Music**
-    - Background Music-- [XtremeFreddy - Game Music Loop 1](https://pixabay.com/sound-effects/game-music-loop-1-143979/)
-    - Button sound-- [Pixabay - gameMusic](https://pixabay.com/sound-effects/gamemusic-6082/)
-    - Success sound-- [Pixabay - Video game music loop](https://pixabay.com/sound-effects/video-game-music-loop-27629/)
-    - Incorrect sound -- [ukhf - Deepwoken Talent Card Flip Sound Effect](https://www.youtube.com/watch?si=itx_puiOXHRARMJV&v=BmLJ60owkX8&feature=youtu.be)
+  - Background  sound -- [Cotton Candy (Children Puzzle Game Music)](https://pixabay.com/music/happy-childrens-tunes-cotton-candy-children-puzzle-game-music-197733/)
+  - ClickButton sound -- [Click sound](https://mixkit.co/free-sound-effects/click/)
+  - Success sound -- [success 1](https://pixabay.com/sound-effects/success-1-6297/)
+  - Fail sound -- [Video game - points lost - retro](https://uppbeat.io/sfx/video-game-points-lost-retro/507/8098)
+  - Clear sound -- [Click sound](https://mixkit.co/free-sound-effects/click/)
+  - Hint sound -- [Click sound](hhttps://mixkit.co/free-sound-effects/click/)
+
+- **Using the prototype Property**
+  - [See the implementation...](src/extensions/array.js) from
+[Reference from W3Schools](https://www.w3schools.com/js/js_object_prototypes.asp#:~:text=Using%20the%20prototype,to%20object%20constructors%3A)
+
+- **Documentation Comments in JSDoc**
+  - [See the implementation...](src/class/QueueManager.js) from
+[Reference from JSDoc](https://www.geeksforgeeks.org/documentation-comments-in-jsdoc/)
+
+- **Implement Queue using array**
+  - [See the implementation...](src/class/QueueManager.js#L95-L106) from
+[Reference from GeeksForGeeks](https://www.geeksforgeeks.org/implementation-queue-javascript/#:~:text=Implement%20Queue%20using%20array)
