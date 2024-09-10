@@ -1,319 +1,297 @@
 <script setup>
-import { ref, computed, watch, reactive } from 'vue'
-import playButton from './assets/icons/play.png'
-import bulb from './assets/icons/bulb.png'
-import prize from './assets/icons/prize.png'
-import back from './assets/icons/back.png'
-import homeButton from './assets/icons/HomeButton.png'
-import helpButton from './assets/icons/helpButton.png'
-import soundButton from './assets/icons/soundButton.png'
-import loadSuccess from './assets/icons/loadPhoto.png'
-import levelSuccess from './assets/icons/level-up-photo.png'
-import continueButton from './assets/icons/continue.png'
-import prizePhoto from './assets/icons/prizePhoto.png'
-import Questions from './data/word_levels.json'
-import helppage1 from './assets/images/helppage1.webp'
-import helppage2 from './assets/images/helppage2.webp'
-import helppage3 from './assets/images/helppage3.webp'
-import helppage4 from './assets/images/helppage4.webp'
-import helppage5 from './assets/images/helppage5.webp'
-import helppage6 from './assets/images/helppage6.webp'
-import helppage7 from './assets/images/helppage7.webp'
-import nextlefticon from './assets/icons/nextlefticon.png'
-import nextrighticon from './assets/icons/nextrighticon.png'
-import cancelicon from './assets/icons/cancel.png'
-import volumeUp from './assets/icons/volumeUp.png'
-import volumeDown from './assets/icons/volumeDown.png'
-import selectLetterSound from './assets/sounds/select.mp3'
-import successSound from './assets/sounds/success.mp3'
-import failSound from './assets/sounds/fail.mp3'
-import clickButtonSound from './assets/sounds/buttonclick.wav'
-import clearSound from './assets/sounds/clear.wav'
-import hintSound from './assets/sounds/hint.wav'
-import backgroundMusic from './assets/sounds/puzzle-game-bg-music.mp3'
-import QueueManager from './class/QueueManager'
+import { ref, computed, watch, reactive } from "vue";
+import playButton from "../public/assets/icons/play.png";
+import bulb from "../public/assets/icons/bulb.png";
+import prize from "../public/assets/icons/prize.png";
+import back from "../public/assets/icons/back.png";
+import homeButton from "../public/assets/icons/HomeButton.png";
+import helpButton from "../public/assets/icons/helpButton.png";
+import soundButton from "../public/assets/icons/soundButton.png";
+import loadSuccess from "../public/assets/icons/loadPhoto.png";
+import levelSuccess from "../public/assets/icons/level-up-photo.png";
+import continueButton from "../public/assets/icons/continue.png";
+import prizePhoto from "../public/assets/icons/prizePhoto.png";
+import Questions from "./data/word_levels.json";
+import helppage1 from "../public/assets/images/helppage1.webp";
+import helppage2 from "../public/assets/images/helppage2.webp";
+import helppage3 from "../public/assets/images/helppage3.webp";
+import helppage4 from "../public/assets/images/helppage4.webp";
+import helppage5 from "../public/assets/images/helppage5.webp";
+import helppage6 from "../public/assets/images/helppage6.webp";
+import helppage7 from "../public/assets/images/helppage7.webp";
+import nextlefticon from "../public/assets/icons/nextlefticon.png";
+import nextrighticon from "../public/assets/icons/nextrighticon.png";
+import cancelicon from "../public/assets/icons/cancel.png";
+import volumeUp from "../public/assets/icons/volumeUp.png";
+import volumeDown from "../public/assets/icons/volumeDown.png";
+import selectLetterSound from "../public/assets/sounds/select.mp3";
+import successSound from "../public/assets/sounds/success.mp3";
+import failSound from "../public/assets/sounds/fail.mp3";
+import clickButtonSound from "../public/assets/sounds/buttonclick.wav";
+import clearSound from "../public/assets/sounds/clear.wav";
+import hintSound from "../public/assets/sounds/hint.wav";
+import backgroundMusic from "../public/assets/sounds/puzzle-game-bg-music.mp3";
+import QueueManager from "./class/QueueManager";
 
-import './extensions/array'
+import "./extensions/array";
 
-const isVisible = ref(0)
-const filteredWordCollection = ref([])
+// For Routing
+const PAGE_NAME = {
+  HOME: "home",
+  MODE: "mode",
+  GAME_PLAY: "game-play",
+  LEVEL_COMPLETE: "level-complete",
+  MODE_COMPLETE: "mode-complete",
+  FINAL: "final",
+  TUTORIAL: "tutorial",
+};
+const currentPage = ref(PAGE_NAME.HOME);
+const isOnPage = (pageName) => currentPage.value === pageName;
+const navigateTo = (pageName) => {
+  currentPage.value = pageName;
+};
+
+const filteredWordCollection = ref([]);
 const level = reactive(
-  JSON.parse(localStorage.getItem('level')) ?? { easy: 1, medium: 1, hard: 1 }
-)
-const selectedWord = ref([])
+  JSON.parse(localStorage.getItem("level")) ?? { easy: 1, medium: 1, hard: 1 },
+);
+const selectedWord = ref([]);
 const selectedAnswer = computed(() => {
   const mapped = selectedWord.value.map((ans) => ({
     ...ans,
-    letter: ans.reserved ? ans.letter : '',
-  }))
+    letter: ans.reserved ? ans.letter : "",
+  }));
 
-  const fixedElements = mapped.filter((ans) => ans.useHint)
-  const sortableElements = mapped.filter((ans) => !ans.useHint)
+  const fixedElements = mapped.filter((ans) => ans.useHint);
+  const sortableElements = mapped.filter((ans) => !ans.useHint);
 
   const sortedElements = sortableElements.toSorted((a, b) => {
-    const orderA = a.order === undefined ? Infinity : a.order
-    const orderB = b.order === undefined ? Infinity : b.order
-    return orderA - orderB
-  })
+    const orderA = a.order === undefined ? Infinity : a.order;
+    const orderB = b.order === undefined ? Infinity : b.order;
+    return orderA - orderB;
+  });
 
-  const result = Array(mapped.length).fill(null)
+  const result = Array(mapped.length).fill(null);
   fixedElements.forEach((el) => {
-    result[el.pos] = el
-  })
+    result[el.pos] = el;
+  });
 
   sortedElements.forEach((el) => {
-    const emptyIndex = result.findIndex((item) => item === null)
-    result[emptyIndex] = el
-  })
+    const emptyIndex = result.findIndex((item) => item === null);
+    result[emptyIndex] = el;
+  });
 
-  return result
-})
-const correctAnswer = ref([])
-const boxAnswerLength = ref(0)
+  return result;
+});
+const correctAnswer = ref([]);
+const boxAnswerLength = ref(0);
 
-const hints = ref(localStorage.getItem('hints') || 3)
-const answerHistory = JSON.parse(localStorage.getItem('answerHistory')) || {}
-const onMode = ref('')
+const hints = ref(localStorage.getItem("hints") || 3);
+const answerHistory = JSON.parse(localStorage.getItem("answerHistory")) || {};
+const onMode = ref("");
 
 // Audio
-const isVolumeVisible = ref(false)
-const volume = ref(0.5)
-const selectAudio = new Audio(selectLetterSound)
-const successAudio = new Audio(successSound)
-const failAudio = new Audio(failSound)
-const clearAudio = new Audio(clearSound)
-const hintAudio = new Audio(hintSound)
-const clickButtonAudio = new Audio(clickButtonSound)
-const backgroundAudio = new Audio(backgroundMusic)
-const volumeTimeout = ref(null)
-const selectedAnswerStatus = ref('')
+const isVolumeVisible = ref(false);
+const volume = ref(0.5);
+const selectAudio = new Audio(selectLetterSound);
+const successAudio = new Audio(successSound);
+const failAudio = new Audio(failSound);
+const clearAudio = new Audio(clearSound);
+const hintAudio = new Audio(hintSound);
+const clickButtonAudio = new Audio(clickButtonSound);
+const backgroundAudio = new Audio(backgroundMusic);
+const volumeTimeout = ref(null);
+const selectedAnswerStatus = ref("");
 
-const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0)
+const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
 const maxLevels = {
   easy: 35,
   medium: 35,
   hard: 30,
-}
+};
+const totalLevels = Object.values(maxLevels).reduce((acc, a) => acc + a, 0);
 
-const queueManager = new QueueManager('wordQueue', Questions, maxLevels)
-
-const startPage = () => {
-  isVisible.value = 0
-}
-
-const modePage = () => {
-  isVisible.value = 1
-}
-
-const gamePlayPage = () => {
-  isVisible.value = 2
-}
-
-const successPage = () => {
-  isVisible.value = 3
-}
-
-const successMode = () => {
-  isVisible.value = 4
-  hints.value += 5
-}
-
-const completedPage = () => {
-  isVisible.value = 6
-}
+const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
 
 const saveToLocalStorage = (key, value) =>
-  localStorage.setItem(key, JSON.stringify(value))
+  localStorage.setItem(key, JSON.stringify(value));
 
 const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
-    successMode()
-    level[onMode.value] = 1
-    saveToLocalStorage('level', level)
+    navigateTo(PAGE_NAME.MODE_COMPLETE);
+    hints.value += 5;
+    level[onMode.value] = 1;
+    saveToLocalStorage("level", level);
 
-    return
+    return;
   }
 
-  gamePlayPage()
+  navigateTo(PAGE_NAME.GAME_PLAY);
 
   const question = filteredWordCollection.value.find(
-    (word) => word.id === queueManager.getNext(onMode.value)?.id
-  )
+    (word) => word.id === queueManager.getNext(onMode.value)?.id,
+  );
 
-  const answerHistory = JSON.parse(localStorage.getItem('answerHistory'))
-  const currentWordId = queueManager.getNext(onMode.value)?.id
+  const answerHistory = JSON.parse(localStorage.getItem("answerHistory"));
+  const currentWordId = queueManager.getNext(onMode.value)?.id;
 
   if (
     answerHistory &&
     Object.keys(answerHistory).map(Number).includes(currentWordId)
   ) {
-    selectedWord.value = answerHistory[currentWordId]
+    selectedWord.value = answerHistory[currentWordId];
   } else {
     selectedWord.value = question.word
-      .split('')
+      .split("")
       .map((letter, index) => ({ letter, pos: index }))
-      .shuffle()
+      .shuffle();
   }
 
-  boxAnswerLength.value = selectedWord.value.length
-  correctAnswer.value = question.correctAnswer.split('')
-}
+  boxAnswerLength.value = selectedWord.value.length;
+  correctAnswer.value = question.correctAnswer.split("");
+};
 
 const playOnMode = (mode) => {
-  onMode.value = mode
+  onMode.value = mode;
   filteredWordCollection.value = Questions.filterBy(
-    'difficulty',
-    mode
-  ).shuffle()
-  nextLevel()
-}
+    "difficulty",
+    mode,
+  ).shuffle();
+  nextLevel();
+};
 
-const findIndexOfFirstEmpty = (arr, key) => arr.findIndex((e) => !e[key])
+const findIndexOfFirstEmpty = (arr, key) => arr.findIndex((e) => !e[key]);
 
 const saveAnswerHistory = () => {
   answerHistory[queueManager.getNext(onMode.value).id] = selectedWord.value.map(
     (ans) => {
       if (ans.useHint) {
-        return ans
+        return ans;
       } else {
-        return { ...ans, reserved: false }
+        return { ...ans, reserved: false };
       }
-    }
-  )
+    },
+  );
 
-  saveToLocalStorage('answerHistory', answerHistory)
-}
+  saveToLocalStorage("answerHistory", answerHistory);
+};
 
 const selectLetter = (index) => {
   if (filledBoxLength.value < selectedAnswer.value.length) {
     const indexOfFirstEmpty = findIndexOfFirstEmpty(
       selectedAnswer.value,
-      'letter'
-    )
+      "letter",
+    );
 
     Object.assign(selectedWord.value[index], {
       reserved: true,
       order: indexOfFirstEmpty,
-    })
+    });
 
-    playSelectLetterSound()
+    playSelectLetterSound();
   }
-}
+};
 
 const checkAnswer = () => {
-  const flattenedSelectedAnswer = selectedAnswer.value.flat()
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index].letter
-  )
+    (char, index) => char === selectedAnswer.value[index].letter,
+  );
 
   if (isCorrect) {
-    selectedAnswerStatus.value = 'correct'
-    playSuccessSound()
+    selectedAnswerStatus.value = "correct";
+    playSuccessSound();
     // เพื่อหยุดเสียงหลังจากเล่นแล้ว
     setTimeout(() => {
-      successAudio.pause()
-      successAudio.currentTime = 0
-      successPage()
+      successAudio.pause();
+      successAudio.currentTime = 0;
+      navigateTo(PAGE_NAME.LEVEL_COMPLETE);
       if (level[onMode.value] <= maxLevels[onMode.value]) {
-        level[onMode.value] += 1
+        level[onMode.value] += 1;
+        saveToLocalStorage("level", level);
       }
-    }, 1900)
+    }, 1900);
     setTimeout(() => {
-      localStorage.removeItem('answerHistory')
-      nextLevel()
-      selectedAnswerStatus.value = ''
-      if (success.value === 100) {
-        completedPage()
+      localStorage.removeItem("answerHistory");
+      nextLevel();
+      selectedAnswerStatus.value = "";
+      if (Math.round(success.value) === 100) {
+        navigateTo(PAGE_NAME.FINAL);
         setTimeout(() => {
-          startPage()
-        }, 1900)
+          navigateTo(PAGE_NAME.HOME);
+        }, 1900);
       }
-    }, 3000)
+    }, 3000);
 
     if (level[onMode.value] <= maxLevels[onMode.value]) {
-      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1
+      success.value += queueManager.isFirstRoundCompleted(onMode.value)
+        ? 0
+        : (1 / totalLevels) * 100;
     }
 
-    queueManager.dequeue(onMode.value)
-    saveToLocalStorage('level', level)
-    saveToLocalStorage('userSuccess', success.value)
+    queueManager.dequeue(onMode.value);
+    saveToLocalStorage("level", level);
+    saveToLocalStorage("userSuccess", success.value);
   } else {
-    selectedAnswerStatus.value = 'incorrect'
-    playFailSound()
+    selectedAnswerStatus.value = "incorrect";
+    playFailSound();
     setTimeout(() => {
-      clearSelectAnswer()
-      selectedAnswerStatus.value = ''
-      localStorage.removeItem('answerHistory')
-    }, 1900)
+      clearSelectAnswer();
+      selectedAnswerStatus.value = "";
+      localStorage.removeItem("answerHistory");
+    }, 1900);
   }
-}
+};
 
 const clearSelectAnswer = () => {
   selectedWord.value.forEach((ans) => {
     if (!ans.useHint) {
-      delete ans.reserved
-      delete ans.order
+      delete ans.reserved;
+      delete ans.order;
     }
-  })
-  saveAnswerHistory()
-}
+  });
+  saveAnswerHistory();
+};
 
 const splitWords = computed(() => {
-  const rows = []
-  const perRow = Math.ceil(boxAnswerLength.value / 2)
+  const rows = [];
+  const perRow = Math.ceil(boxAnswerLength.value / 2);
   selectedWord.value.forEach((ans, index) => {
-    const rowIndex = Math.floor(index / perRow)
+    const rowIndex = Math.floor(index / perRow);
     if (!rows[rowIndex]) {
-      rows[rowIndex] = []
+      rows[rowIndex] = [];
     }
-    rows[rowIndex].push({ ...ans, index })
-  })
-  return rows
-})
+    rows[rowIndex].push({ ...ans, index });
+  });
+  return rows;
+});
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length
-)
+  () => selectedAnswer.value.filter((ans) => ans.reserved).length,
+);
 
 const applyHint = () => {
-  if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
+  if (hints.value > 0 && filledBoxLength.value < selectedAnswer.value.length) {
     const availableIndexes = selectedWord.value
       .map((ans, i) => (!ans.useHint ? i : -1))
-      .filter((i) => i !== -1)
+      .filter((i) => i !== -1);
     const randomOfAvailable = Math.floor(
-      Math.random() * availableIndexes.length
-    )
-    const randomIndex = availableIndexes[randomOfAvailable]
+      Math.random() * availableIndexes.length,
+    );
+    const randomIndex = availableIndexes[randomOfAvailable];
 
     Object.assign(selectedWord.value[randomIndex], {
       reserved: true,
       useHint: true,
-    })
+    });
 
-    saveAnswerHistory()
+    saveAnswerHistory();
 
-    hints.value -= 1
+    hints.value -= 1;
   }
-}
+};
 
-watch(
-  () => filledBoxLength.value,
-  () => {
-    if (filledBoxLength.value >= correctAnswer.value.length) {
-      checkAnswer()
-    }
-  }
-)
-
-watch(
-  () => hints.value,
-  () => {
-    saveToLocalStorage('hints', hints.value)
-  }
-)
-
-const showHelpModal = ref(false)
-const currentPage = ref(0)
+const showHelpModal = ref(false);
+const currentTutorialPage = ref(0);
 const helpPages = [
   helppage1,
   helppage2,
@@ -322,102 +300,118 @@ const helpPages = [
   helppage5,
   helppage6,
   helppage7,
-]
+];
 
 const openHelpModal = () => {
-  currentPage.value = 0
-  showHelpModal.value = true
-}
+  currentTutorialPage.value = 0;
+  showHelpModal.value = true;
+};
 
 const closeHelpModal = () => {
-  showHelpModal.value = false
-}
+  showHelpModal.value = false;
+};
 
 const nextPage = () => {
-  if (currentPage.value < helpPages.length - 1) {
-    currentPage.value++
+  if (currentTutorialPage.value < helpPages.length - 1) {
+    currentTutorialPage.value++;
   }
-}
+};
 
 const prevPage = () => {
-  if (currentPage.value > 0) {
-    currentPage.value--
+  if (currentTutorialPage.value > 0) {
+    currentTutorialPage.value--;
   }
-}
+};
 
 const toggleSound = () => {
-  isVolumeVisible.value = !isVolumeVisible.value
+  isVolumeVisible.value = !isVolumeVisible.value;
   if (isVolumeVisible.value) {
-    clearTimeout(volumeTimeout.value)
+    clearTimeout(volumeTimeout.value);
     volumeTimeout.value = setTimeout(() => {
-      isVolumeVisible.value = false
-    }, 3000)
+      isVolumeVisible.value = false;
+    }, 3000);
   }
-}
+};
 
 const playSelectLetterSound = () => {
-  selectAudio.currentTime = 0
-  selectAudio.play()
-}
+  selectAudio.currentTime = 0;
+  selectAudio.play();
+};
 
 const playSuccessSound = () => {
-  successAudio.play()
-}
+  successAudio.play();
+};
 
 const playFailSound = () => {
-  failAudio.play()
-}
+  failAudio.play();
+};
 
 const playClickButtonSound = () => {
-  clickButtonAudio.play()
-}
+  clickButtonAudio.play();
+};
 
 const playClearSound = () => {
-  clearAudio.play()
-}
+  clearAudio.play();
+};
 
 const playHintSound = () => {
-  hintAudio.currentTime = 0
-  hintAudio.play()
-}
+  hintAudio.currentTime = 0;
+  hintAudio.play();
+};
 
 const playBackgroundMusic = () => {
-  backgroundAudio.play()
-  backgroundAudio.loop = true
-}
+  backgroundAudio.play();
+  backgroundAudio.loop = true;
+};
 
 const setVolume = (newVolume) => {
-  selectAudio.volume = newVolume
-  successAudio.volume = newVolume
-  clickButtonAudio.volume = newVolume
-  failAudio.volume = newVolume
-  clearAudio.volume = newVolume
-  hintAudio.volume = newVolume
-  backgroundAudio.volume = newVolume
-}
+  selectAudio.volume = newVolume;
+  successAudio.volume = newVolume;
+  clickButtonAudio.volume = newVolume;
+  failAudio.volume = newVolume;
+  clearAudio.volume = newVolume;
+  hintAudio.volume = newVolume;
+  backgroundAudio.volume = newVolume;
+};
 
 watch(volume, (newVolume) => {
-  setVolume(newVolume)
+  setVolume(newVolume);
 
   if (isVolumeVisible.value) {
     // รีเซ็ต timeout เมื่อมีการเปลี่ยนแปลงระดับเสียง
-    clearTimeout(volumeTimeout.value)
+    clearTimeout(volumeTimeout.value);
     volumeTimeout.value = setTimeout(() => {
-      isVolumeVisible.value = false
-    }, 1000)
+      isVolumeVisible.value = false;
+    }, 1000);
   }
-})
+});
 
-const titlegames_1 = ['c', 'l', 'i', 'c', 'k']
-const titlegames_2 = ['w', 'o', 'r', 'd']
-const modgames = ['m', 'o', 'd', 'e']
+watch(
+  () => filledBoxLength.value,
+  () => {
+    if (filledBoxLength.value >= selectedAnswer.value.length) {
+      checkAnswer();
+    }
+  },
+);
+
+watch(
+  () => hints.value,
+  () => {
+    saveToLocalStorage("hints", hints.value);
+  },
+);
+
+const titleGame1 = ["c", "l", "i", "c", "k"];
+const titleGame2 = ["w", "o", "r", "d"];
+const modeGameTitle = ["m", "o", "d", "e"];
 </script>
 
 <template>
   <div class="relative">
     <!-- Start Page -->
     <div
-      v-if="isVisible === 0"
+      v-if="isOnPage(PAGE_NAME.HOME)"
       class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen"
     >
       <div
@@ -426,7 +420,7 @@ const modgames = ['m', 'o', 'd', 'e']
         <div class="flex md:flex-col lg:flex-row justify-center items-center">
           <div class="mx-10">
             <span
-              v-for="(char, index) in titlegames_1"
+              v-for="(char, index) in titleGame1"
               class="mr-6"
               :key="index"
               :style="`--i: ${index + 1}`"
@@ -436,7 +430,7 @@ const modgames = ['m', 'o', 'd', 'e']
           </div>
           <div>
             <span
-              v-for="(char, index) in titlegames_2"
+              v-for="(char, index) in titleGame2"
               class="mr-6"
               :key="index"
               :style="`--i: ${index + 1}`"
@@ -457,7 +451,7 @@ const modgames = ['m', 'o', 'd', 'e']
             />
           </button>
 
-          <button @click="toggleSound">
+          <button @click="toggleSound(), playBackgroundMusic()">
             <img
               :src="soundButton"
               alt="Sound Button"
@@ -467,9 +461,7 @@ const modgames = ['m', 'o', 'd', 'e']
         </div>
       </div>
 
-      <button
-        @click="modePage(), playClickButtonSound(), playBackgroundMusic()"
-      >
+      <button @click="navigateTo(PAGE_NAME.MODE), playClickButtonSound()">
         <img
           :src="playButton"
           alt="Play Button"
@@ -484,7 +476,7 @@ const modgames = ['m', 'o', 'd', 'e']
             class="w-20 h-20 md:w-16 md:h-16 mx-auto my-auto mb-1"
           />
           <h3 class="bg-[#19C3B2] text-[#FEF9EF] text-[20px] rounded-2xl p-3">
-            Success ({{ success }}%)
+            Success ({{ Math.round(success) }}%)
           </h3>
         </div>
         <div class="flex flex-col item-center gap-2">
@@ -502,12 +494,12 @@ const modgames = ['m', 'o', 'd', 'e']
 
     <!-- Mode Page -->
     <div
-      v-if="isVisible === 1"
+      v-if="isOnPage(PAGE_NAME.MODE)"
       class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen gap-16"
     >
       <div class="waviy titles text-[150px] text-[#237C9D]">
         <span
-          v-for="(char, index) in modgames"
+          v-for="(char, index) in modeGameTitle"
           class="mr-6"
           :key="index"
           :style="`--i: ${index + 1}`"
@@ -554,7 +546,7 @@ const modgames = ['m', 'o', 'd', 'e']
         >
           Hard
         </button>
-        <button @click="startPage(), playClickButtonSound()">
+        <button @click="navigateTo(PAGE_NAME.HOME), playClickButtonSound()">
           <img
             :src="back"
             alt="Back Button"
@@ -566,11 +558,11 @@ const modgames = ['m', 'o', 'd', 'e']
 
     <!-- Play Page -->
     <div
-      v-if="isVisible === 2"
+      v-if="isOnPage(PAGE_NAME.GAME_PLAY)"
       class="flex flex-col justify-between bg-[#FEF9EF] h-screen"
     >
       <div class="flex justify-between items-start">
-        <button @click="modePage">
+        <button @click="navigateTo(PAGE_NAME.MODE)">
           <img
             :src="homeButton"
             alt="Home Button"
@@ -669,7 +661,7 @@ const modgames = ['m', 'o', 'd', 'e']
 
     <!-- Success Page -->
     <div
-      v-if="isVisible === 3"
+      v-if="isOnPage(PAGE_NAME.LEVEL_COMPLETE)"
       class="bg-[#227C9D] h-screen flex flex-col justify-center items-center"
     >
       <h2 class="text-white text-7xl mt-10 justify-start">
@@ -684,7 +676,7 @@ const modgames = ['m', 'o', 'd', 'e']
 
     <!-- Level-up Page -->
     <div
-      v-if="isVisible === 4"
+      v-if="isOnPage(PAGE_NAME.MODE_COMPLETE)"
       class="bg-[#227C9D] h-screen flex flex-col justify-center items-center space-y-8"
     >
       <h2 class="text-white text-7xl mt-10">
@@ -697,7 +689,7 @@ const modgames = ['m', 'o', 'd', 'e']
         alt="Prize"
         class="w-[410px] h-[400px] items-end mt-[-10px]"
       />
-      <button @click="modePage" class="hover:scale-150">
+      <button @click="navigateTo(PAGE_NAME.MODE)" class="hover:scale-150">
         <img
           :src="continueButton"
           alt="Continue"
@@ -711,7 +703,7 @@ const modgames = ['m', 'o', 'd', 'e']
 
     <!-- Final Page -->
     <div
-      v-if="isVisible === 6"
+      v-if="isOnPage(PAGE_NAME.FINAL)"
       class="bg-[#227C9D] h-screen flex flex-col justify-between items-center"
     >
       <h2 class="text-white text-7xl mt-10">Congratulations !</h2>
@@ -744,23 +736,25 @@ const modgames = ['m', 'o', 'd', 'e']
         <div class="flex items-center justify-between">
           <button
             @click="prevPage"
-            :disabled="currentPage === 0"
-            :class="currentPage > 0 ? '' : 'invisible'"
+            :disabled="currentTutorialPage === 0"
+            :class="currentTutorialPage > 0 ? '' : 'invisible'"
             class="p-2 transition duration-300 ease-in-out transform hover:scale-110"
           >
             <img :src="nextlefticon" alt="Previous" class="w-10 h-10" />
           </button>
           <div class="flex justify-center items-center w-[500px] h-auto">
             <img
-              :src="helpPages[currentPage]"
+              :src="helpPages[currentTutorialPage]"
               alt="Help Page"
               class="w-full h-auto"
             />
           </div>
           <button
             @click="nextPage"
-            :disabled="currentPage === helpPages.length - 1"
-            :class="currentPage < helpPages.length - 1 ? '' : 'invisible'"
+            :disabled="currentTutorialPage === helpPages.length - 1"
+            :class="
+              currentTutorialPage < helpPages.length - 1 ? '' : 'invisible'
+            "
             class="p-2 transition duration-300 ease-in-out transform hover:scale-110"
           >
             <img :src="nextrighticon" alt="Next" class="w-10 h-10" />
@@ -770,7 +764,7 @@ const modgames = ['m', 'o', 'd', 'e']
     </div>
 
     <div v-show="isVolumeVisible" class="volume-control">
-      <div class="volume-icon">
+      <div class="volume-icon" @click="volume = 1">
         <img :src="volumeUp" alt="volume-up" />
       </div>
       <input
@@ -781,7 +775,7 @@ const modgames = ['m', 'o', 'd', 'e']
         v-model="volume"
         class="volume-slider"
       />
-      <div class="volume-icon">
+      <div class="volume-icon" @click="volume = 0">
         <img :src="volumeDown" alt="volume-down" />
       </div>
     </div>
@@ -789,18 +783,18 @@ const modgames = ['m', 'o', 'd', 'e']
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
 
 * {
   user-select: none;
-  font-family: 'Itim', cursive;
+  font-family: "Itim", cursive;
   font-weight: 400;
   font-style: normal;
 }
 
 .titles {
-  font-family: 'Irish Grover', sans-serif;
+  font-family: "Irish Grover", sans-serif;
   font-weight: 500;
   font-style: normal;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -888,7 +882,7 @@ const modgames = ['m', 'o', 'd', 'e']
   text-transform: uppercase;
   animation: flip 4s infinite;
   animation-delay: calc(0.2s * var(--i));
-  font-family: 'Irish Grover', sans-serif;
+  font-family: "Irish Grover", sans-serif;
 }
 @keyframes flip {
   0%,

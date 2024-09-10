@@ -1,8 +1,3 @@
-Array.prototype.filterByExcludeIds = function (excludeIds) {
-  if (this.length === 0) return [];
-  return this.filter((item) => !excludeIds.includes(item.id));
-};
-
 Array.prototype.filterBy = function (key, value) {
   if (this.length === 0) return [];
   return this.filter((item) => item[key] === value);
