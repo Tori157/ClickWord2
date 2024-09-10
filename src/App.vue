@@ -17,6 +17,8 @@ import helppage2 from "./assets/images/helppage2.webp";
 import helppage3 from "./assets/images/helppage3.webp";
 import helppage4 from "./assets/images/helppage4.webp";
 import helppage5 from "./assets/images/helppage5.webp";
+import helppage6 from "./assets/images/helppage6.webp";
+import helppage7 from "./assets/images/helppage7.webp";
 import nextlefticon from "./assets/icons/nextlefticon.png";
 import nextrighticon from "./assets/icons/nextrighticon.png";
 import cancelicon from "./assets/icons/cancel.png";
@@ -312,7 +314,7 @@ watch(
 
 const showHelpModal = ref(false);
 const currentPage = ref(0);
-const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5];
+const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5 , helppage6, helppage7];
 
 const openHelpModal = () => {
   currentPage.value = 0;
