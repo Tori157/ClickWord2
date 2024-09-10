@@ -421,7 +421,7 @@ const modgames = ['m', 'o', 'd', 'e']
       class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen"
     >
       <div
-        class="waviy titles text-[#237C9D] text-[40px] md:text-[70px] lg:text-[120px]"
+        class="waviy titles text-[#237C9D] text-[40px] md:text-[70px] lg:text-[100px] xl:text-[150px] min-[1440px]:text-[200px] max-[2000px]:text-[200px] mt-[-90px]"
       >
         <div class="flex md:flex-col lg:flex-row justify-center items-center">
           <div class="mx-10">
@@ -473,7 +473,7 @@ const modgames = ['m', 'o', 'd', 'e']
         <img
           :src="playButton"
           alt="Play Button"
-          class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
+          class="lg:w-80 lg:h-80 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
       <div class="flex gap-80 mt-10">
@@ -675,7 +675,11 @@ const modgames = ['m', 'o', 'd', 'e']
       <h2 class="text-white text-7xl mt-10 justify-start">
         {{ `Level ${level[onMode] - 1} completed !` }}
       </h2>
-      <img :src="loadSuccess" alt="Prize" class="w-1/2 h-1/2 items-end" />
+      <img
+        :src="loadSuccess"
+        alt="Prize"
+        class="w-[610px] h-[600px] items-end"
+      />
     </div>
 
     <!-- Level-up Page -->
