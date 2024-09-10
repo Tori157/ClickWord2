@@ -105,9 +105,9 @@ const selectedAnswerStatus = ref("");
 
 const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
 const maxLevels = {
-  easy: 1,
-  medium: 1,
-  hard: 1,
+  easy: 35,
+  medium: 35,
+  hard: 30,
 };
 const totalLevels = Object.values(maxLevels).reduce((acc, a) => acc + a, 0);
 
@@ -117,11 +117,13 @@ const saveToLocalStorage = (key, value) =>
   localStorage.setItem(key, JSON.stringify(value));
 
 const completedGame = () => {
-  const firstRoundCompleted = JSON.parse(localStorage.getItem("firstRoundCompleted"))
+  const firstRoundCompleted = JSON.parse(
+    localStorage.getItem("firstRoundCompleted"),
+  );
   if (firstRoundCompleted) {
-    return Object.values(firstRoundCompleted).every((key) => key)
+    return Object.values(firstRoundCompleted).every((key) => key);
   }
-}
+};
 
 const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
@@ -468,7 +470,13 @@ const modeGameTitle = ["m", "o", "d", "e"];
         </div>
       </div>
 
-      <button @click="navigateTo(PAGE_NAME.MODE), playClickButtonSound(), playBackgroundMusic()">
+      <button
+        @click="
+          navigateTo(PAGE_NAME.MODE),
+            playClickButtonSound(),
+            playBackgroundMusic()
+        "
+      >
         <img
           :src="playButton"
           alt="Play Button"
