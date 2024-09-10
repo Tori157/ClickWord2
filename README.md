@@ -205,6 +205,8 @@
   <h1>Game Play</h1>
 </div>
 
+[![Start Page](/readme_src/screenshot/startPage.png)](https://drive.google.com/file/d/1yzetdwbV0A_n2fngy7zKVZ90hLYyevit/view?usp=sharing)
+
 <div align="center">
   <h1>References</h1>
 </div>
@@ -225,7 +227,8 @@
   - Success sound -- [success 1](https://pixabay.com/sound-effects/success-1-6297/)
   - Fail sound -- [Video game - points lost - retro](https://uppbeat.io/sfx/video-game-points-lost-retro/507/8098)
   - Clear sound -- [Click sound](https://mixkit.co/free-sound-effects/click/)
-  - Hint sound -- [Click sound](hhttps://mixkit.co/free-sound-effects/click/)
+  - Hint sound -- [Click sound](https://mixkit.co/free-sound-effects/click/)
+  - SelectLetter sound -- [Sound effect click](https://mixkit.co/free-sound-effects/click/)
 
 - **Using the prototype Property**
   - [See the implementation...](src/extensions/array.js) from
