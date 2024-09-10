@@ -34,7 +34,7 @@
         <td>
           <ul>
             <li>Implement local storage</li>
-            <li>Clear function</li>
+            <li>Clear feature</li>
           </ul>
         </td>
         <td>20%</td>
@@ -58,7 +58,7 @@
         <td><b>LALITA BENJAMANUKUL</b></td>
         <td>
           <ul>
-            <li>Hint Feature</li>
+            <li>Hint feature</li>
             <li>Fix and refactor code overall</li>
             <li>Readme</li>
           </ul>
@@ -88,17 +88,30 @@
 <h1 align="center">Feature</h1>
 <p align="center">"Click Word". It is a game application in which players choose letters to construct words. It will consist of:</p>
 
-<h2>Start Page</h2>
+<h2>Tutorial</h2>
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/startPage.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/tutorial.webp" width="450px"></td>
       <td> 
         <ul>
-            <li><b>Success:</b> Track the success rate of the game, with each level completed by players in that mode contributing towards a total of 100%.</li>
-            <li><b>Hint:</b> Display the number of hints players have and can use.</li>
+            <li><b>Tutorial:</b> How to play this game.</li>
         </ul>
       </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Sound Effect</h2>
+<table align="center">
+  <tbody>
+    <tr>
+      <td><img src="/readme_src/screenshot/soundEffect.png" width="450px"></td>
+      <td>
+        <ul>
+          <li><b>Sound Effect:</b> Player has the option to set sound effect.</li>
+        </ul>
+    </td>
     </tr>
   </tbody>
 </table>
@@ -109,49 +122,55 @@
     <tr>
       <td><img src="/readme_src/screenshot/modeSelection.png" width="450px"></td>
       <td>
-      Our game has 3 modes:
+      Our game features 3 modes:
         <ul>
-          <li><b>Easy Mode:</b> contains 35 levels.</li>
-          <li><b>Medium Mode:</b> contains 35 levels.</li>
-          <li><b>Hard Mode:</b> contains 30 levels.</li>
+          <li><b>Easy:</b> contains 35 words, each with 4 letters.</li>
+          <li><b>Medium:</b> contains 35 words, each with 6 letters.</li>
+          <li><b>Hard:</b> contains 30 words, each with 8 letters.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Clear</h2>
+<table align="center">
+  <tbody>
+    <tr>
+      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
+      <td>
+        <ul>
+          <li><b>Clear:</b> If you select the wrong letter and need to reset your choices, click the "Clear" button. This will remove all selected letters, except those revealed by hints.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Hint</h2>
+<table align="center">
+  <tbody>
+    <tr>
+      <td><img src="/readme_src/screenshot/hint.png" width="450px"></td>
+      <td>
+        <ul>
+          <li><b>Hint:</b> The game starts with 3 hints. If you get stuck, you can use a hint to reveal one correct letter in the answer box. You’ll also earn 5 additional hints for completing each game mode.</li>
         </ul>
     </td>
     </tr>
   </tbody>
 </table>
 
-<h2>Game Section</h2>
+<h2>Success</h2>
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/gameSection.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/success.png" width="450px"></td>
       <td>
         <ul>
-          <li><b>Level:</b> Show which level the player is currently playing.</li>
-          <li><b>Letter Section:</b> This is where the letters for the vocabulary are displayed.</li>
-          <li><b>Selected Letters Box:</b> This is where the letters you have chosen are shown.</li>
-          <li><b>Manual:</b> How to Play</li>
-          <li><b>Sound Volume:</b> Player has the option to set sound volume (sound effect).</li>
-          <li><b>Clear:</b> If you select the wrong letter and want to clear your choice, you can use the "Clear" button. This button will remove all selected letters except for those revealed by hints.</li>
-          <li><b>Hint:</b> The game starts with 3 hints. If you get stuck, you can use hints to reveal one correct letter in the answer box. Additionally, you will earn 5 extra hints upon completing each mode.</li>
+          <li><b>Success:</b> Track your success rate by measuring how many levels you complete in each mode. Your progress will contribute to reaching a total of 100%.</li>
         </ul>
-      </td>
-    </tr>
-    <tr>
-      <td><img src="" width="450px"></td>
-      <td>
-        <ul>
-          <li><b>Level Completed Screen:</b> The screen that shows when a level has been completed.</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td><img src="" width="450px"></td>
-      <td>
-        <ul>
-          <li><b>Success Mode Screen:</b> The screen that appears when you successfully complete a mode.</li>
-        </ul>
-      </td>
+    </td>
     </tr>
   </tbody>
 </table>
@@ -171,18 +190,36 @@
 <h2>How To Play?</h2>
 
 <ol>
-  <li>Press the Start Game button to start the game.</li>
-  <li>Select the mode you want to play.</li>
-  <li>Choose letters from the grid displayed above, then arrange them in the correct order to form the correct word.</li>
-  <li>If you choose the wrong word, clear your selection to start over.</li>
-  <li>The game will get increasingly difficult. If you get stuck, you can use hints!</li>
+  <li>Click the <b>"Start Game"</b> button to begin.</li>
+  <li>Select your desired difficulty level. Each level offers unique challenges for an engaging experience.</li>
+  <li>Choose letters from the grid and arrange them to form the correct word.</li>
+  <li>If your answer is incorrect, the selection box will reset.</li>
+  <li>If you make a mistake, you can click the <b>"Clear"</b> button to start over.</li>
+  <li>Use hints to reveal a letter in the correct order if needed.</li>
 </ol>
 
 <div align="center">
-  <h1>Demo Clip</h1>
-  <p>A short video showing how the game works or demonstrating its features.</p>
+  <h1>Game Play</h1>
 </div>
 
 <div align="center">
   <h1>References</h1>
 </div>
+
+- **Game Design**
+  - [Infinite Word Search Crossy](https://www.flaticon.com/)
+
+- **Images**
+  - Icons
+    - using [Flaticon](https://www.flaticon.com/)
+  - Avatars
+    - using [Recraft](https://www.recraft.ai/)
+
+- **Animation**
+  - using [Tailwindcss](https://tailwindcss.com/) and [Codepen io](https://codepen.io/alvarotrigo/pen/bGrXmwM)
+
+- **Sound Effects and Background Music**
+    - Background Music-- [XtremeFreddy - Game Music Loop 1](https://pixabay.com/sound-effects/game-music-loop-1-143979/)
+    - Button sound-- [Pixabay - gameMusic](https://pixabay.com/sound-effects/gamemusic-6082/)
+    - Success sound-- [Pixabay - Video game music loop](https://pixabay.com/sound-effects/video-game-music-loop-27629/)
+    - Incorrect sound -- [ukhf - Deepwoken Talent Card Flip Sound Effect](https://www.youtube.com/watch?si=itx_puiOXHRARMJV&v=BmLJ60owkX8&feature=youtu.be)
