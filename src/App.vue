@@ -421,7 +421,7 @@ const modgames = ['m', 'o', 'd', 'e']
       class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen"
     >
       <div
-        class="waviy titles text-[#237C9D] text-[40px] md:text-[70px] lg:text-[100px] xl:text-[150px] min-[1440px]:text-[200px] max-[2000px]:text-[200px] mt-[-90px]"
+        class="waviy titles text-[#237C9D] text-[40px] md:text-[70px] lg:text-[100px] xl:text-[150px] min-[1440px]:text-[200px] max-[2000px]:text-[200px] mt-[-50px]"
       >
         <div class="flex md:flex-col lg:flex-row justify-center items-center">
           <div class="mx-10">
@@ -473,7 +473,7 @@ const modgames = ['m', 'o', 'd', 'e']
         <img
           :src="playButton"
           alt="Play Button"
-          class="lg:w-80 lg:h-80 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
+          class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
       <div class="flex gap-80 mt-10">
@@ -648,7 +648,7 @@ const modgames = ['m', 'o', 'd', 'e']
       <div class="flex justify-center items-end mb-16 gap-10">
         <button
           @click="clearSelectAnswer(), playClearSound()"
-          class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 hover:bg-[#878787] focus:bg-black transition duration-300 ease-in-out transform hover:scale-110"
+          class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-20 w-58 hover:bg-[#878787] focus:bg-black transition duration-300 ease-in-out transform hover:scale-110"
         >
           Clear
         </button>
@@ -656,7 +656,7 @@ const modgames = ['m', 'o', 'd', 'e']
           @click="applyHint(), playHintSound()"
           :disabled="hints === 0"
           :class="[
-            'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-8 w-56 transition duration-300 ease-in-out transform hover:scale-110',
+            'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
             hints > 0
               ? 'hover:bg-[#878787] focus:bg-black'
               : 'opacity-50 cursor-not-allowed',
@@ -685,7 +685,7 @@ const modgames = ['m', 'o', 'd', 'e']
     <!-- Level-up Page -->
     <div
       v-if="isVisible === 4"
-      class="bg-[#227C9D] h-screen flex flex-col justify-center items-center"
+      class="bg-[#227C9D] h-screen flex flex-col justify-center items-center space-y-8"
     >
       <h2 class="text-white text-7xl mt-10">
         {{
