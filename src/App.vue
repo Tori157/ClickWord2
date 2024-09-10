@@ -1,407 +1,416 @@
 <script setup>
-import { ref, computed, watch, reactive } from "vue";
-import playButton from "./assets/icons/play.png";
-import bulb from "./assets/icons/bulb.png";
-import prize from "./assets/icons/prize.png";
-import back from "./assets/icons/back.png";
-import homeButton from "./assets/icons/HomeButton.png";
-import helpButton from "./assets/icons/helpButton.png";
-import soundButton from "./assets/icons/soundButton.png";
-import loadSuccess from "./assets/icons/loadPhoto.png";
-import levelSuccess from "./assets/icons/level-up-photo.png";
-import continueButton from "./assets/icons/continue.png";
-import prizePhoto from "./assets/icons/prizePhoto.png";
-import Questions from "./data/word_levels.json";
-import helppage1 from "./assets/images/helppage1.webp";
-import helppage2 from "./assets/images/helppage2.webp";
-import helppage3 from "./assets/images/helppage3.webp";
-import helppage4 from "./assets/images/helppage4.webp";
-import helppage5 from "./assets/images/helppage5.webp";
-import helppage6 from "./assets/images/helppage6.webp";
-import helppage7 from "./assets/images/helppage7.webp";
-import nextlefticon from "./assets/icons/nextlefticon.png";
-import nextrighticon from "./assets/icons/nextrighticon.png";
-import cancelicon from "./assets/icons/cancel.png";
-import volumeUp from "./assets/icons/volumeUp.png";
-import volumeDown from "./assets/icons/volumeDown.png";
-import selectLetterSound from "./assets/sounds/select.mp3";
-import successSound from "./assets/sounds/success.mp3";
-import failSound from "./assets/sounds/fail.mp3";
-import clickButtonSound from "./assets/sounds/buttonclick.wav";
-import clearSound from "./assets/sounds/clear.wav";
-import hintSound from "./assets/sounds/hint.wav";
-import backgroundMusic from "./assets/sounds/puzzle-game-bg-music.mp3";
-import QueueManager from "./class/QueueManager";
+import { ref, computed, watch, reactive } from 'vue'
+import playButton from './assets/icons/play.png'
+import bulb from './assets/icons/bulb.png'
+import prize from './assets/icons/prize.png'
+import back from './assets/icons/back.png'
+import homeButton from './assets/icons/HomeButton.png'
+import helpButton from './assets/icons/helpButton.png'
+import soundButton from './assets/icons/soundButton.png'
+import loadSuccess from './assets/icons/loadPhoto.png'
+import levelSuccess from './assets/icons/level-up-photo.png'
+import continueButton from './assets/icons/continue.png'
+import prizePhoto from './assets/icons/prizePhoto.png'
+import Questions from './data/word_levels.json'
+import helppage1 from './assets/images/helppage1.webp'
+import helppage2 from './assets/images/helppage2.webp'
+import helppage3 from './assets/images/helppage3.webp'
+import helppage4 from './assets/images/helppage4.webp'
+import helppage5 from './assets/images/helppage5.webp'
+import helppage6 from './assets/images/helppage6.webp'
+import helppage7 from './assets/images/helppage7.webp'
+import nextlefticon from './assets/icons/nextlefticon.png'
+import nextrighticon from './assets/icons/nextrighticon.png'
+import cancelicon from './assets/icons/cancel.png'
+import volumeUp from './assets/icons/volumeUp.png'
+import volumeDown from './assets/icons/volumeDown.png'
+import selectLetterSound from './assets/sounds/select.mp3'
+import successSound from './assets/sounds/success.mp3'
+import failSound from './assets/sounds/fail.mp3'
+import clickButtonSound from './assets/sounds/buttonclick.wav'
+import clearSound from './assets/sounds/clear.wav'
+import hintSound from './assets/sounds/hint.wav'
+import backgroundMusic from './assets/sounds/puzzle-game-bg-music.mp3'
+import QueueManager from './class/QueueManager'
 
-import "./extensions/array";
+import './extensions/array'
 
-const isVisible = ref(0);
-const filteredWordCollection = ref([]);
+const isVisible = ref(0)
+const filteredWordCollection = ref([])
 const level = reactive(
-  JSON.parse(localStorage.getItem("level")) ?? { easy: 1, medium: 1, hard: 1 },
-);
-const selectedWord = ref([]);
+  JSON.parse(localStorage.getItem('level')) ?? { easy: 1, medium: 1, hard: 1 }
+)
+const selectedWord = ref([])
 const selectedAnswer = computed(() => {
   const mapped = selectedWord.value.map((ans) => ({
     ...ans,
-    letter: ans.reserved ? ans.letter : "",
-  }));
+    letter: ans.reserved ? ans.letter : '',
+  }))
 
-  const fixedElements = mapped.filter((ans) => ans.useHint);
-  const sortableElements = mapped.filter((ans) => !ans.useHint);
+  const fixedElements = mapped.filter((ans) => ans.useHint)
+  const sortableElements = mapped.filter((ans) => !ans.useHint)
 
   const sortedElements = sortableElements.toSorted((a, b) => {
-    const orderA = a.order === undefined ? Infinity : a.order;
-    const orderB = b.order === undefined ? Infinity : b.order;
-    return orderA - orderB;
-  });
+    const orderA = a.order === undefined ? Infinity : a.order
+    const orderB = b.order === undefined ? Infinity : b.order
+    return orderA - orderB
+  })
 
-  const result = Array(mapped.length).fill(null);
+  const result = Array(mapped.length).fill(null)
   fixedElements.forEach((el) => {
-    result[el.pos] = el;
-  });
+    result[el.pos] = el
+  })
 
   sortedElements.forEach((el) => {
-    const emptyIndex = result.findIndex((item) => item === null);
-    result[emptyIndex] = el;
-  });
+    const emptyIndex = result.findIndex((item) => item === null)
+    result[emptyIndex] = el
+  })
 
-  return result;
-});
-const correctAnswer = ref([]);
-const boxAnswerLength = ref(0);
+  return result
+})
+const correctAnswer = ref([])
+const boxAnswerLength = ref(0)
 
-const hints = ref(localStorage.getItem("hints") || 3);
-const answerHistory = JSON.parse(localStorage.getItem("answerHistory")) || {};
-const onMode = ref("");
+const hints = ref(localStorage.getItem('hints') || 3)
+const answerHistory = JSON.parse(localStorage.getItem('answerHistory')) || {}
+const onMode = ref('')
 
 // Audio
-const isVolumeVisible = ref(false);
-const volume = ref(0.5);
-const selectAudio = new Audio(selectLetterSound);
-const successAudio = new Audio(successSound);
-const failAudio = new Audio(failSound);
-const clearAudio = new Audio(clearSound);
-const hintAudio = new Audio(hintSound);
-const clickButtonAudio = new Audio(clickButtonSound);
-const backgroundAudio = new Audio(backgroundMusic);
-const volumeTimeout = ref(null);
-const selectedAnswerStatus = ref("");
+const isVolumeVisible = ref(false)
+const volume = ref(0.5)
+const selectAudio = new Audio(selectLetterSound)
+const successAudio = new Audio(successSound)
+const failAudio = new Audio(failSound)
+const clearAudio = new Audio(clearSound)
+const hintAudio = new Audio(hintSound)
+const clickButtonAudio = new Audio(clickButtonSound)
+const backgroundAudio = new Audio(backgroundMusic)
+const volumeTimeout = ref(null)
+const selectedAnswerStatus = ref('')
 
-const success = ref(Number(localStorage.getItem("userSuccess")) ?? 0);
+const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0)
 const maxLevels = {
   easy: 35,
   medium: 35,
   hard: 30,
-};
+}
 
-const queueManager = new QueueManager("wordQueue", Questions, maxLevels);
+const queueManager = new QueueManager('wordQueue', Questions, maxLevels)
 
 const startPage = () => {
-  isVisible.value = 0;
-};
+  isVisible.value = 0
+}
 
 const modePage = () => {
-  isVisible.value = 1;
-};
+  isVisible.value = 1
+}
 
 const gamePlayPage = () => {
-  isVisible.value = 2;
-};
+  isVisible.value = 2
+}
 
 const successPage = () => {
-  isVisible.value = 3;
-};
+  isVisible.value = 3
+}
 
 const successMode = () => {
-  isVisible.value = 4;
-  hints.value += 5;
-};
+  isVisible.value = 4
+  hints.value += 5
+}
 
 const completedPage = () => {
-  isVisible.value = 6;
-};
+  isVisible.value = 6
+}
 
 const saveToLocalStorage = (key, value) =>
-  localStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(key, JSON.stringify(value))
 
 const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
-    successMode();
-    level[onMode.value] = 1;
-    saveToLocalStorage("level", level);
+    successMode()
+    level[onMode.value] = 1
+    saveToLocalStorage('level', level)
 
-    return;
+    return
   }
 
-  gamePlayPage();
+  gamePlayPage()
 
   const question = filteredWordCollection.value.find(
-    (word) => word.id === queueManager.getNext(onMode.value)?.id,
-  );
+    (word) => word.id === queueManager.getNext(onMode.value)?.id
+  )
 
-  const answerHistory = JSON.parse(localStorage.getItem("answerHistory"));
-  const currentWordId = queueManager.getNext(onMode.value)?.id;
+  const answerHistory = JSON.parse(localStorage.getItem('answerHistory'))
+  const currentWordId = queueManager.getNext(onMode.value)?.id
 
   if (
     answerHistory &&
     Object.keys(answerHistory).map(Number).includes(currentWordId)
   ) {
-    selectedWord.value = answerHistory[currentWordId];
+    selectedWord.value = answerHistory[currentWordId]
   } else {
     selectedWord.value = question.word
-      .split("")
+      .split('')
       .map((letter, index) => ({ letter, pos: index }))
-      .shuffle();
+      .shuffle()
   }
 
-  boxAnswerLength.value = selectedWord.value.length;
-  correctAnswer.value = question.correctAnswer.split("");
-};
+  boxAnswerLength.value = selectedWord.value.length
+  correctAnswer.value = question.correctAnswer.split('')
+}
 
 const playOnMode = (mode) => {
-  onMode.value = mode;
+  onMode.value = mode
   filteredWordCollection.value = Questions.filterBy(
-    "difficulty",
-    mode,
-  ).shuffle();
-  nextLevel();
-};
+    'difficulty',
+    mode
+  ).shuffle()
+  nextLevel()
+}
 
-const findIndexOfFirstEmpty = (arr, key) => arr.findIndex((e) => !e[key]);
+const findIndexOfFirstEmpty = (arr, key) => arr.findIndex((e) => !e[key])
 
 const saveAnswerHistory = () => {
   answerHistory[queueManager.getNext(onMode.value).id] = selectedWord.value.map(
     (ans) => {
       if (ans.useHint) {
-        return ans;
+        return ans
       } else {
-        return { ...ans, reserved: false };
+        return { ...ans, reserved: false }
       }
-    },
-  );
+    }
+  )
 
-  saveToLocalStorage("answerHistory", answerHistory);
-};
+  saveToLocalStorage('answerHistory', answerHistory)
+}
 
 const selectLetter = (index) => {
   if (filledBoxLength.value < selectedAnswer.value.length) {
     const indexOfFirstEmpty = findIndexOfFirstEmpty(
       selectedAnswer.value,
-      "letter",
-    );
+      'letter'
+    )
 
     Object.assign(selectedWord.value[index], {
       reserved: true,
       order: indexOfFirstEmpty,
-    });
+    })
 
-    playSelectLetterSound();
+    playSelectLetterSound()
   }
-};
+}
 
 const checkAnswer = () => {
-  const flattenedSelectedAnswer = selectedAnswer.value.flat();
+  const flattenedSelectedAnswer = selectedAnswer.value.flat()
   const isCorrect = correctAnswer.value.every(
-    (char, index) => char === flattenedSelectedAnswer[index].letter,
-  );
+    (char, index) => char === flattenedSelectedAnswer[index].letter
+  )
 
   if (isCorrect) {
-    selectedAnswerStatus.value = "correct";
-    playSuccessSound();
+    selectedAnswerStatus.value = 'correct'
+    playSuccessSound()
     // เพื่อหยุดเสียงหลังจากเล่นแล้ว
     setTimeout(() => {
-      successAudio.pause();
-      successAudio.currentTime = 0;
-      successPage();
+      successAudio.pause()
+      successAudio.currentTime = 0
+      successPage()
       if (level[onMode.value] <= maxLevels[onMode.value]) {
-        level[onMode.value] += 1;
+        level[onMode.value] += 1
       }
-    }, 1900);
+    }, 1900)
     setTimeout(() => {
-      localStorage.removeItem("answerHistory");
-      nextLevel();
-      selectedAnswerStatus.value = "";
+      localStorage.removeItem('answerHistory')
+      nextLevel()
+      selectedAnswerStatus.value = ''
       if (success.value === 100) {
-        completedPage();
+        completedPage()
         setTimeout(() => {
-          startPage();
-        }, 1900);
+          startPage()
+        }, 1900)
       }
-    }, 3000);
+    }, 3000)
 
     if (level[onMode.value] <= maxLevels[onMode.value]) {
-      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1;
+      success.value += queueManager.isFirstRoundCompleted(onMode.value) ? 0 : 1
     }
 
-    queueManager.dequeue(onMode.value);
-    saveToLocalStorage("level", level);
-    saveToLocalStorage("userSuccess", success.value);
+    queueManager.dequeue(onMode.value)
+    saveToLocalStorage('level', level)
+    saveToLocalStorage('userSuccess', success.value)
   } else {
-    selectedAnswerStatus.value = "incorrect";
-    playFailSound();
+    selectedAnswerStatus.value = 'incorrect'
+    playFailSound()
     setTimeout(() => {
-      clearSelectAnswer();
-      selectedAnswerStatus.value = "";
-      localStorage.removeItem("answerHistory");
-    }, 1900);
+      clearSelectAnswer()
+      selectedAnswerStatus.value = ''
+      localStorage.removeItem('answerHistory')
+    }, 1900)
   }
-};
+}
 
 const clearSelectAnswer = () => {
   selectedWord.value.forEach((ans) => {
     if (!ans.useHint) {
-      delete ans.reserved;
-      delete ans.order;
+      delete ans.reserved
+      delete ans.order
     }
-  });
-  saveAnswerHistory();
-};
+  })
+  saveAnswerHistory()
+}
 
 const splitWords = computed(() => {
-  const rows = [];
-  const perRow = Math.ceil(boxAnswerLength.value / 2);
+  const rows = []
+  const perRow = Math.ceil(boxAnswerLength.value / 2)
   selectedWord.value.forEach((ans, index) => {
-    const rowIndex = Math.floor(index / perRow);
+    const rowIndex = Math.floor(index / perRow)
     if (!rows[rowIndex]) {
-      rows[rowIndex] = [];
+      rows[rowIndex] = []
     }
-    rows[rowIndex].push({ ...ans, index });
-  });
-  return rows;
-});
+    rows[rowIndex].push({ ...ans, index })
+  })
+  return rows
+})
 
 const filledBoxLength = computed(
-  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length,
-);
+  () => selectedAnswer.value.filter((l) => /^[a-zA-Z]+$/.test(l.letter)).length
+)
 
 const applyHint = () => {
   if (hints.value > 0 && filledBoxLength.value < correctAnswer.value.length) {
     const availableIndexes = selectedWord.value
       .map((ans, i) => (!ans.useHint ? i : -1))
-      .filter((i) => i !== -1);
+      .filter((i) => i !== -1)
     const randomOfAvailable = Math.floor(
-      Math.random() * availableIndexes.length,
-    );
-    const randomIndex = availableIndexes[randomOfAvailable];
+      Math.random() * availableIndexes.length
+    )
+    const randomIndex = availableIndexes[randomOfAvailable]
 
     Object.assign(selectedWord.value[randomIndex], {
       reserved: true,
       useHint: true,
-    });
+    })
 
-    saveAnswerHistory();
+    saveAnswerHistory()
 
-    hints.value -= 1;
+    hints.value -= 1
   }
-};
+}
 
 watch(
   () => filledBoxLength.value,
   () => {
     if (filledBoxLength.value >= correctAnswer.value.length) {
-      checkAnswer();
+      checkAnswer()
     }
-  },
-);
+  }
+)
 
 watch(
   () => hints.value,
   () => {
-    saveToLocalStorage("hints", hints.value);
-  },
-);
+    saveToLocalStorage('hints', hints.value)
+  }
+)
 
-const showHelpModal = ref(false);
-const currentPage = ref(0);
-const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5 , helppage6, helppage7];
+const showHelpModal = ref(false)
+const currentPage = ref(0)
+const helpPages = [
+  helppage1,
+  helppage2,
+  helppage3,
+  helppage4,
+  helppage5,
+  helppage6,
+  helppage7,
+]
 
 const openHelpModal = () => {
-  currentPage.value = 0;
-  showHelpModal.value = true;
-};
+  currentPage.value = 0
+  showHelpModal.value = true
+}
 
 const closeHelpModal = () => {
-  showHelpModal.value = false;
-};
+  showHelpModal.value = false
+}
 
 const nextPage = () => {
   if (currentPage.value < helpPages.length - 1) {
-    currentPage.value++;
+    currentPage.value++
   }
-};
+}
 
 const prevPage = () => {
   if (currentPage.value > 0) {
-    currentPage.value--;
+    currentPage.value--
   }
-};
+}
 
 const toggleSound = () => {
-  isVolumeVisible.value = !isVolumeVisible.value;
+  isVolumeVisible.value = !isVolumeVisible.value
   if (isVolumeVisible.value) {
-    clearTimeout(volumeTimeout.value);
+    clearTimeout(volumeTimeout.value)
     volumeTimeout.value = setTimeout(() => {
-      isVolumeVisible.value = false;
-    }, 3000);
+      isVolumeVisible.value = false
+    }, 3000)
   }
-};
+}
 
 const playSelectLetterSound = () => {
-  selectAudio.currentTime = 0;
-  selectAudio.play();
-};
+  selectAudio.currentTime = 0
+  selectAudio.play()
+}
 
 const playSuccessSound = () => {
-  successAudio.play();
-};
+  successAudio.play()
+}
 
 const playFailSound = () => {
-  failAudio.play();
-};
+  failAudio.play()
+}
 
 const playClickButtonSound = () => {
-  clickButtonAudio.play();
-};
+  clickButtonAudio.play()
+}
 
 const playClearSound = () => {
-  clearAudio.play();
-};
+  clearAudio.play()
+}
 
 const playHintSound = () => {
-  hintAudio.currentTime = 0;
-  hintAudio.play();
-};
+  hintAudio.currentTime = 0
+  hintAudio.play()
+}
 
 const playBackgroundMusic = () => {
-  backgroundAudio.play();
-  backgroundAudio.loop = true;
-};
+  backgroundAudio.play()
+  backgroundAudio.loop = true
+}
 
 const setVolume = (newVolume) => {
-  selectAudio.volume = newVolume;
-  successAudio.volume = newVolume;
-  clickButtonAudio.volume = newVolume;
-  failAudio.volume = newVolume;
-  clearAudio.volume = newVolume;
-  hintAudio.volume = newVolume;
-  backgroundAudio.volume = newVolume;
-};
+  selectAudio.volume = newVolume
+  successAudio.volume = newVolume
+  clickButtonAudio.volume = newVolume
+  failAudio.volume = newVolume
+  clearAudio.volume = newVolume
+  hintAudio.volume = newVolume
+  backgroundAudio.volume = newVolume
+}
 
 watch(volume, (newVolume) => {
-  setVolume(newVolume);
+  setVolume(newVolume)
 
   if (isVolumeVisible.value) {
     // รีเซ็ต timeout เมื่อมีการเปลี่ยนแปลงระดับเสียง
-    clearTimeout(volumeTimeout.value);
+    clearTimeout(volumeTimeout.value)
     volumeTimeout.value = setTimeout(() => {
-      isVolumeVisible.value = false;
-    }, 1000);
+      isVolumeVisible.value = false
+    }, 1000)
   }
-});
+})
 
-const titlegames = ["c", "l", "i", "c", "k", " ", " ", "w", "o", "r", "d"];
-const modgames = ["m", "o", "d", "e"];
+const titlegames_1 = ['c', 'l', 'i', 'c', 'k']
+const titlegames_2 = ['w', 'o', 'r', 'd']
+const modgames = ['m', 'o', 'd', 'e']
 </script>
 
 <template>
@@ -411,15 +420,31 @@ const modgames = ["m", "o", "d", "e"];
       v-if="isVisible === 0"
       class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen"
     >
-      <div class="waviy titles text-[150px] text-[#237C9D]">
-        <span
-          v-for="(char, index) in titlegames"
-          class="mr-6"
-          :key="index"
-          :style="`--i: ${index + 1}`"
-        >
-          {{ char }}
-        </span>
+      <div
+        class="waviy titles text-[#237C9D] text-[40px] md:text-[70px] lg:text-[120px]"
+      >
+        <div class="flex md:flex-col lg:flex-row justify-center items-center">
+          <div class="mx-10">
+            <span
+              v-for="(char, index) in titlegames_1"
+              class="mr-6"
+              :key="index"
+              :style="`--i: ${index + 1}`"
+            >
+              {{ char }}
+            </span>
+          </div>
+          <div>
+            <span
+              v-for="(char, index) in titlegames_2"
+              class="mr-6"
+              :key="index"
+              :style="`--i: ${index + 1}`"
+            >
+              {{ char }}
+            </span>
+          </div>
+        </div>
       </div>
 
       <div class="z-50 absolute top-0 right-0">
@@ -448,7 +473,7 @@ const modgames = ["m", "o", "d", "e"];
         <img
           :src="playButton"
           alt="Play Button"
-          class="w-60 h-60 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
+          class="w-60 h-60 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
       <div class="flex gap-80 mt-10">
@@ -456,7 +481,7 @@ const modgames = ["m", "o", "d", "e"];
           <img
             :src="prize"
             alt="Prize"
-            class="w-20 h-20 mx-auto my-auto mb-1"
+            class="w-20 h-20 md:w-16 md:h-16 mx-auto my-auto mb-1"
           />
           <h3 class="bg-[#19C3B2] text-[#FEF9EF] text-[20px] rounded-2xl p-3">
             Success ({{ success }}%)
@@ -466,7 +491,7 @@ const modgames = ["m", "o", "d", "e"];
           <img
             :src="bulb"
             alt="Bulb Button"
-            class="w-20 h-20 mx-auto my-auto mb-1 mr-3"
+            class="w-20 h-20 md:w-16 md:h-16 mx-auto my-auto mb-1 mr-3"
           />
           <h3 class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3">
             Hints ({{ hints }})
@@ -645,22 +670,18 @@ const modgames = ["m", "o", "d", "e"];
     <!-- Success Page -->
     <div
       v-if="isVisible === 3"
-      class="bg-[#227C9D] h-screen flex flex-col justify-start items-center"
+      class="bg-[#227C9D] h-screen flex flex-col justify-center items-center"
     >
       <h2 class="text-white text-7xl mt-10 justify-start">
         {{ `Level ${level[onMode] - 1} completed !` }}
       </h2>
-      <img
-        :src="loadSuccess"
-        alt="Prize"
-        class="w-[610px] h-[600px] items-end"
-      />
+      <img :src="loadSuccess" alt="Prize" class="w-1/2 h-1/2 items-end" />
     </div>
 
     <!-- Level-up Page -->
     <div
       v-if="isVisible === 4"
-      class="bg-[#227C9D] h-screen flex flex-col justify-between items-center"
+      class="bg-[#227C9D] h-screen flex flex-col justify-center items-center"
     >
       <h2 class="text-white text-7xl mt-10">
         {{
@@ -764,18 +785,18 @@ const modgames = ["m", "o", "d", "e"];
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
 
 * {
   user-select: none;
-  font-family: "Itim", cursive;
+  font-family: 'Itim', cursive;
   font-weight: 400;
   font-style: normal;
 }
 
 .titles {
-  font-family: "Irish Grover", sans-serif;
+  font-family: 'Irish Grover', sans-serif;
   font-weight: 500;
   font-style: normal;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -863,7 +884,7 @@ const modgames = ["m", "o", "d", "e"];
   text-transform: uppercase;
   animation: flip 4s infinite;
   animation-delay: calc(0.2s * var(--i));
-  font-family: "Irish Grover", sans-serif;
+  font-family: 'Irish Grover', sans-serif;
 }
 @keyframes flip {
   0%,
