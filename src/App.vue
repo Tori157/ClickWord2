@@ -221,7 +221,7 @@ const checkAnswer = () => {
     setTimeout(() => {
       localStorage.removeItem("answerHistory");
       if (
-        queueManager.isFirstRoundCompleted(onMode.value) &&
+        !queueManager.isFirstRoundCompleted(onMode.value) &&
         isLevelWithinMax
       ) {
         success.value += 1;
