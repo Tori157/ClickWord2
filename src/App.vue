@@ -473,7 +473,7 @@ const modgames = ['m', 'o', 'd', 'e']
         <img
           :src="playButton"
           alt="Play Button"
-          class="w-60 h-60 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
+          class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
       <div class="flex gap-80 mt-10">
@@ -491,7 +491,7 @@ const modgames = ['m', 'o', 'd', 'e']
           <img
             :src="bulb"
             alt="Bulb Button"
-            class="w-20 h-20 md:w-16 md:h-16 mx-auto my-auto mb-1 mr-3"
+            class="w-20 h-20 md:w-16 md:h-16 mx-auto mb-1"
           />
           <h3 class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3">
             Hints ({{ hints }})
