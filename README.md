@@ -35,6 +35,7 @@
           <ul>
             <li>Implement local storage</li>
             <li>Clear feature</li>
+            <li>Fix and refactor code overall</li>
           </ul>
         </td>
         <td>20%</td>
@@ -48,6 +49,7 @@
             <li>Tutorial page</li>
             <li>Quiz word setup</li>
             <li>Animation</li>
+            <li>Fix and refactor code overall</li>
           </ul>
         </td>
         <td>20%</td>
@@ -73,6 +75,7 @@
           <ul>
             <li>Answer validator</li>
             <li>UI image asset</li>
+            <li>Fix and refactor code overall</li>
           </ul>
         </td>
         <td>20%</td>
