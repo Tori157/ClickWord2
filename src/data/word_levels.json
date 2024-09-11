@@ -1316,8 +1316,8 @@
   {
     "id": 219,
     "difficulty": "hard",
-    "word": "discovery",
-    "correctAnswer": "discovery"
+    "word": "discover",
+    "correctAnswer": "discover"
   },
   {
     "id": 220,
@@ -1628,7 +1628,7 @@
   {
     "id": 271,
     "difficulty": "hard",
-    "word": "realize",
+    "word": "realized",
     "correctAnswer": "realize"
   },
   {
