@@ -18,4 +18,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: '📣 @everyone รบกวนตรวจสอบ commits และ approve (ถ้าโอเค) ด้วยคับ✨ ➡️ {{ github.event.pull_request.html_url }}'
+          args: '📣 @everyone รบกวนตรวจสอบ commits และ approve (ถ้าโอเค) ด้วยคับ✨ ➡️ {{ EVENT_PAYLOAD.pull_request.html_url }}'
