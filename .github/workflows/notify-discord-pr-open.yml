@@ -1,0 +1,18 @@
+name: Notify Discord on PR Open
+
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Discord notification'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '📣 @everyone รบกวนตรวจสอบ commits และ approve (ถ้าโอเค) ด้วยคับ✨ ➡️ {{ github.event.pull_request.html_url }}'
