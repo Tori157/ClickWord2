@@ -1,0 +1,1 @@
+For testing PR open notifications by Discord webhook
