@@ -1,4 +1,4 @@
-import "../extensions/array";
+import '../extensions/array';
 
 class QueueManager {
   constructor(queueKey, collection, config) {
@@ -6,11 +6,8 @@ class QueueManager {
     this.queueKey = queueKey;
 
     // Retrieve initial states from localStorage or initialize them if not found
-    this.firstRoundCompleted =
-      JSON.parse(localStorage.getItem("firstRoundCompleted")) || {};
-    this.queue =
-      JSON.parse(localStorage.getItem(queueKey)) ||
-      this._createAndInitializeQueue(collection);
+    this.firstRoundCompleted = JSON.parse(localStorage.getItem('firstRoundCompleted')) || {};
+    this.queue = JSON.parse(localStorage.getItem(queueKey)) || this._createAndInitializeQueue(collection);
 
     // Ensure firstRoundCompleted has all required keys initialized
     this._initializeFirstRoundState();
@@ -41,10 +38,7 @@ class QueueManager {
    */
   _saveState() {
     localStorage.setItem(this.queueKey, JSON.stringify(this.queue));
-    localStorage.setItem(
-      "firstRoundCompleted",
-      JSON.stringify(this.firstRoundCompleted),
-    );
+    localStorage.setItem('firstRoundCompleted', JSON.stringify(this.firstRoundCompleted));
   }
 
   /**
@@ -54,10 +48,7 @@ class QueueManager {
    */
   _createQueue(collection) {
     const shuffledCollection = collection.shuffle();
-    const organizedCollection = Object.groupBy(
-      shuffledCollection,
-      ({ difficulty }) => difficulty,
-    );
+    const organizedCollection = Object.groupBy(shuffledCollection, ({ difficulty }) => difficulty);
     return this._transformCollection(organizedCollection);
   }
 
@@ -70,9 +61,8 @@ class QueueManager {
     return Object.fromEntries(
       Object.entries(this.config).map(([key, length]) => {
         const items = collection[key] || [];
-        const subArrays = Array.from(
-          { length: Math.ceil(items.length / length) },
-          (_, i) => items.slice(i * length, i * length + length),
+        const subArrays = Array.from({ length: Math.ceil(items.length / length) }, (_, i) =>
+          items.slice(i * length, i * length + length),
         );
         return [key, subArrays];
       }),
