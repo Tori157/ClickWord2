@@ -10,9 +10,6 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Debug GitHub Context'
-        run: echo "${{ toJson(github) }}"
-      
       - name: 'Discord notification'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
