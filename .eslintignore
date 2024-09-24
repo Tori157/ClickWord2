@@ -1,0 +1,7 @@
+vite.config.ts
+dist
+.eslintrc.cjs
+node_modules
+package-lock.json
+tailwind.config.js
+postcss.config.js
