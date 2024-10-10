@@ -12,6 +12,17 @@ import nextLeftIcon from '@/../public/assets/icons/nextlefticon.png';
 import nextRightIcon from '@/../public/assets/icons/nextrighticon.png';
 import cancelIcon from '@/../public/assets/icons/cancel.png';
 
+defineProps({
+  isOpen: {
+    type: Boolean,
+    required: true,
+  },
+  onClose: {
+    type: Function,
+    required: true,
+  },
+});
+
 const currentTutorialPage = ref(0);
 const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5, helppage6, helppage7];
 
@@ -29,9 +40,10 @@ const prevPage = () => {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-50">
+  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="fixed inset-0 bg-black bg-opacity-50" @click="onClose"></div>
     <div class="relative w-full max-w-3xl p-6 bg-[#FEF9EF] rounded-lg shadow-lg">
-      <button class="absolute top-3 right-3 text-gray-600 hover:text-gray-800" @click="$emit('close')">
+      <button class="absolute top-3 right-3 text-gray-600 hover:text-gray-800" @click="onClose">
         <img
           :src="cancelIcon"
           alt="Close Button"

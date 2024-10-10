@@ -84,7 +84,7 @@ const selectedAnswer = computed(() => {
 const correctAnswer = ref([]);
 const boxAnswerLength = ref(0);
 
-const hints = ref(localStorage.getItem('hints') || 3);
+const hints = ref(localStorage.getItem('hints') || 1000);
 const answerHistory = JSON.parse(localStorage.getItem('answerHistory')) || {};
 const onMode = ref('');
 
@@ -103,9 +103,9 @@ const selectedAnswerStatus = ref('');
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const maxLevels = {
-  easy: 35,
-  medium: 35,
-  hard: 30,
+  easy: 3,
+  medium: 3,
+  hard: 3,
 };
 
 const queueManager = new QueueManager('wordQueue', Questions, maxLevels);

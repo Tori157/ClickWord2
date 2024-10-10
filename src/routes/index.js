@@ -1,17 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import OriginGamePage from './pages/OriginGamePage.vue';
-import HomePage from './pages/HomePage.vue';
+import { HomePage, MenuPage, GamePlayPage } from './pages';
 
 const routes = [
   {
     path: '/',
-    name: 'HomePage',
+    name: 'home-page',
     component: HomePage,
   },
   {
+    path: '/menu',
+    name: 'menu-page',
+    component: MenuPage,
+  },
+  {
+    path: '/game',
+    name: 'game-play-page',
+    component: GamePlayPage,
+  },
+  {
     path: '/origin',
-    name: 'OriginGamePage',
+    name: 'origin-game-page',
     component: OriginGamePage,
   },
 ];

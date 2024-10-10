@@ -1,38 +1,16 @@
 <script setup>
-import { ref } from 'vue';
+import { AppControlPanel } from './routes/pages/shared';
+import { TutorialModal } from './common/components';
 
-import TutorialModal from './common/components/Modal/TutorialModal.vue';
+import { useDisclosure } from '@/common/utils';
 
-import helpButton from '../public/assets/icons/helpButton.png';
-import soundButton from '../public/assets/icons/soundButton.png';
-
-const isTutorialModalOpen = ref(false);
+const { opened, open, close } = useDisclosure();
 </script>
 
 <template>
   <div class="relative">
-    <div class="z-50 absolute top-0 right-0">
-      <div class="flex flex-col">
-        <button @click="isTutorialModalOpen = true">
-          <img
-            :src="helpButton"
-            alt="Help Button"
-            class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
-          />
-        </button>
-
-        <button @click="toggleSound()">
-          <img
-            :src="soundButton"
-            alt="Sound Button"
-            class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
-          />
-        </button>
-      </div>
-    </div>
-
-    <tutorial-modal v-if="isTutorialModalOpen" @close="isTutorialModalOpen = false" />
-
+    <app-control-panel :open-tutorial-modal="open" />
+    <tutorial-modal :is-open="opened" :on-close="close" />
     <router-view />
   </div>
 </template>
