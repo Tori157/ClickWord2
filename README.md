@@ -50,6 +50,7 @@
             <li>Quiz word setup</li>
             <li>Animation</li>
             <li>Fix and refactor code overall</li>
+            <li>Market feature <b>[NEW]</b></li>
           </ul>
         </td>
         <td>20%</td>
@@ -63,6 +64,7 @@
             <li>Hint feature</li>
             <li>Fix and refactor code overall</li>
             <li>Readme</li>
+            <li>Components Refactoring <b>[NEW]</b></li>
           </ul>
         </td>
         <td>20%</td>
