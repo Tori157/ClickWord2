@@ -1,6 +1,11 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useDisclosure } from '@/common/utils';
+
+import LevelCompletePage from './CutScene/LevelCompletedPage.vue';
+import ModeCompletePage from './CutScene/ModeCompletedPage.vue';
+import GameCompletedPage from './CutScene/GameCompletedPage.vue';
 
 import QueueManager from '@/class/QueueManager';
 import '@/extensions/array';
@@ -9,13 +14,17 @@ import HomeIcon from '/public/assets/icons/HomeButton.png';
 
 import Questions from '@/data/word_levels.json';
 
+// Use this with cut scene components
+const { opened, open, close } = useDisclosure();
+const currentCutScene = ref('');
+
 const {
   query: { mode },
 } = useRoute();
 const router = useRouter();
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
-const hints = ref(localStorage.getItem('hints') || 300);
+const hints = ref(localStorage.getItem('hints') || 3);
 const onMode = ref('');
 const selectedAnswerStatus = ref('');
 const boxAnswerLength = ref(0);
@@ -71,9 +80,9 @@ const selectedAnswer = computed(() => {
 const filledBoxLength = computed(() => selectedAnswer.value.filter((ans) => ans.reserved).length);
 
 const maxLevels = {
-  easy: 3,
-  medium: 3,
-  hard: 3,
+  easy: 35,
+  medium: 35,
+  hard: 30,
 };
 const queueManager = new QueueManager('wordQueue', Questions, maxLevels);
 
@@ -116,6 +125,7 @@ const clearSelectAnswer = () => {
   saveAnswerHistory();
 };
 
+// TODO: The logic and variables should be extracted to a separate file such as store and hook
 const applyHint = () => {
   if (hints.value > 0 && filledBoxLength.value < selectedAnswer.value.length) {
     const availableIndexes = selectedWord.value.map((ans, i) => (!ans.useHint ? i : -1)).filter((i) => i !== -1);
@@ -140,16 +150,17 @@ const completedGame = () => {
   }
 };
 
+const openPage = (completedType) => {
+  currentCutScene.value = completedType;
+  open();
+};
+
 const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
-    // TODO: Show modal that the player has completed the game on this mode
-    // navigateTo(PAGE_NAME.MODE_COMPLETE);
-    // STUB: Go back to menu page for now
-    router.push({ name: 'menu-page' });
+    openPage('mode-completed');
     hints.value += 5;
     level[onMode.value] = 1;
     saveToLocalStorage('level', level);
-
     return;
   }
 
@@ -184,16 +195,14 @@ const checkAnswer = () => {
     const isLevelWithinMax = level[onMode.value] <= maxLevels[onMode.value];
     // playSuccessSound();
     setTimeout(() => {
-      // successAudio.pause();
-      // successAudio.currentTime = 0;
-      // TODO: Show modal that the player has completed the level
-      // navigateTo(PAGE_NAME.LEVEL_COMPLETE);
       if (isLevelWithinMax) {
         level[onMode.value] += 1;
         saveToLocalStorage('level', level);
+        openPage('level-completed');
       }
     }, 1900);
     setTimeout(() => {
+      close();
       localStorage.removeItem('answerHistory');
       if (!queueManager.isFirstRoundCompleted(onMode.value) && isLevelWithinMax) {
         success.value += 1;
@@ -201,8 +210,7 @@ const checkAnswer = () => {
       saveToLocalStorage('userSuccess', success.value);
       const isSuccessPendingCompletion = Math.round(success.value) === 100 && !completedGame();
       if (isSuccessPendingCompletion) {
-        // TODO: Show modal that the player has completed the game in all modes
-        // navigateTo(PAGE_NAME.FINAL);
+        openPage('game-completed');
         hints.value += 5;
         setTimeout(() => {
           router.push({ name: 'home-page' });
@@ -211,7 +219,7 @@ const checkAnswer = () => {
       queueManager.dequeue(onMode.value);
       if (!isSuccessPendingCompletion) nextLevel();
       selectedAnswerStatus.value = '';
-    }, 3000);
+    }, 3500);
   } else {
     selectedAnswerStatus.value = 'incorrect';
     // playFailSound();
@@ -315,6 +323,21 @@ watch(
       >
         Hints ({{ hints }})
       </button>
+    </section>
+
+    <section id="cut-scene-pages">
+      <level-complete-page
+        :is-open="opened && currentCutScene === 'level-completed'"
+        :on-close="close"
+        :level="level"
+        :on-mode="onMode"
+      />
+      <mode-complete-page
+        :is-open="opened && currentCutScene === 'mode-completed'"
+        :on-close="close"
+        :on-mode="onMode"
+      />
+      <game-completed-page :is-open="opened && currentCutScene === 'game-completed'" :on-close="close" />
     </section>
   </div>
 </template>

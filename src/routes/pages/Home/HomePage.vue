@@ -1,10 +1,14 @@
 <script setup>
-import PlayButtonIcon from '@/../public/assets/icons/play.png';
-import BulbIcon from '@/../public/assets/icons/bulb.png';
-import TrophyIcon from '@/../public/assets/icons/prize.png';
+import { ref } from 'vue';
+import PlayButtonIcon from '/public/assets/icons/play.png';
+import BulbIcon from '/public/assets/icons/bulb.png';
+import TrophyIcon from '/public/assets/icons/prize.png';
 
 const titleGame1 = ['c', 'l', 'i', 'c', 'k'];
 const titleGame2 = ['w', 'o', 'r', 'd'];
+
+const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
+const hints = ref(localStorage.getItem('hints') || 3);
 </script>
 
 <template>
