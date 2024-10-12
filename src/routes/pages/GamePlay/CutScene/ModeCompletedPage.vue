@@ -19,10 +19,7 @@ defineProps({
 </script>
 
 <template>
-  <div
-    v-if="isOpen"
-    class="fixed z-50 bg-[#227C9D] min-w-full h-screen flex flex-col justify-center items-center space-y-8"
-  >
+  <div v-if="isOpen" class="modal-container">
     <h2 class="text-white text-7xl mt-10">
       {{ `Finished Mode ${onMode.charAt(0).toUpperCase() + onMode.slice(1)}` }}
     </h2>

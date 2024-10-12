@@ -22,7 +22,7 @@ defineProps({
 </script>
 
 <template>
-  <div v-if="isOpen" class="fixed z-50 bg-[#227C9D] min-w-full h-screen flex flex-col justify-center items-center">
+  <div v-if="isOpen" class="modal-container">
     <h2 class="text-white text-7xl mt-10 justify-start">
       {{ `Level ${level[onMode] - 1} completed !` }}
     </h2>
