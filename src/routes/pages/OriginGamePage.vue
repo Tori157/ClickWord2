@@ -6,7 +6,8 @@ import prize from '../../../public/assets/icons/prize.png';
 import back from '../../../public/assets/icons/back.png';
 import homeButton from '../../../public/assets/icons/HomeButton.png';
 import helpButton from '../../../public/assets/icons/helpButton.png';
-import soundButton from '../../../public/assets/icons/soundButton.png';
+// import soundButton from '../../../public/assets/icons/soundButton.png';
+import settingButton from '../../../public/assets/icons/settingButton.png';
 import loadSuccess from '../../../public/assets/icons/loadPhoto.png';
 import levelSuccess from '../../../public/assets/icons/level-up-photo.png';
 import continueButton from '../../../public/assets/icons/continue.png';
@@ -22,8 +23,6 @@ import helppage7 from '../../../public/assets/images/helppage7.webp';
 import nextlefticon from '../../../public/assets/icons/nextlefticon.png';
 import nextrighticon from '../../../public/assets/icons/nextrighticon.png';
 import cancelicon from '../../../public/assets/icons/cancel.png';
-import volumeUp from '../../../public/assets/icons/volumeUp.png';
-import volumeDown from '../../../public/assets/icons/volumeDown.png';
 import selectLetterSound from '../../../public/assets/sounds/select.mp3';
 import successSound from '../../../public/assets/sounds/success.mp3';
 import failSound from '../../../public/assets/sounds/fail.mp3';
@@ -89,8 +88,11 @@ const answerHistory = JSON.parse(localStorage.getItem('answerHistory')) || {};
 const onMode = ref('');
 
 // Audio
-const isVolumeVisible = ref(false);
-const volume = ref(0.5);
+const showSoundSettingsModal = ref(false);
+const effectVolumeEnabled = ref(true);
+const backgroundMusicEnabled = ref(true);
+const effectVolume = ref(0.5);
+const backgroundMusicVolume = ref(0.5);
 const selectAudio = new Audio(selectLetterSound);
 const successAudio = new Audio(successSound);
 const failAudio = new Audio(failSound);
@@ -98,7 +100,6 @@ const clearAudio = new Audio(clearSound);
 const hintAudio = new Audio(hintSound);
 const clickButtonAudio = new Audio(clickButtonSound);
 const backgroundAudio = new Audio(backgroundMusic);
-const volumeTimeout = ref(null);
 const selectedAnswerStatus = ref('');
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
@@ -281,6 +282,14 @@ const closeHelpModal = () => {
   showHelpModal.value = false;
 };
 
+const openSoundModal = () => {
+  showSoundSettingsModal.value = true;
+};
+
+const closeSoundModal = () => {
+  showSoundSettingsModal.value = false;
+};
+
 const nextPage = () => {
   if (currentTutorialPage.value < helpPages.length - 1) {
     currentTutorialPage.value++;
@@ -290,16 +299,6 @@ const nextPage = () => {
 const prevPage = () => {
   if (currentTutorialPage.value > 0) {
     currentTutorialPage.value--;
-  }
-};
-
-const toggleSound = () => {
-  isVolumeVisible.value = !isVolumeVisible.value;
-  if (isVolumeVisible.value) {
-    clearTimeout(volumeTimeout.value);
-    volumeTimeout.value = setTimeout(() => {
-      isVolumeVisible.value = false;
-    }, 3000);
   }
 };
 
@@ -334,27 +333,36 @@ const playBackgroundMusic = () => {
   backgroundAudio.loop = true;
 };
 
-const setVolume = (newVolume) => {
+const setEffectVolume = (newVolume) => {
+  effectVolume.value = newVolume;
+  if (effectVolumeEnabled.value) {
+    setVolumeForEffects(newVolume);
+  } else {
+    setVolumeForEffects(0);
+  }
+};
+
+const setBackgroundMusicVolume = (newVolume) => {
+  backgroundMusicVolume.value = newVolume;
+
+  if (backgroundMusicEnabled.value) {
+    backgroundAudio.volume = newVolume;
+    if (backgroundAudio.paused) {
+      backgroundAudio.play();
+    }
+  } else {
+    backgroundAudio.pause();
+  }
+};
+
+const setVolumeForEffects = (newVolume) => {
   selectAudio.volume = newVolume;
   successAudio.volume = newVolume;
   clickButtonAudio.volume = newVolume;
   failAudio.volume = newVolume;
   clearAudio.volume = newVolume;
   hintAudio.volume = newVolume;
-  backgroundAudio.volume = newVolume;
 };
-
-watch(volume, (newVolume) => {
-  setVolume(newVolume);
-
-  if (isVolumeVisible.value) {
-    // รีเซ็ต timeout เมื่อมีการเปลี่ยนแปลงระดับเสียง
-    clearTimeout(volumeTimeout.value);
-    volumeTimeout.value = setTimeout(() => {
-      isVolumeVisible.value = false;
-    }, 1000);
-  }
-});
 
 watch(
   () => filledBoxLength.value,
@@ -408,9 +416,9 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
             />
           </button>
 
-          <button @click="toggleSound()">
+          <button @click="openSoundModal()">
             <img
-              :src="soundButton"
+              :src="settingButton"
               alt="Sound Button"
               class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
             />
@@ -418,7 +426,12 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
         </div>
       </div>
 
-      <button @click="navigateTo(PAGE_NAME.MODE), playClickButtonSound(), playBackgroundMusic()">
+      <button
+        @click="
+          navigateTo(PAGE_NAME.MODE), playClickButtonSound();
+          playBackgroundMusic();
+        "
+      >
         <img
           :src="playButton"
           alt="Play Button"
@@ -446,7 +459,7 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
       </div>
       <div class="z-50 absolute top-0 right-0">
         <div class="flex flex-col">
-          <button @click="openHelpModal">
+          <button @click="openHelpModal(), playClickButtonSound()">
             <img
               :src="helpButton"
               alt="Help Button"
@@ -454,9 +467,9 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
             />
           </button>
 
-          <button @click="toggleSound">
+          <button @click="openSoundModal(), playClickButtonSound()">
             <img
-              :src="soundButton"
+              :src="settingButton"
               alt="Sound Button"
               class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
             />
@@ -483,7 +496,12 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
         >
           Hard
         </button>
-        <button @click="navigateTo(PAGE_NAME.HOME), playClickButtonSound()">
+        <button
+          @click="
+            navigateTo(PAGE_NAME.HOME);
+            playClickButtonSound();
+          "
+        >
           <img
             :src="back"
             alt="Back Button"
@@ -496,7 +514,12 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
     <!-- Play Page -->
     <div v-if="isOnPage(PAGE_NAME.GAME_PLAY)" class="flex flex-col justify-between bg-[#FEF9EF] h-screen">
       <div class="flex justify-between items-start">
-        <button @click="navigateTo(PAGE_NAME.MODE)">
+        <button
+          @click="
+            navigateTo(PAGE_NAME.MODE);
+            playClickButtonSound();
+          "
+        >
           <img
             :src="homeButton"
             alt="Home Button"
@@ -506,7 +529,7 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
         <h3 class="mt-6 text-4xl text-black">{{ `Level ${level[onMode]}` }}</h3>
 
         <div class="flex flex-col">
-          <button @click="openHelpModal">
+          <button @click="openHelpModal(), playClickButtonSound()">
             <img
               :src="helpButton"
               alt="Help Button"
@@ -514,9 +537,9 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
             />
           </button>
 
-          <button @click="toggleSound">
+          <button @click="openSoundModal(), playClickButtonSound()">
             <img
-              :src="soundButton"
+              :src="settingButton"
               alt="Sound Button"
               class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
             />
@@ -603,7 +626,13 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
         {{ `Finished Mode ${onMode.charAt(0).toUpperCase() + onMode.slice(1)}` }}
       </h2>
       <img :src="levelSuccess" alt="Prize" class="w-[410px] h-[400px] items-end mt-[-10px]" />
-      <button class="hover:scale-150" @click="navigateTo(PAGE_NAME.MODE)">
+      <button
+        class="hover:scale-150"
+        @click="
+          navigateTo(PAGE_NAME.MODE);
+          playClickButtonSound();
+        "
+      >
         <img :src="continueButton" alt="Continue" class="w-[150px] h-[150px] items-end mt-[-100px] hover:scale-110" />
       </button>
       <h2 class="text-white text-4xl mb-[60px] justify-end">You have received 5 additional hint.</h2>
@@ -620,7 +649,10 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
     <!-- Help Modal -->
     <div v-if="showHelpModal" class="fixed inset-0 z-500 flex items-center justify-center bg-black bg-opacity-50">
       <div class="relative w-full max-w-3xl p-6 bg-[#FEF9EF] rounded-lg shadow-lg">
-        <button class="absolute top-3 right-3 text-gray-600 hover:text-gray-800" @click="closeHelpModal">
+        <button
+          class="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+          @click="closeHelpModal(), playClickButtonSound()"
+        >
           <img
             :src="cancelicon"
             class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
@@ -631,7 +663,7 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
             :disabled="currentTutorialPage === 0"
             :class="currentTutorialPage > 0 ? '' : 'invisible'"
             class="p-2 transition duration-300 ease-in-out transform hover:scale-110"
-            @click="prevPage"
+            @click="prevPage(), playClickButtonSound()"
           >
             <img :src="nextlefticon" alt="Previous" class="w-10 h-10" />
           </button>
@@ -642,7 +674,7 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
             :disabled="currentTutorialPage === helpPages.length - 1"
             :class="currentTutorialPage < helpPages.length - 1 ? '' : 'invisible'"
             class="p-2 transition duration-300 ease-in-out transform hover:scale-110"
-            @click="nextPage"
+            @click="nextPage(), playClickButtonSound()"
           >
             <img :src="nextrighticon" alt="Next" class="w-10 h-10" />
           </button>
@@ -650,13 +682,65 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
       </div>
     </div>
 
-    <div v-show="isVolumeVisible" class="volume-control">
-      <div class="volume-icon" @click="volume = 1">
-        <img :src="volumeUp" alt="volume-up" />
-      </div>
-      <input v-model="volume" type="range" min="0" max="1" step="0.01" class="volume-slider" />
-      <div class="volume-icon" @click="volume = 0">
-        <img :src="volumeDown" alt="volume-down" />
+    <!-- Sound Settings Modal -->
+    <div
+      v-if="showSoundSettingsModal"
+      class="fixed inset-0 z-500 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div class="relative w-full max-w-3xl p-6 bg-[#FEF9EF] rounded-lg shadow-lg text-black">
+        <h2 class="text-xl mb-4">Sound Settings</h2>
+
+        <!-- Toggle for Sound Effects -->
+        <div class="mb-4 flex items-center">
+          <input type="checkbox" v-model="effectVolumeEnabled" @change="setEffectVolume(effectVolume)" class="mr-2" />
+          <label>Enable Sound Effects</label>
+        </div>
+
+        <!-- Volume Control for Sound Effects -->
+        <div v-if="effectVolumeEnabled" class="mb-4">
+          <label for="effectVolume" class="block mb-2">Sound Effects Volume</label>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            v-model="effectVolume"
+            @input="setEffectVolume(effectVolume)"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Toggle for Background Music -->
+        <div class="mb-4 flex items-center">
+          <input
+            type="checkbox"
+            v-model="backgroundMusicEnabled"
+            @change="setBackgroundMusicVolume(backgroundMusicVolume)"
+            class="mr-2"
+          />
+          <label>Enable Background Music</label>
+        </div>
+
+        <!-- Volume Control for Background Music -->
+        <div v-if="backgroundMusicEnabled">
+          <label for="backgroundMusicVolume" class="block mb-2">Background Music Volume</label>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            v-model="backgroundMusicVolume"
+            @input="setBackgroundMusicVolume(backgroundMusicVolume)"
+            class="w-full"
+          />
+        </div>
+
+        <button @click="closeSoundModal(), playClickButtonSound()" class="absolute top-1 right-1 hover:text-gray-800">
+          <img
+            :src="cancelicon"
+            class="w-[40px] h-[40px] mr-4 mt-4 transition duration-300 ease-in-out transform hover:scale-110"
+          />
+        </button>
       </div>
     </div>
   </div>
@@ -681,35 +765,6 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
   /* เงาที่ตัวอักษร */
   margin-right: 5px; /* เพิ่มช่องว่างระหว่างตัวอักษร */
   letter-spacing: 5px; /* เพิ่มช่องว่างระหว่างตัวอักษร */
-}
-
-.volume-control {
-  width: 45px;
-  position: fixed;
-  top: 170px;
-  right: 20px;
-  background-color: transparent;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.volume-slider {
-  height: 140px;
-  background: #ddd;
-  border-radius: 5px;
-  outline: none;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-  transform: rotate(-90deg);
-}
-
-.volume-icon img {
-  width: 24px;
-  height: 24px;
 }
 
 @keyframes bounce {
