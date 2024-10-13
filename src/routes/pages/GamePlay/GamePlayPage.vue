@@ -2,6 +2,7 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDisclosure } from '@/common/utils';
+import { useHintStore } from '@/stores';
 
 import LevelCompletePage from './CutScene/LevelCompletedPage.vue';
 import ModeCompletePage from './CutScene/ModeCompletedPage.vue';
@@ -23,8 +24,9 @@ const {
 } = useRoute();
 const router = useRouter();
 
+const hintStore = useHintStore();
+
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
-const hints = ref(localStorage.getItem('hints') || 3);
 const onMode = ref('');
 const selectedAnswerStatus = ref('');
 const boxAnswerLength = ref(0);
@@ -80,9 +82,9 @@ const selectedAnswer = computed(() => {
 const filledBoxLength = computed(() => selectedAnswer.value.filter((ans) => ans.reserved).length);
 
 const maxLevels = {
-  easy: 35,
-  medium: 35,
-  hard: 30,
+  easy: 3,
+  medium: 3,
+  hard: 3,
 };
 const queueManager = new QueueManager('wordQueue', Questions, maxLevels);
 
@@ -127,7 +129,7 @@ const clearSelectAnswer = () => {
 
 // TODO: The logic and variables should be extracted to a separate file such as store and hook
 const applyHint = () => {
-  if (hints.value > 0 && filledBoxLength.value < selectedAnswer.value.length) {
+  if (!hintStore.isEmpty && filledBoxLength.value < selectedAnswer.value.length) {
     const availableIndexes = selectedWord.value.map((ans, i) => (!ans.useHint ? i : -1)).filter((i) => i !== -1);
     const randomOfAvailable = Math.floor(Math.random() * availableIndexes.length);
     const randomIndex = availableIndexes[randomOfAvailable];
@@ -139,7 +141,7 @@ const applyHint = () => {
 
     saveAnswerHistory();
 
-    hints.value -= 1;
+    hintStore.decrement();
   }
 };
 
@@ -158,7 +160,7 @@ const openPage = (completedType) => {
 const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
     openPage('mode-completed');
-    hints.value += 5;
+    hintStore.increment(5);
     level[onMode.value] = 1;
     saveToLocalStorage('level', level);
     return;
@@ -211,7 +213,7 @@ const checkAnswer = () => {
       const isSuccessPendingCompletion = Math.round(success.value) === 100 && !completedGame();
       if (isSuccessPendingCompletion) {
         openPage('game-completed');
-        hints.value += 5;
+        hintStore.increment(5);
         setTimeout(() => {
           router.push({ name: 'home-page' });
         }, 1900);
@@ -243,13 +245,6 @@ watch(
     }
   },
 );
-
-watch(
-  () => hints.value,
-  () => {
-    saveToLocalStorage('hints', hints.value);
-  },
-);
 </script>
 
 <template>
@@ -262,6 +257,7 @@ watch(
         class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
       />
     </button>
+
     <section id="gameplay-title-component" class="flex items-center justify-center h-[12%]">
       <!-- Display the level player is on in the current game mode -->
       <h3 class="text-4xl text-black">{{ `Level ${level[onMode]}` }}</h3>
@@ -314,14 +310,14 @@ watch(
         Clear
       </button>
       <button
-        :disabled="hints === 0"
+        :disabled="hintStore.isEmpty"
         :class="[
           'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
-          hints > 0 ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
+          !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
         ]"
         @click="applyHint(), playHintSound()"
       >
-        Hints ({{ hints }})
+        Hints ({{ hintStore.hint }})
       </button>
     </section>
 
