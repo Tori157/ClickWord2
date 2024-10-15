@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .modal-container {
-    @apply fixed inset-0 z-50 bg-[#227C9D] flex flex-col justify-center items-center
+  @apply fixed inset-0 z-50 bg-[#227C9D] flex flex-col justify-center items-center;
 }

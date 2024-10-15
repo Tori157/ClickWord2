@@ -1,12 +1,12 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useDisclosure } from '@/common/utils';
+import { useDisclosure } from '@/utils';
 import { useHintStore } from '@/stores';
 
-import LevelCompletePage from './CutScene/LevelCompletedPage.vue';
-import ModeCompletePage from './CutScene/ModeCompletedPage.vue';
-import GameCompletedPage from './CutScene/GameCompletedPage.vue';
+import LevelCompletePage from '../../views/CutScene/LevelCompletedPage.vue';
+import ModeCompletePage from '../../views/CutScene/ModeCompletedPage.vue';
+import GameCompletedPage from '../../views/CutScene/GameCompletedPage.vue';
 
 import QueueManager from '@/class/QueueManager';
 import '@/extensions/array';
