@@ -210,7 +210,7 @@ const checkAnswer = () => {
         success.value += 1;
       }
       saveToLocalStorage('userSuccess', success.value);
-      const isSuccessPendingCompletion = Math.round(success.value) === 100 && !completedGame();
+      const isSuccessPendingCompletion = Math.round(success.value) === 9 && !completedGame();
       if (isSuccessPendingCompletion) {
         openPage('game-completed');
         hintStore.increment(5);

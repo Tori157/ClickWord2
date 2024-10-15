@@ -1,6 +1,6 @@
 <script setup>
-import { AppControlPanel } from './components/AppControlPanel.vue';
-import { TutorialModal } from './components/Modal/TutorialModal.vue';
+import AppControlPanel from './components/AppControlPanel.vue';
+import TutorialModal from './components/Modal/TutorialModal.vue';
 
 import { useDisclosure } from '@/utils';
 
