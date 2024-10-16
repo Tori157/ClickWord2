@@ -14,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-  <div v-if="isOpen" class="fixed z-50 bg-[#227C9D] min-w-full h-screen flex flex-col justify-between items-center">
+  <div v-if="isOpen" class="modal-container">
     <h2 class="text-white text-7xl mt-10">Congratulations !</h2>
     <h2 class="text-white text-2xl mt-10">You success 100% in this game</h2>
 

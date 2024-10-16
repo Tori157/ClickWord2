@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import OriginGamePage from './pages/OriginGamePage.vue';
-import { HomePage, MenuPage, GamePlayPage } from './pages';
+import OriginGamePage from '../views/OriginGamePage.vue';
+import MenuPage from '../views/MenuPage.vue';
+import HomePage from '../views/Home/HomePage.vue';
+import GamePlayPage from '../views/GamePlay/GamePlayPage.vue';
 
 const routes = [
   {

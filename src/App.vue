@@ -1,8 +1,8 @@
 <script setup>
-import { AppControlPanel } from './routes/pages/shared';
-import { TutorialModal } from './common/components';
+import AppControlPanel from './components/AppControlPanel.vue';
+import TutorialModal from './components/Modal/TutorialModal.vue';
 
-import { useDisclosure } from '@/common/utils';
+import { useDisclosure } from '@/utils';
 
 const { opened, open, close } = useDisclosure();
 </script>
