@@ -4,6 +4,7 @@ import OriginGamePage from '../views/OriginGamePage.vue';
 import MenuPage from '../views/MenuPage.vue';
 import HomePage from '../views/Home/HomePage.vue';
 import GamePlayPage from '../views/GamePlay/GamePlayPage.vue';
+import RankBoardPage from '../views/GamePlay/RankBoardPage.vue';
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: '/game',
     name: 'game-play-page',
     component: GamePlayPage,
+  },
+  {
+    path: '/rank-board',
+    name: 'rank-board-page',
+    component: RankBoardPage,
   },
   {
     path: '/origin',
