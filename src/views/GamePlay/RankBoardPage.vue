@@ -1,5 +1,4 @@
 <script setup></script>
-
 <template>
   <div>
     <div class="flex flex-col items-center bg-[#FEF9EF] h-screen">
@@ -9,10 +8,8 @@
     </div>
   </div>
 </template>
-
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
-
 h1 {
   font-family: 'Irish Grover', sans-serif;
   font-weight: 500;
