@@ -55,7 +55,7 @@ const hints = ref(localStorage.getItem('hint') || 3);
           <img :src="BulbIcon" alt="Bulb Button" class="w-20 h-20 md:w-16 md:h-16 mx-auto mb-1" />
           <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Hints ({{ hints }})</h3>
         </div>
-        <button class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">Market</button>
+        <!-- <button class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">Market</button> -->
       </div>
     </div>
   </div>
