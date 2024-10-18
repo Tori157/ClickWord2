@@ -1,6 +1,8 @@
 <script setup>
 import helpButton from '/public/assets/icons/helpButton.png';
 import soundButton from '/public/assets/icons/soundButton.png';
+import coinDisplay from '/public/assets/icons/coin.png';
+import { useCoinStore } from '@/stores';
 
 defineProps({
   openTutorialModal: {
@@ -8,11 +10,21 @@ defineProps({
     required: true,
   },
 });
+
+const coinStore = useCoinStore();
 </script>
 
 <template>
   <div id="app-control-panel" class="z-50 absolute top-0 right-0">
     <div class="flex flex-col">
+      <div class="flex items-center">
+        <img
+          :src="coinDisplay"
+          alt="Coin Icon"
+          class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
+        />
+        <span class="text-4xl text-black font-bold mr-4 mt-4">{{ coinStore.formattedCoin }}</span>
+      </div>
       <button @click="openTutorialModal">
         <img
           :src="helpButton"
