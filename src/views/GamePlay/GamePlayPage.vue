@@ -16,7 +16,6 @@ import HomeIcon from '/public/assets/icons/HomeButton.png';
 import Questions from '@/data/word_levels.json';
 import TimeIcon from '/public/assets/icons/timeicon.png';
 
-
 // Use this with cut scene components
 const { opened, open, close } = useDisclosure();
 const currentCutScene = ref('');
@@ -253,8 +252,11 @@ watch(
   <div class="flex flex-col justify-between bg-[#FEF9EF] h-screen">
     <!-- Back to Menu page -->
     <button class="absolute left-2" @click="$router.push({ name: 'menu-page' })">
-      <img :src="HomeIcon" alt="Go to menu page"
-        class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110" />
+      <img
+        :src="HomeIcon"
+        alt="Go to menu page"
+        class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
+      />
     </button>
 
     <section id="gameplay-title-component" class="flex items-center justify-center h-[15%]">
@@ -264,57 +266,82 @@ watch(
 
     <section id="gameplay-main-component" class="flex flex-col items-center justify-center h-[60%]">
       <div v-for="(row, rowIndex) in splitWords" :key="rowIndex" class="flex flex-row gap-2 mb-8">
-        <button v-for="item in row" :key="item.index" :disabled="item.reserved" :class="[
-          'text-[40px]',
-          'text-[#FEF9EF]',
-          'rounded-2xl',
-          'w-20',
-          'h-20',
-          'hover:bg-[#09897c]',
-          item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
-        ]" @click="selectLetter(item.index)">
+        <button
+          v-for="item in row"
+          :key="item.index"
+          :disabled="item.reserved"
+          :class="[
+            'text-[40px]',
+            'text-[#FEF9EF]',
+            'rounded-2xl',
+            'w-20',
+            'h-20',
+            'hover:bg-[#09897c]',
+            item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
+          ]"
+          @click="selectLetter(item.index)"
+        >
           {{ item.letter.toUpperCase() }}
         </button>
       </div>
       <div class="flex flex-row gap-2 mt-10">
-        <div v-for="(item, index) in selectedAnswer" :key="index" :class="[
-          item.useHint ? 'hinted-box' : !item.letter ? 'unfilled-box' : 'filled-box',
-          selectedAnswerStatus === 'correct'
-            ? 'correct-box'
-            : selectedAnswerStatus === 'incorrect'
-              ? 'incorrect-box'
-              : '',
-        ]" class="box-base">
+        <div
+          v-for="(item, index) in selectedAnswer"
+          :key="index"
+          :class="[
+            item.useHint ? 'hinted-box' : !item.letter ? 'unfilled-box' : 'filled-box',
+            selectedAnswerStatus === 'correct'
+              ? 'correct-box'
+              : selectedAnswerStatus === 'incorrect'
+                ? 'incorrect-box'
+                : '',
+          ]"
+          class="box-base"
+        >
           {{ item.letter.toUpperCase() }}
         </div>
       </div>
     </section>
 
-    <section id="gameplay-tools-component" class="flex justify-center items-end mb-6 gap-5 ">
+    <section id="gameplay-tools-component" class="flex justify-center items-end mb-6 gap-5">
       <button
         class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-20 w-58 hover:bg-[#878787] focus:bg-black transition duration-300 ease-in-out transform hover:scale-110"
-        @click="clearSelectAnswer(), playClearSound()">
+        @click="clearSelectAnswer(), playClearSound()"
+      >
         Clear
       </button>
-      <button :class="[
-        'bg-[#BFBFBF] text-[#1D1B20] text-3xl rounded-xl w-58 flex items-center justify-start gap-x-[30px] pr-12 pl-8',
-      ]">
+      <button
+        :class="[
+          'bg-[#BFBFBF] text-[#1D1B20] text-3xl rounded-xl w-58 flex items-center justify-start gap-x-[30px] pr-12 pl-8',
+        ]"
+      >
         <img :src="TimeIcon" alt="Time icon" class="w-[25px] h-[25px] mr-2" />
         00.00.00
       </button>
-      <button :disabled="hintStore.isEmpty" :class="[
-        'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
-        !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
-      ]" @click="applyHint(), playHintSound()">
+      <button
+        :disabled="hintStore.isEmpty"
+        :class="[
+          'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
+          !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
+        ]"
+        @click="applyHint(), playHintSound()"
+      >
         Hints ({{ hintStore.hint }})
       </button>
     </section>
 
     <section id="cut-scene-pages">
-      <level-complete-page :is-open="opened && currentCutScene === 'level-completed'" :on-close="close" :level="level"
-        :on-mode="onMode" />
-      <mode-complete-page :is-open="opened && currentCutScene === 'mode-completed'" :on-close="close"
-        :on-mode="onMode" />
+      <level-complete-page
+        :is-open="opened && currentCutScene === 'level-completed'"
+        :on-close="close"
+        :level="level"
+        :on-mode="onMode"
+      />
+      <mode-complete-page
+        :is-open="opened && currentCutScene === 'mode-completed'"
+        :on-close="close"
+        :on-mode="onMode"
+      />
       <game-completed-page :is-open="opened && currentCutScene === 'game-completed'" :on-close="close" />
     </section>
   </div>
