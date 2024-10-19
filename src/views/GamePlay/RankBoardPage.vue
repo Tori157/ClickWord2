@@ -1,7 +1,13 @@
-<script setup></script>
+<script setup>
+import HomeIcon from '/public/assets/icons/HomeButton.png';
+</script>
 <template>
   <div>
     <div class="flex flex-col items-center bg-[#FEF9EF] h-screen">
+      <button class="absolute left-2" @click="$router.push({ name: 'home-page' }), playClickButtonSound(), playBackgroundMusic()">
+        <img :src="HomeIcon" alt="Go to menu page"
+          class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110" />
+      </button>
       <div class="titles text-[100px] text-[#237C9D]">
         <h1>Rank Board</h1>
       </div>
@@ -10,6 +16,7 @@
 </template>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+
 h1 {
   font-family: 'Irish Grover', sans-serif;
   font-weight: 500;
