@@ -351,7 +351,7 @@ function goToMenuPage() {
   stopTimer();
   router.push({ name: 'menu-page' });
 }
- 
+
 // ////////////////End TimeBoard ///////////////////////////////
 </script>
 
@@ -360,8 +360,11 @@ function goToMenuPage() {
     <!-- Back to Menu page -->
 
     <button class="absolute left-2" @click="goToMenuPage">
-      <img :src="HomeIcon" alt="Go to menu page"
-        class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110" />
+      <img
+        :src="HomeIcon"
+        alt="Go to menu page"
+        class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
+      />
     </button>
 
     <section id="gameplay-title-component" class="flex items-center justify-center h-[15%]">
@@ -416,20 +419,25 @@ function goToMenuPage() {
         Clear
       </button>
 
-      <div :class="[
-        'bg-[#BFBFBF] text-[#1D1B20] text-3xl rounded-xl w-58 flex items-center justify-start gap-x-[30px] pr-12 pl-8',
-      ]">
+      <div
+        :class="[
+          'bg-[#BFBFBF] text-[#1D1B20] text-3xl rounded-xl w-58 flex items-center justify-start gap-x-[30px] pr-12 pl-8',
+        ]"
+      >
         <img :src="TimeIcon" alt="Time icon" class="w-[25px] h-[25px] mr-2" />
         <div>
           <div id="timer">{{ formattedTime }}</div>
           <!-- <button type="button" id="stop_timer" @click="stopTimer">Stop time</button> -->
         </div>
       </div>
-      <button :disabled="hintStore.isEmpty" :class="[
-        'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
-        !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
-      ]" @click="applyHint(), playHintSound()">
-
+      <button
+        :disabled="hintStore.isEmpty"
+        :class="[
+          'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
+          !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
+        ]"
+        @click="applyHint(), playHintSound()"
+      >
         Hints ({{ hintStore.hint }})
       </button>
     </section>
