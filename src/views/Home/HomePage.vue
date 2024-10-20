@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import PlayButtonIcon from '/public/assets/icons/play.png';
 import BulbIcon from '/public/assets/icons/bulb.png';
+import TimeIcon from '/public/assets/icons/clock.png';
+import Ranking from '/public/assets/icons/ranking.png';
 import TrophyIcon from '/public/assets/icons/prize.png';
 
 const titleGame1 = ['c', 'l', 'i', 'c', 'k'];
@@ -9,6 +11,20 @@ const titleGame2 = ['w', 'o', 'r', 'd'];
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const hints = ref(localStorage.getItem('hint') || 3);
+const totalTimes = ref(localStorage.getItem('timerHistory') || 0);
+
+function formatTime(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  // เพิ่มเลขศูนย์หน้าเมื่อมีค่าต่ำกว่า 10
+  const formattedHours = String(hours).padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(secs).padStart(2, '0');
+
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
 </script>
 
 <template>
@@ -31,25 +47,37 @@ const hints = ref(localStorage.getItem('hint') || 3);
 
     <button @click="$router.push({ name: 'menu-page' }), playClickButtonSound(), playBackgroundMusic()">
       <img :src="PlayButtonIcon" alt="Play Button"
-        class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[50px] mt-10 transition duration-300 ease-in-out transform hover:scale-110" />
+        class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[30px] transition duration-300 ease-in-out transform hover:scale-110" />
     </button>
-    <div class="flex gap-80 mt-1">
+    <button
+      class="bg-black text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 transition duration-300 ease-in-out transform hover:scale-110">
+      UserName
+    </button>
+    <button @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
+      class="bg-[#19C3B2] text-[#FEF9EF] flex text-[20px] rounded-2xl p-3 mt-5 transition duration-300 ease-in-out transform hover:scale-110">
+      <img :src="Ranking" alt="Rank icon" class="w-[30px] h-[30px] mr-2" />
+      Rank Board
+    </button>
+    <div class="flex gap-48 mt-12">
       <div class="flex flex-col item-center gap-2">
         <div class="flex flex-col gap-0">
           <img :src="TrophyIcon" alt="Prize" class="w-20 h-20 md:w-16 md:h-16 mx-auto my-auto mb-1" />
-          <h3 class=" text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Success ({{ Math.round(success) }}%)</h3>
+          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Success ({{ Math.round(success) }}%)</h3>
         </div>
-        <button @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
-          class="bg-[#19C3B2] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">
-          Rank Board
-        </button>
+      </div>
+      <div class="flex flex-col item-center gap-2">
+        <div class="flex flex-col gap-0">
+          <img :src="TimeIcon" alt="Time Button" class="w-20 h-20 md:w-16 md:h-16 mx-auto mb-1" />
+          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Times ({{ formatTime(totalTimes) }})</h3>
+        </div>
+        <!-- <button class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">Market</button> -->
       </div>
       <div class="flex flex-col item-center gap-2">
         <div class="flex flex-col gap-0">
           <img :src="BulbIcon" alt="Bulb Button" class="w-20 h-20 md:w-16 md:h-16 mx-auto mb-1" />
-          <h3 class=" text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Hints ({{ hints }})</h3>
+          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Hints ({{ hints }})</h3>
         </div>
-        <button class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">Market</button>
+        <!-- <button class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">Market</button> -->
       </div>
     </div>
   </div>
