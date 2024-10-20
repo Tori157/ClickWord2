@@ -17,13 +17,15 @@ const coinStore = useCoinStore();
 <template>
   <div id="app-control-panel" class="z-50 absolute top-0 right-0">
     <div class="flex flex-col">
-      <div class="flex items-center">
+      <div class="flex items-center space-x-2 mr-4 mt-4">
         <img
           :src="coinDisplay"
           alt="Coin Icon"
-          class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
+          class="w-[50px] h-[50px] transition duration-300 ease-in-out transform hover:scale-110"
         />
-        <span class="text-4xl text-black font-bold mr-4 mt-4">{{ coinStore.formattedCoin }}</span>
+        <span class="text-4xl text-black font-bold">
+          {{ coinStore.formattedCoin() }}
+        </span>
       </div>
       <button @click="openTutorialModal">
         <img

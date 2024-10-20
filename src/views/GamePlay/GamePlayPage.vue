@@ -164,7 +164,6 @@ const nextLevel = () => {
   if (level[onMode.value] > maxLevels[onMode.value]) {
     openPage('mode-completed');
     hintStore.increment(5);
-    coinStore.increment(1);
     level[onMode.value] = 1;
     saveToLocalStorage('level', level);
     return;
@@ -200,13 +199,22 @@ const checkAnswer = () => {
     selectedAnswerStatus.value = 'correct';
     const isLevelWithinMax = level[onMode.value] <= maxLevels[onMode.value];
 
-    coinStore.increment(1);
-
     // playSuccessSound();
     setTimeout(() => {
       if (isLevelWithinMax) {
         level[onMode.value] += 1;
         saveToLocalStorage('level', level);
+
+        let coinsToAdd = 0;
+        if (onMode.value === 'easy') {
+          coinsToAdd = 1;
+        } else if (onMode.value === 'medium') {
+          coinsToAdd = 2;
+        } else if (onMode.value === 'hard') {
+          coinsToAdd = 4;
+        }
+
+        coinStore.increment(coinsToAdd);
         openPage('level-completed');
       }
     }, 1900);

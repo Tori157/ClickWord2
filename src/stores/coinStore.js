@@ -1,37 +1,35 @@
-// coinStore.js
-
 import { defineStore, acceptHMRUpdate } from 'pinia';
+import { ref } from 'vue';
 
 const COIN_KEY_STORAGE = 'coin';
 
-export const useCoinStore = defineStore('coin', {
-  state: () => ({
-    coin: Number(localStorage.getItem(COIN_KEY_STORAGE)) || 0,
-  }),
+export const useCoinStore = defineStore('coin', () => {
+  const coin = ref(Number(localStorage.getItem(COIN_KEY_STORAGE)) || 0);
 
-  actions: {
-    increment(number = 1) {
-      this.coin += number;
-      this.saveToLocalStorage();
-    },
+  const increment = (number = 1) => {
+    coin.value += number;
+    saveToLocalStorage();
+  };
 
-    decrement(number = 1) {
-      if (this.coin >= number) {
-        this.coin -= number; //
-        this.saveToLocalStorage();
-      }
-    },
+  const decrement = (number = 1) => {
+    if (coin.value >= number) {
+      coin.value -= number;
+      saveToLocalStorage();
+    }
+  };
 
-    saveToLocalStorage() {
-      localStorage.setItem(COIN_KEY_STORAGE, this.coin);
-    },
-  },
+  const saveToLocalStorage = () => {
+    localStorage.setItem(COIN_KEY_STORAGE, coin.value);
+  };
 
-  getters: {
-    formattedCoin: (state) => `${state.coin} $`,
+  const formattedCoin = () => `${coin.value} $`;
 
-    isEmpty: (state) => state.coin === 0,
-  },
+  return {
+    coin,
+    increment,
+    decrement,
+    formattedCoin,
+  };
 });
 
 if (import.meta.hot) {
