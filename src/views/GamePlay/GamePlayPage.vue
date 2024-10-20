@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { ref, reactive, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDisclosure } from '@/utils';
 import { useHintStore } from '@/stores';
@@ -159,6 +159,7 @@ const openPage = (completedType) => {
 };
 
 const nextLevel = () => {
+  resumeTimer();
   if (level[onMode.value] > maxLevels[onMode.value]) {
     openPage('mode-completed');
     hintStore.increment(5);
@@ -188,12 +189,18 @@ const nextLevel = () => {
 const playOnMode = (mode) => {
   onMode.value = mode;
   filteredWordCollection.value = Questions.filterBy('difficulty', mode).shuffle();
+  startTimer();
   nextLevel();
 };
 
 const checkAnswer = () => {
   const isCorrect = correctAnswer.value.every((char, index) => char === selectedAnswer.value[index].letter);
   if (isCorrect) {
+    // ตรวจสอบว่าตัวจับเวลายังทำงานอยู่หรือไม่
+    if (isTimerRunning.value) {
+      saveTimerHistory(); // บันทึกตัวจับเวลาลงใน LocalStorage
+    }
+    stopTimer();
     selectedAnswerStatus.value = 'correct';
     const isLevelWithinMax = level[onMode.value] <= maxLevels[onMode.value];
     // playSuccessSound();
@@ -246,17 +253,100 @@ watch(
     }
   },
 );
+
+// ////////////////////// Start TimeBoard ///////////////////////////////////////////////////
+
+const totalSeconds = ref(0);
+const timerVar = ref(null);
+const isTimerRunning = ref(false); // ใช้ตรวจสอบว่าเวลาทำงานอยู่หรือไม่
+
+const saveTimerHistory = () => {
+  const currentTimer = totalSeconds.value; // ตัวแปรจับเวลาที่ต้องการบันทึก
+  saveToLocalStorage('timerHistory', currentTimer); // บันทึกเวลาลงใน LocalStorage
+  console.log('time' + currentTimer);
+};
+
+// คำนวณเวลาให้แสดงผลเป็นรูปแบบ HH:MM:SS
+const formattedTime = computed(() => {
+  const hour = Math.floor(totalSeconds.value / 3600);
+  const minute = Math.floor((totalSeconds.value % 3600) / 60);
+  const seconds = totalSeconds.value % 60;
+
+  const format = (val) => (val < 10 ? `0${val}` : val);
+
+  return `${format(hour)}:${format(minute)}:${format(seconds)}`;
+});
+
+// ฟังก์ชันจับเวลา
+function countTimer() {
+  totalSeconds.value++;
+}
+
+// เริ่มจับเวลาเมื่อ component ถูก mounted
+onMounted(() => {
+  startTimer(); // เริ่มจับเวลาเมื่อ component โหลดเสร็จ
+});
+
+// หยุดจับเวลาเมื่อ component ถูก unmounted
+onBeforeUnmount(() => {
+  clearInterval(timerVar.value);
+});
+
+function startTimer() {
+  if (!isTimerRunning.value) {
+    // เริ่มต้นจับเวลาเมื่อฟังก์ชันถูกเรียกครั้งแรก
+    timerVar.value = setInterval(countTimer, 1000);
+    isTimerRunning.value = true;
+  } else {
+    // ดึงข้อมูล level จาก localStorage
+    const levels = JSON.parse(localStorage.getItem('level'));
+    console.log(levels);
+
+    let shouldContinue = false; // ตัวแปรตรวจสอบว่าควรจะเริ่มจับเวลาต่อหรือไม่
+
+    // วนลูปผ่าน level ที่เล่นอยู่ใน localStorage
+    for (const levelType in levels) {
+      const currentLevel = levels[levelType];
+      console.log(`Current Level (${levelType}):`, currentLevel);
+
+      if (currentLevel >= 1) {
+        shouldContinue = true; // กำหนดให้จับเวลาต่อ
+        const savedTime = parseInt(localStorage.getItem('timerHistory'), 10) || 0; // ดึงเวลาที่บันทึกไว้จาก timerHistory
+        totalSeconds.value = savedTime; // ตั้งค่าเวลาใหม่
+        break; // ออกจากลูปเมื่อพบ Level ที่มากกว่า 1
+      }
+    }
+  }
+}
+
+// ฟังก์ชันหยุดจับเวลา
+function stopTimer() {
+  clearInterval(timerVar.value);
+  isTimerRunning.value = false; // เปลี่ยนสถานะเป็นหยุดเวลา
+}
+
+// ฟังก์ชันนับเวลาต่อ
+function resumeTimer() {
+  if (!isTimerRunning.value) {
+    startTimer(); // เริ่มนับเวลาต่อจากที่หยุดไว้
+  }
+}
+
+// ฟังก์ชันสำหรับการนำทางไปที่หน้าเมนู
+function goToMenuPage() {
+  stopTimer();
+  router.push({ name: 'menu-page' });
+}
+ 
+// ////////////////End TimeBoard ///////////////////////////////
 </script>
 
 <template>
   <div class="flex flex-col justify-between bg-[#FEF9EF] h-screen">
     <!-- Back to Menu page -->
-    <button class="absolute left-2" @click="$router.push({ name: 'menu-page' })">
-      <img
-        :src="HomeIcon"
-        alt="Go to menu page"
-        class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
-      />
+    <button class="absolute left-2" @click="goToMenuPage">
+      <img :src="HomeIcon" alt="Go to menu page"
+        class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110" />
     </button>
 
     <section id="gameplay-title-component" class="flex items-center justify-center h-[15%]">
@@ -266,38 +356,27 @@ watch(
 
     <section id="gameplay-main-component" class="flex flex-col items-center justify-center h-[60%]">
       <div v-for="(row, rowIndex) in splitWords" :key="rowIndex" class="flex flex-row gap-2 mb-8">
-        <button
-          v-for="item in row"
-          :key="item.index"
-          :disabled="item.reserved"
-          :class="[
-            'text-[40px]',
-            'text-[#FEF9EF]',
-            'rounded-2xl',
-            'w-20',
-            'h-20',
-            'hover:bg-[#09897c]',
-            item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
-          ]"
-          @click="selectLetter(item.index)"
-        >
+        <button v-for="item in row" :key="item.index" :disabled="item.reserved" :class="[
+          'text-[40px]',
+          'text-[#FEF9EF]',
+          'rounded-2xl',
+          'w-20',
+          'h-20',
+          'hover:bg-[#09897c]',
+          item.reserved ? 'bg-[#09897c]' : 'bg-[#19C3B2]',
+        ]" @click="selectLetter(item.index)">
           {{ item.letter.toUpperCase() }}
         </button>
       </div>
       <div class="flex flex-row gap-2 mt-10">
-        <div
-          v-for="(item, index) in selectedAnswer"
-          :key="index"
-          :class="[
-            item.useHint ? 'hinted-box' : !item.letter ? 'unfilled-box' : 'filled-box',
-            selectedAnswerStatus === 'correct'
-              ? 'correct-box'
-              : selectedAnswerStatus === 'incorrect'
-                ? 'incorrect-box'
-                : '',
-          ]"
-          class="box-base"
-        >
+        <div v-for="(item, index) in selectedAnswer" :key="index" :class="[
+          item.useHint ? 'hinted-box' : !item.letter ? 'unfilled-box' : 'filled-box',
+          selectedAnswerStatus === 'correct'
+            ? 'correct-box'
+            : selectedAnswerStatus === 'incorrect'
+              ? 'incorrect-box'
+              : '',
+        ]" class="box-base">
           {{ item.letter.toUpperCase() }}
         </div>
       </div>
@@ -306,42 +385,31 @@ watch(
     <section id="gameplay-tools-component" class="flex justify-center items-end mb-6 gap-5">
       <button
         class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-20 w-58 hover:bg-[#878787] focus:bg-black transition duration-300 ease-in-out transform hover:scale-110"
-        @click="clearSelectAnswer(), playClearSound()"
-      >
+        @click="clearSelectAnswer(), playClearSound()">
         Clear
       </button>
-      <button
-        :class="[
-          'bg-[#BFBFBF] text-[#1D1B20] text-3xl rounded-xl w-58 flex items-center justify-start gap-x-[30px] pr-12 pl-8',
-        ]"
-      >
+      <div :class="[
+        'bg-[#BFBFBF] text-[#1D1B20] text-3xl rounded-xl w-58 flex items-center justify-start gap-x-[30px] pr-12 pl-8',
+      ]">
         <img :src="TimeIcon" alt="Time icon" class="w-[25px] h-[25px] mr-2" />
-        00.00.00
-      </button>
-      <button
-        :disabled="hintStore.isEmpty"
-        :class="[
-          'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
-          !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
-        ]"
-        @click="applyHint(), playHintSound()"
-      >
+        <div>
+          <div id="timer">{{ formattedTime }}</div>
+          <!-- <button type="button" id="stop_timer" @click="stopTimer">Stop time</button> -->
+        </div>
+      </div>
+      <button :disabled="hintStore.isEmpty" :class="[
+        'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
+        !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
+      ]" @click="applyHint(), playHintSound()">
         Hints ({{ hintStore.hint }})
       </button>
     </section>
 
     <section id="cut-scene-pages">
-      <level-complete-page
-        :is-open="opened && currentCutScene === 'level-completed'"
-        :on-close="close"
-        :level="level"
-        :on-mode="onMode"
-      />
-      <mode-complete-page
-        :is-open="opened && currentCutScene === 'mode-completed'"
-        :on-close="close"
-        :on-mode="onMode"
-      />
+      <level-complete-page :is-open="opened && currentCutScene === 'level-completed'" :on-close="close" :level="level"
+        :on-mode="onMode" />
+      <mode-complete-page :is-open="opened && currentCutScene === 'mode-completed'" :on-close="close"
+        :on-mode="onMode" />
       <game-completed-page :is-open="opened && currentCutScene === 'game-completed'" :on-close="close" />
     </section>
   </div>
