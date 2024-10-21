@@ -2,10 +2,11 @@
 import cancelIcon from '@/../public/assets/icons/cancel.png';
 import bulbmarket from '@/../public/assets/icons/bulbmarket.png';
 import coin from '@/../public/assets/images/coin.png';
-import blueprofile from '@/../public/assets/images/blueprofile.png';
-import greenprofile from '@/../public/assets/images/greenprofile.png';
-import orangeprofile from '@/../public/assets/images/orangeprofile.png';
-import redprofile from '@/../public/assets/images/redprofile.png';
+// import blueprofile from '@/../public/assets/images/blueprofile.png';
+// import greenprofile from '@/../public/assets/images/greenprofile.png';
+// import orangeprofile from '@/../public/assets/images/orangeprofile.png';
+// import redprofile from '@/../public/assets/images/redprofile.png';
+
 import { useCoinStore, useHintStore } from '@/stores';
 
 const coinStore = useCoinStore();
@@ -25,10 +26,10 @@ defineProps({
 const items = [
   { id: 1, name: 'Hint 1', price: 4, type: 'hint', hintAmount: 1, image: bulbmarket },
   { id: 2, name: 'Hint 6', price: 20, type: 'hint', hintAmount: 6, image: bulbmarket },
-  { id: 3, name: 'Blue Profile Frame', price: 10, type: 'profile', image: blueprofile },
-  { id: 4, name: 'Green Profile Frame', price: 12, type: 'profile', image: greenprofile },
-  { id: 5, name: 'Orange Profile Frame', price: 15, type: 'profile', image: orangeprofile },
-  { id: 6, name: 'Red Profile Frame', price: 18, type: 'profile', image: redprofile },
+  // { id: 3, name: 'Blue Profile Frame', price: 10, type: 'profile', image: blueprofile },
+  // { id: 4, name: 'Green Profile Frame', price: 12, type: 'profile', image: greenprofile },
+  // { id: 5, name: 'Orange Profile Frame', price: 15, type: 'profile', image: orangeprofile },
+  // { id: 6, name: 'Red Profile Frame', price: 18, type: 'profile', image: redprofile },
 ];
 
 const MarketTitle = ['M', 'a', 'r', 'k', 'e', 't'];
@@ -73,9 +74,11 @@ const buyItem = (item) => {
       <!-- Coin and Balance -->
       <div class="flex items-end mb-6 absolute top-3 right-3">
         <img :src="coin" alt="coin" class="w-9 h-9 mb-1 mr-2" />
-        <span class="text-4xl text-black font-bold">
+        <span class="text-3xl text-black font-bold mr-3 mb-1">
           {{ coinStore.formattedCoin() }}
         </span>
+        <img :src="bulbmarket" alt="coin" class="w-9 h-9 mb-1 mr-2" />
+        <span class="text-3xl text-black font-bold mb-1"> {{ hintStore.hint }} </span>
       </div>
 
       <!-- Items Grid -->

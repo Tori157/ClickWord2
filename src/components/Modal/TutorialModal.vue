@@ -8,6 +8,8 @@ import helppage4 from '@/../public/assets/images/helppage4.webp';
 import helppage5 from '@/../public/assets/images/helppage5.webp';
 import helppage6 from '@/../public/assets/images/helppage6.webp';
 import helppage7 from '@/../public/assets/images/helppage7.webp';
+import helppage8 from '@/../public/assets/images/helppage8.webp';
+import helppage9 from '@/../public/assets/images/helppage9.webp';
 import nextLeftIcon from '@/../public/assets/icons/nextlefticon.png';
 import nextRightIcon from '@/../public/assets/icons/nextrighticon.png';
 import cancelIcon from '@/../public/assets/icons/cancel.png';
@@ -24,7 +26,7 @@ defineProps({
 });
 
 const currentTutorialPage = ref(0);
-const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5, helppage6, helppage7];
+const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5, helppage6, helppage7, helppage8, helppage9];
 
 const nextPage = () => {
   if (currentTutorialPage.value < helpPages.length - 1) {
