@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import getcoin1 from '@/../public/assets/images/getcoin1.png';
 import getcoin2 from '@/../public/assets/images/getcoin2.png';
 import getcoin4 from '@/../public/assets/images/getcoin4.png';
