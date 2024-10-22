@@ -277,7 +277,6 @@ const isTimerRunning = ref(false); // ใช้ตรวจสอบว่าเ
 const saveTimerHistory = () => {
   const currentTimer = totalSeconds.value; // ตัวแปรจับเวลาที่ต้องการบันทึก
   saveToLocalStorage('timerHistory', currentTimer); // บันทึกเวลาลงใน LocalStorage
-  console.log('time' + currentTimer);
 };
 
 // คำนวณเวลาให้แสดงผลเป็นรูปแบบ HH:MM:SS
@@ -314,17 +313,11 @@ function startTimer() {
   } else {
     // ดึงข้อมูล level จาก localStorage
     const levels = JSON.parse(localStorage.getItem('level'));
-    console.log(levels);
-
-    let shouldContinue = false; // ตัวแปรตรวจสอบว่าควรจะเริ่มจับเวลาต่อหรือไม่
 
     // วนลูปผ่าน level ที่เล่นอยู่ใน localStorage
     for (const levelType in levels) {
       const currentLevel = levels[levelType];
-      console.log(`Current Level (${levelType}):`, currentLevel);
-
       if (currentLevel >= 1) {
-        shouldContinue = true; // กำหนดให้จับเวลาต่อ
         const savedTime = parseInt(localStorage.getItem('timerHistory'), 10) || 0; // ดึงเวลาที่บันทึกไว้จาก timerHistory
         totalSeconds.value = savedTime; // ตั้งค่าเวลาใหม่
         break; // ออกจากลูปเมื่อพบ Level ที่มากกว่า 1
