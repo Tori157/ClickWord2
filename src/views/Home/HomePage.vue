@@ -5,16 +5,17 @@ import BulbIcon from '/public/assets/icons/bulb.png';
 import TimeIcon from '/public/assets/icons/clock.png';
 import Ranking from '/public/assets/icons/ranking.png';
 import TrophyIcon from '/public/assets/icons/prize.png';
-import { useHintStore } from '@/stores';
+import { useUserStore, useHintStore } from '@/stores';
 const titleGame1 = ['c', 'l', 'i', 'c', 'k'];
 const titleGame2 = ['w', 'o', 'r', 'd'];
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
+const userStore = useUserStore();
 const hintStore = useHintStore();
 // มาเปลี่ยนด้วยนะจุ้บๆ
 // const hints = ref(localStorage.getItem('hint') || 3);
 
-const userName = localStorage.getItem('currentUser');
+const userName = userStore.user.username;
 
 const totalTimes = ref(localStorage.getItem('timerHistory') || 0);
 

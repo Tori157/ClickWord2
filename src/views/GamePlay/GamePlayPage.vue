@@ -2,8 +2,7 @@
 import { ref, reactive, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDisclosure } from '@/utils';
-import { useHintStore } from '@/stores';
-import { useCoinStore } from '@/stores';
+import { useHintStore, useCoinStore } from '@/stores';
 
 import LevelCompletePage from '../../views/CutScene/LevelCompletedPage.vue';
 import ModeCompletePage from '../../views/CutScene/ModeCompletedPage.vue';
@@ -18,7 +17,7 @@ import Questions from '@/data/word_levels.json';
 import TimeIcon from '/public/assets/icons/timeicon.png';
 
 // Use for data
-import { updateUserWithLocalStorage } from '../../lib/fetchUtils';
+import { updateUserWithLocalStorage } from '../../libs/fetchUtils';
 
 const saveLocalStorageToDB = async () => {
   try {
@@ -142,7 +141,6 @@ const clearSelectAnswer = () => {
   saveAnswerHistory();
 };
 
-// TODO: The logic and variables should be extracted to a separate file such as store and hook
 const applyHint = () => {
   if (!hintStore.isEmpty && filledBoxLength.value < selectedAnswer.value.length) {
     const availableIndexes = selectedWord.value.map((ans, i) => (!ans.useHint ? i : -1)).filter((i) => i !== -1);
@@ -177,7 +175,9 @@ const nextLevel = () => {
   resumeTimer();
   if (level[onMode.value] > maxLevels[onMode.value]) {
     openPage('mode-completed');
-    hintStore.increment(5);
+    if (queueManager.isFirstRoundCompleted(onMode.value)) {
+      hintStore.increment(5);
+    }
     level[onMode.value] = 1;
     saveToLocalStorage('level', level);
     return;
@@ -248,7 +248,9 @@ const checkAnswer = () => {
       const isSuccessPendingCompletion = Math.round(success.value) === 9 && !completedGame();
       if (isSuccessPendingCompletion) {
         openPage('game-completed');
-        hintStore.increment(5);
+        if (queueManager.isFirstRoundCompleted(onMode.value)) {
+          hintStore.increment(5);
+        }
         setTimeout(() => {
           router.push({ name: 'home-page' });
         }, 1900);

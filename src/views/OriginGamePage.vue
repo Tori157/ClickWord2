@@ -31,7 +31,6 @@ import clearSound from '../../public/assets/sounds/clear.wav';
 import hintSound from '../../public/assets/sounds/hint.wav';
 import backgroundMusic from '../../public/assets/sounds/puzzle-game-bg-music.mp3';
 import QueueManager from '@/class/QueueManager';
-import { updateUserWithLocalStorage } from '../lib/fetchUtils';
 
 import '@/extensions/array';
 
@@ -45,8 +44,6 @@ const PAGE_NAME = {
   FINAL: 'final',
   TUTORIAL: 'tutorial',
 };
-
-
 
 const currentPage = ref(PAGE_NAME.HOME);
 const isOnPage = (pageName) => currentPage.value === pageName;
@@ -125,7 +122,6 @@ const completedGame = () => {
 };
 
 const nextLevel = () => {
-  
   console.log('hello');
 
   if (level[onMode.value] > maxLevels[onMode.value]) {

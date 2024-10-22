@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "id": "11c7",
+      "username": "aivane",
+      "password": "///",
+      "localStorageData": {
+        "currentUser": "aivane",
+        "coin": "1011",
+        "userSuccess": "4",
+        "firstRoundCompleted": "{\"easy\":false,\"medium\":false,\"hard\":false}",
+        "timerHistory": "6",
+        "debug": "PreMiD*",
+        "level": "{\"easy\":3,\"medium\":3,\"hard\":1}",
+        "hint": "963"
+      }
+    },
+    {
+      "id": "dd0c",
+      "username": "itbkk.olarn",
+      "password": "ip23/OLA"
+    }
+  ]
+}

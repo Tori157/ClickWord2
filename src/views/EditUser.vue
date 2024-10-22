@@ -30,7 +30,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchUser, updateUser } from '../lib/fetchUtils'; // นำเข้าฟังก์ชันที่จำเป็น
+import { fetchUser, updateUser } from '../libs/fetchUtils'; // นำเข้าฟังก์ชันที่จำเป็น
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute(); // ใช้เพื่อเข้าถึง route

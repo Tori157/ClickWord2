@@ -1,7 +1,7 @@
 <script setup>
 import TurtleIcon from '/public/assets/icons/loadPhoto.png';
 import { ref, watchEffect, toRefs } from 'vue';
- 
+
 const props = defineProps({
   isOpen: {
     type: Boolean,
@@ -20,23 +20,23 @@ const props = defineProps({
     required: true,
   },
 });
- 
+
 // ใช้ toRefs เพื่อให้สามารถเข้าถึง props ได้ในแบบ reactive
 const { isOpen } = toRefs(props);
 const totalTimes = ref(localStorage.getItem('timerHistory') || 0);
- 
+
 function formatTime(seconds) {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
- 
+
   const formattedHours = String(hours).padStart(2, '0');
   const formattedMinutes = String(minutes).padStart(2, '0');
   const formattedSeconds = String(secs).padStart(2, '0');
- 
+
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
- 
+
 // Watch for changes when modal is opened
 watchEffect(() => {
   if (isOpen.value) {
@@ -44,7 +44,7 @@ watchEffect(() => {
   }
 });
 </script>
- 
+
 <template>
   <div v-if="isOpen" class="modal-container">
     <h2 class="text-white text-7xl mt-5 justify-start">
