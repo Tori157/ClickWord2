@@ -14,6 +14,8 @@ const hintStore = useHintStore();
 // มาเปลี่ยนด้วยนะจุ้บๆ
 // const hints = ref(localStorage.getItem('hint') || 3);
 
+const userName = localStorage.getItem('currentUser');
+
 const totalTimes = ref(localStorage.getItem('timerHistory') || 0);
 
 function formatTime(seconds) {
@@ -57,9 +59,10 @@ function formatTime(seconds) {
       />
     </button>
     <button
+      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
       class="bg-black text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 transition duration-300 ease-in-out transform hover:scale-110"
     >
-      UserName
+      {{ userName }}
     </button>
     <button
       @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
