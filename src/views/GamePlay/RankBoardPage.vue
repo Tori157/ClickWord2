@@ -1,21 +1,31 @@
 <script setup>
-import HomeIcon from '/public/assets/icons/HomeButton.png';
+import BackIcon from '/public/assets/icons/previous.png';
+import ProfileIcon from '/public/assets/icons/profile-user.png';
+
 </script>
 <template>
   <div>
-    <div class="flex flex-col items-center bg-[#FEF9EF] h-screen">
-      <button
-        class="absolute left-2"
-        @click="$router.push({ name: 'home-page' }), playClickButtonSound(), playBackgroundMusic()"
-      >
-        <img
-          :src="HomeIcon"
-          alt="Go to menu page"
-          class="w-[50px] h-[50px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
-        />
-      </button>
-      <div class="titles text-[100px] text-[#237C9D]">
-        <h1>Rank Board</h1>
+    <div class="bg-[#FEF9EF] h-screen flex">
+      <div class="flex flex-col">
+        <button>
+          <img
+            :src="ProfileIcon"
+            alt="Profile Button"
+            class="w-[55px] h-[55px] ml-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
+          />
+        </button>
+        <button @click="$router.push({ name: 'home-page' }), playClickButtonSound(), playBackgroundMusic()">
+          <img
+            :src="BackIcon"
+            alt="Go to menu page"
+            class="w-[50px] h-[50px] ml-5 mt-4 transition duration-300 ease-in-out transform hover:scale-110"
+          />
+        </button>
+      </div>
+      <div class="flex flex-col items-center flex-grow">
+        <div class="titles text-[100px] text-[#237C9D]">
+          <h1>Rank Board</h1>
+        </div>
       </div>
     </div>
   </div>
