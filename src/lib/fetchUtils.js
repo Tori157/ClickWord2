@@ -1,11 +1,10 @@
-import axios from 'axios';
-
 const baseURL = import.meta.env.VITE_APP_URL;
 
 // ฟังก์ชันเพื่อตรวจสอบว่าชื่อผู้ใช้มีอยู่ในระบบหรือไม่
 const checkUsernameExists = async (username) => {
-  const response = await axios.get(`${baseURL}/users`);
-  return response.data.some((user) => user.username === username); // ตรวจสอบว่า username ซ้ำไหม
+  const response = await fetch(`${baseURL}/users`);
+  const data = await response.json();
+  return data.some((user) => user.username === username); // ตรวจสอบว่า username ซ้ำไหม
 };
 
 export const updateUserWithLocalStorage = async () => {
@@ -16,8 +15,9 @@ export const updateUserWithLocalStorage = async () => {
   }
 
   // ดึงข้อมูลผู้ใช้จาก db.json ด้วย username ที่ได้จาก localStorage
-  const response = await axios.get(`${baseURL}/users?username=${username}`);
-  const user = response.data[0]; // ถือว่า username เป็น unique
+  const response = await fetch(`${baseURL}/users?username=${username}`);
+  const data = await response.json();
+  const user = data[0]; // ถือว่า username เป็น unique
 
   if (!user) {
     throw new Error('ไม่พบผู้ใช้ในระบบ');
@@ -33,16 +33,24 @@ export const updateUserWithLocalStorage = async () => {
   };
 
   // ใช้คำขอ PUT เพื่ออัปเดตผู้ใช้
-  const updateResponse = await axios.put(`${baseURL}/users/${user.id}`, updatedUser);
-  return updateResponse.data;
+  const updateResponse = await fetch(`${baseURL}/users/${user.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedUser),
+  });
+
+  return updateResponse.json();
 };
 
 export const loginUser = async (credentials) => {
   // ตรวจสอบการล็อกอิน
-  const response = await axios.get(
-    `${baseURL}/users?username=${credentials.username}&password=${credentials.password}`,
+  const response = await fetch(
+    `${baseURL}/users?username=${credentials.username}&password=${credentials.password}`
   );
-  const user = response.data[0]; // สมมติว่า username/password เป็น unique
+  const data = await response.json();
+  const user = data[0]; // สมมติว่า username/password เป็น unique
 
   if (!user) {
     throw new Error('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
@@ -73,15 +81,22 @@ export const createUser = async (userData) => {
     throw new Error('ชื่อผู้ใช้ซ้ำ โปรดเลือกชื่อใหม่');
   }
 
-  const response = await axios.post(`${baseURL}/users`, userData);
-  return response.data;
+  const response = await fetch(`${baseURL}/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+
+  return response.json();
 };
 
 export const fetchUser = async (username) => {
-  const response = await axios.get(`${baseURL}/users?username=${username}`);
-  return response.data[0]; // คืนค่าผู้ใช้ที่มี username ตรงกัน
+  const response = await fetch(`${baseURL}/users?username=${username}`);
+  const data = await response.json();
+  return data[0]; // คืนค่าผู้ใช้ที่มี username ตรงกัน
 };
-
 
 export const updateUser = async (userData) => {
   // ตรวจสอบว่ามี userData.id และ username ใน userData หรือไม่
@@ -90,6 +105,13 @@ export const updateUser = async (userData) => {
   }
 
   // อัปเดตข้อมูลผู้ใช้ใน db.json
-  const response = await axios.put(`${baseURL}/users/${userData.id}`, userData);
-  return response.data;
+  const response = await fetch(`${baseURL}/users/${userData.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+
+  return response.json();
 };
