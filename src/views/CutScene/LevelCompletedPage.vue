@@ -1,6 +1,7 @@
 <script setup>
 import TurtleIcon from '/public/assets/icons/loadPhoto.png';
-import { ref } from 'vue';
+import { useCoinStore } from '@/stores/coinStore';
+import { ref, computed } from 'vue';
 
 defineProps({
   isOpen: {
@@ -35,6 +36,10 @@ function formatTime(seconds) {
 
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
+
+const coinStore = useCoinStore();
+const getCoinImage = computed(() => coinStore.getCoinImage);
+const showGetCoinImage = computed(() => coinStore.showGetCoinImage);
 </script>
 
 <template>
@@ -44,5 +49,8 @@ function formatTime(seconds) {
     </h2>
     <h3 class="text-white text-3xl mt-5 justify-end">Total Times: ({{ formatTime(totalTimes) }})</h3>
     <img :src="TurtleIcon" alt="Prize" class="w-[600px] h-[590px] mt-[-60px]" />
+    <div v-if="showGetCoinImage" :class="['get-coin', showGetCoinImage ? 'show' : 'hide']">
+      <img :src="getCoinImage" alt="Get Coin w-9 h-9" />
+    </div>
   </div>
 </template>

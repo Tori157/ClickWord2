@@ -123,4 +123,35 @@ const { opened, open, close } = useDisclosure();
     transform: rotateY(360deg);
   }
 }
+
+.get-coin {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px; /* ขนาดของรูปภาพ */
+  height: auto;
+  opacity: 0; /* เริ่มจากโปร่งใส */
+  transition: opacity 0.5s ease-in-out; /* ทำให้ transition นุ่มนวล */
+}
+
+.get-coin.show {
+  opacity: 1; /* ทำให้ภาพปรากฏ */
+  animation: fadeIn 1s ease-in-out; /* ใช้ animation ที่สร้างขึ้น */
+}
+
+.get-coin.hide {
+  opacity: 0;
+}
+
+/* Keyframes สำหรับการ fade in */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* ขยับตำแหน่งเล็กน้อย */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* กลับไปที่ตำแหน่งเดิม */
+  }
+}
 </style>
