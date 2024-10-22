@@ -28,14 +28,14 @@ const coinStore = useCoinStore();
 A
 <template>
   <div id="app-control-panel" class="z-50 absolute top-0 right-0">
-    <div class="flex flex-col">
+    <div class="flex flex-col items-end">
       <div class="flex items-center space-x-2 mr-4 mt-4">
         <img
           :src="coinDisplay"
           alt="Coin Icon"
-          class="w-[50px] h-[50px] transition duration-300 ease-in-out transform hover:scale-110"
+          class="w-[45px] h-[45px] transition duration-300 ease-in-out transform hover:scale-110"
         />
-        <span class="text-4xl text-black font-bold">
+        <span class="text-3xl text-black font-bold">
           {{ coinStore.formattedCoin() }}
         </span>
       </div>
