@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import PlayButtonIcon from '/public/assets/icons/play.png';
 import BulbIcon from '/public/assets/icons/bulb.png';
 import TimeIcon from '/public/assets/icons/clock.png';
@@ -8,6 +8,39 @@ import TrophyIcon from '/public/assets/icons/prize.png';
 import { useHintStore } from '@/stores';
 const titleGame1 = ['c', 'l', 'i', 'c', 'k'];
 const titleGame2 = ['w', 'o', 'r', 'd'];
+import { useRouter } from 'vue-router'; // นำเข้า useRouter
+const baseURL = import.meta.env.VITE_APP_URL;
+
+const userProfilePic = ref(''); // เก็บ path รูปโปรไฟล์ของผู้ใช้
+
+// ฟังก์ชันดึงข้อมูลผู้ใช้จาก db.json
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${baseURL}/users`);
+    const users = await response.json();
+
+    // ค้นหาผู้ใช้ที่ล็อกอินอยู่
+    const currentUser = users.find((user) => user.username === userName);
+
+    if (currentUser) {
+      userProfilePic.value = currentUser.profileImage; // สมมุติว่ามี field ชื่อ profilePic ใน db.json
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
+
+// เรียกใช้ฟังก์ชัน fetchUserProfile เมื่อ component ถูก mounted
+onMounted(() => {
+  fetchUserProfile();
+});
+
+// ฟั่งชั่น logout
+const router = useRouter();
+function logout() {
+  localStorage.clear(); // ล้างข้อมูลทั้งหมดใน localStorage
+  router.push({ name: 'login' }); // เปลี่ยนหน้าไปยัง 'Login'
+}
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const hintStore = useHintStore();
@@ -58,11 +91,28 @@ function formatTime(seconds) {
         class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[30px] transition duration-300 ease-in-out transform hover:scale-110"
       />
     </button>
+
+    <!-- เพิ่มการแสดงรูปโปรไฟล์ -->
+    <div class="flex flex-col items-center mb-5">
+      <img
+        v-if="userProfilePic"
+        :src="userProfilePic"
+        alt="Profile Picture"
+        class="w-24 h-24 rounded-full object-cover border border-gray-300 shadow-lg mb-3"
+      />
+    </div>
+
     <button
       @click="$router.push({ name: 'edit-user', params: { username: userName } })"
       class="bg-black text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 transition duration-300 ease-in-out transform hover:scale-110"
     >
       {{ userName }}
+    </button>
+    <button
+      @click="logout()"
+      class="bg-red-500 text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
+    >
+      Logout
     </button>
     <button
       @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
@@ -71,6 +121,7 @@ function formatTime(seconds) {
       <img :src="Ranking" alt="Rank icon" class="w-[30px] h-[30px] mr-2" />
       Rank Board
     </button>
+
     <div class="flex gap-48 mt-12">
       <div class="flex flex-col item-center gap-2">
         <div class="flex flex-col gap-0">

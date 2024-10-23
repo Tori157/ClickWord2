@@ -1,28 +1,45 @@
 <template>
   <div class="flex items-center justify-center h-screen bg-gray-100">
     <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-      <h2 class="text-2xl font-bold text-center mb-6">แก้ไขข้อมูลผู้ใช้</h2>
+      <h2 class="text-2xl font-bold text-center mb-6">Edit user information</h2>
       <form @submit.prevent="handleUpdateUser">
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">ชื่อผู้ใช้:</label>
+          <label class="block text-sm font-medium mb-1">username:</label>
           <input
             v-model="user.username"
             type="text"
             class="input input-bordered w-full"
-            placeholder="กรอกชื่อผู้ใช้"
+            placeholder="Enter username"
             required
           />
         </div>
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">รหัสผ่าน:</label>
+          <label class="block text-sm font-medium mb-1">password:</label>
           <input
             v-model="user.password"
             type="password"
             class="input input-bordered w-full"
-            placeholder="กรอกรหัสผ่าน"
+            placeholder="Enter password"
           />
         </div>
-        <button type="submit" class="btn btn-primary w-full mt-4">บันทึกการเปลี่ยนแปลง</button>
+
+        <!-- ส่วนสำหรับเลือกภาพโปรไฟล์ -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Choose a profile picture:</label>
+          <div class="flex gap-4">
+            <div
+              v-for="(image, index) in profileImages"
+              :key="index"
+              class="profile-pic cursor-pointer"
+              :class="{ selected: selectedImage === image }"
+              @click="selectImage(image)"
+            >
+              <img :src="image" alt="Profile Picture" class="w-16 h-16 rounded-full border" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full mt-4">save</button>
       </form>
     </div>
   </div>
@@ -30,31 +47,63 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchUser, updateUser } from '../lib/fetchUtils'; // นำเข้าฟังก์ชันที่จำเป็น
+import { fetchUser, updateUser } from '../lib/fetchUtils';
 import { useRoute, useRouter } from 'vue-router';
 
-const route = useRoute(); // ใช้เพื่อเข้าถึง route
+const route = useRoute();
 const router = useRouter();
-const user = ref({ username: '', password: '' }); // สร้างตัวแปรเพื่อเก็บข้อมูลผู้ใช้
+const user = ref({ username: '', password: '', profileImage: '' });
+const selectedImage = ref(''); // เก็บภาพโปรไฟล์ที่เลือก
+
+// ตัวเลือกภาพโปรไฟล์ที่ให้ผู้ใช้เลือก
+const profileImages = [
+  '/assets/profile-pics/profile1.png',
+  '/assets/profile-pics/profile2.png',
+  '/assets/profile-pics/profile3.png',
+  '/assets/profile-pics/profile4.png',
+];
 
 // ดึงข้อมูลผู้ใช้เมื่อติดตั้งคอมโพเนนต์
 onMounted(async () => {
   const username = route.params.username; // ดึง username จาก params
   const fetchedUser = await fetchUser(username); // ดึงข้อมูลผู้ใช้จาก API
   user.value = fetchedUser; // ตั้งค่าผู้ใช้
+  selectedImage.value = fetchedUser.profileImage; // ตั้งค่า selectedImage ให้เป็นภาพโปรไฟล์ปัจจุบัน
 });
 
+// ฟังก์ชันเลือกภาพโปรไฟล์
+const selectImage = (image) => {
+  selectedImage.value = image;
+};
+
+// ฟังก์ชันการอัปเดตผู้ใช้
 const handleUpdateUser = async () => {
+  if (!selectedImage.value) {
+    alert('Please select a profile picture');
+    return;
+  }
+
   try {
+    // เพิ่มรูปโปรไฟล์เข้าไปในข้อมูลผู้ใช้
+    user.value.profileImage = selectedImage.value;
+
     await updateUser(user.value); // เรียกใช้ฟังก์ชันเพื่ออัปเดตข้อมูล
-    alert('อัปเดตข้อมูลเรียบร้อยแล้ว!');
+    alert('updated successfully!');
     router.push('/home'); // นำทางไปยังหน้า Home หลังการอัปเดต
   } catch (error) {
-    alert('ไม่สามารถอัปเดตข้อมูลได้: ' + error.message);
+    alert('Unable to update information: ' + error.message);
   }
 };
 </script>
 
 <style scoped>
-/* เพิ่มสไตล์เพิ่มเติมหากจำเป็น */
+/* สไตล์เพิ่มเติมสำหรับการเลือกภาพ */
+.profile-pic img {
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.profile-pic.selected img {
+  border-color: #007bff;
+}
 </style>
