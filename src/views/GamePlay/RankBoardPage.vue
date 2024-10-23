@@ -1,7 +1,6 @@
 <script setup>
 import BackIcon from '/public/assets/icons/previous.png';
 import ProfileIcon from '/public/assets/icons/profile-user.png';
-
 </script>
 <template>
   <div>

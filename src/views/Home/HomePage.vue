@@ -67,8 +67,21 @@ function formatTime(seconds) {
 
 <template>
   <div class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen">
+    <!-- เพิ่มการแสดงรูปโปรไฟล์ชิดซ้าย -->
+    <button
+      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
+      class="absolute top-5 left-5 flex flex-col items-start mb-5"
+    >
+      <img
+        v-if="userProfilePic"
+        :src="userProfilePic"
+        alt="Profile Picture"
+        class="w-[50px] h-[50px] rounded-full object-cover border border-black-800 shadow-lg mb-3 transition duration-300 ease-in-out transform hover:scale-110"
+        style="box-shadow: 0 0 0 5px black"
+      />
+    </button>
     <div
-      class="waviy titles text-[#237C9D] text-[40px] md:text-[70px] lg:text-[100px] xl:text-[150px] min-[1440px]:text-[200px] max-[2000px]:text-[200px] mt-[-50px]"
+      class="waviy titles text-[#237C9D] text-[30px] md:text-[50px] lg:text-[80px] xl:text-[100px] min-[1440px]:text-[160px] max-[2000px]:text-[150px] mt-[-50px]"
     >
       <div class="flex md:flex-col lg:flex-row justify-center items-center">
         <div class="mx-10">
@@ -88,31 +101,8 @@ function formatTime(seconds) {
       <img
         :src="PlayButtonIcon"
         alt="Play Button"
-        class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[30px] transition duration-300 ease-in-out transform hover:scale-110"
+        class="lg:w-[300px] lg:h-[300px] md:w-36 md:h-36 mx-auto mb-[30px] transition duration-300 ease-in-out transform hover:scale-110"
       />
-    </button>
-
-    <!-- เพิ่มการแสดงรูปโปรไฟล์ -->
-    <div class="flex flex-col items-center mb-5">
-      <img
-        v-if="userProfilePic"
-        :src="userProfilePic"
-        alt="Profile Picture"
-        class="w-24 h-24 rounded-full object-cover border border-gray-300 shadow-lg mb-3"
-      />
-    </div>
-
-    <button
-      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
-      class="bg-black text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 transition duration-300 ease-in-out transform hover:scale-110"
-    >
-      {{ userName }}
-    </button>
-    <button
-      @click="logout()"
-      class="bg-red-500 text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
-    >
-      Logout
     </button>
     <button
       @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
@@ -121,6 +111,7 @@ function formatTime(seconds) {
       <img :src="Ranking" alt="Rank icon" class="w-[30px] h-[30px] mr-2" />
       Rank Board
     </button>
+    
 
     <div class="flex gap-48 mt-12">
       <div class="flex flex-col item-center gap-2">

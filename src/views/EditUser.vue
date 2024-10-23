@@ -1,10 +1,10 @@
 <template>
   <div class="flex items-center justify-center h-screen bg-gray-100">
     <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-      <h2 class="text-2xl font-bold text-center mb-6">Edit user information</h2>
+      <h2 class="text-2xl font-bold text-center mb-6">Edit profile</h2>
       <form @submit.prevent="handleUpdateUser">
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">username:</label>
+          <label class="block text-sm font-medium mb-1">Username:</label>
           <input
             v-model="user.username"
             type="text"
@@ -13,7 +13,7 @@
             required
           />
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <label class="block text-sm font-medium mb-1">password:</label>
           <input
             v-model="user.password"
@@ -21,7 +21,7 @@
             class="input input-bordered w-full"
             placeholder="Enter password"
           />
-        </div>
+        </div> -->
 
         <!-- ส่วนสำหรับเลือกภาพโปรไฟล์ -->
         <div class="mb-4">
@@ -39,8 +39,15 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-full mt-4">save</button>
+        <button type="submit" class="btn btn-primary w-full mt-4 text-md">Save</button>
+                <button type="submit" class="btn w-full mt-4 text-md" @click="cancel()">Cancle</button>
+
       </form>
+      <!-- ปุ่ม Logout อยู่ตรงกลาง -->
+      <div class="flex justify-center mt-4">
+        <button @click="logout()" class="text-red-500 underline hover:text-red-300">Logout</button>
+      </div>
+
     </div>
   </div>
 </template>
@@ -94,6 +101,16 @@ const handleUpdateUser = async () => {
     alert('Unable to update information: ' + error.message);
   }
 };
+
+// ฟังก์ชัน Cancel กลับไปหน้า home
+function cancel() {
+  router.push('/home');
+}
+
+function logout() {
+  localStorage.clear(); // ล้างข้อมูลทั้งหมดใน localStorage
+  router.push({ name: 'login' }); // เปลี่ยนหน้าไปยัง 'Login'
+}
 </script>
 
 <style scoped>

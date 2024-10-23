@@ -52,7 +52,6 @@ const routes = [
     path: '/edit-user/:username', // เส้นทางสำหรับแก้ไขผู้ใช้ โดยมีพารามิเตอร์ที่เปลี่ยนแปลงได้
     name: 'edit-user',
     component: EditUser,
-    
   },
   {
     path: '/:catchAll(.*)', // เส้นทางสำหรับ 404 Not Found

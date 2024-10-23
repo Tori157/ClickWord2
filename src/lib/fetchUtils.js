@@ -1,5 +1,5 @@
-import { useCoinStore } from "@/stores";
-import { useHintStore } from "@/stores";
+import { useCoinStore } from '@/stores';
+import { useHintStore } from '@/stores';
 
 const baseURL = import.meta.env.VITE_APP_URL;
 

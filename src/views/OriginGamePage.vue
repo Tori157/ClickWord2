@@ -46,8 +46,6 @@ const PAGE_NAME = {
   TUTORIAL: 'tutorial',
 };
 
-
-
 const currentPage = ref(PAGE_NAME.HOME);
 const isOnPage = (pageName) => currentPage.value === pageName;
 const navigateTo = (pageName) => {
@@ -125,7 +123,6 @@ const completedGame = () => {
 };
 
 const nextLevel = () => {
-  
   console.log('hello');
 
   if (level[onMode.value] > maxLevels[onMode.value]) {
