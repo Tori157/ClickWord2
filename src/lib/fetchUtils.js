@@ -142,5 +142,6 @@ export const deleteUser = async (username) => {
   // ลบชื่อผู้ใช้จาก localStorage ถ้าลบสำเร็จ
   localStorage.removeItem('currentUser');
   localStorage.clear();
+
   return { message: 'User deleted successfully.' };
 };
