@@ -121,3 +121,27 @@ export const updateUser = async (userData) => {
   localStorage.setItem('currentUser', `${userData.username}`);
   return response.json();
 };
+
+export const deleteUser = async (username) => {
+  // ตรวจสอบว่าชื่อผู้ใช้มีอยู่ในระบบก่อนที่จะลบ
+  const user = await fetchUser(username);
+  
+  if (!user) {
+    throw new Error('User not found.');
+  }
+
+  // ส่งคำขอ DELETE เพื่อลบผู้ใช้
+  const response = await fetch(`${baseURL}/users/${user.id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete user.');
+  }
+
+  // ลบชื่อผู้ใช้จาก localStorage ถ้าลบสำเร็จ
+  localStorage.removeItem('currentUser');
+  
+  return { message: 'User deleted successfully.' };
+};
+

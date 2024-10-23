@@ -4,7 +4,7 @@
       <h2 class="text-2xl font-bold text-center mb-6">Edit user information</h2>
       <form @submit.prevent="handleUpdateUser">
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">username:</label>
+          <label class="block text-sm font-medium mb-1">Username:</label>
           <input
             v-model="user.username"
             type="text"
@@ -14,7 +14,7 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">password:</label>
+          <label class="block text-sm font-medium mb-1">Password:</label>
           <input
             v-model="user.password"
             type="password"
@@ -23,7 +23,7 @@
           />
         </div>
 
-        <!-- ส่วนสำหรับเลือกภาพโปรไฟล์ -->
+        <!-- Profile Picture Selection -->
         <div class="mb-4">
           <label class="block text-sm font-medium mb-1">Choose a profile picture:</label>
           <div class="flex gap-4">
@@ -39,23 +39,26 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-full mt-4">save</button>
+        <button type="submit" class="btn btn-primary w-full mt-4">Save</button>
       </form>
+
+      <!-- Delete User Button -->
+      <button @click="handleDeleteUser" class="btn btn-danger w-full mt-4">Delete Account</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchUser, updateUser } from '../lib/fetchUtils';
+import { fetchUser, updateUser, deleteUser } from '../lib/fetchUtils'; // Ensure deleteUser is imported
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
 const user = ref({ username: '', password: '', profileImage: '' });
-const selectedImage = ref(''); // เก็บภาพโปรไฟล์ที่เลือก
+const selectedImage = ref('');
 
-// ตัวเลือกภาพโปรไฟล์ที่ให้ผู้ใช้เลือก
+// Profile images array
 const profileImages = [
   '/assets/profile-pics/profile1.png',
   '/assets/profile-pics/profile2.png',
@@ -63,20 +66,20 @@ const profileImages = [
   '/assets/profile-pics/profile4.png',
 ];
 
-// ดึงข้อมูลผู้ใช้เมื่อติดตั้งคอมโพเนนต์
+// Fetch user data on component mount
 onMounted(async () => {
-  const username = route.params.username; // ดึง username จาก params
-  const fetchedUser = await fetchUser(username); // ดึงข้อมูลผู้ใช้จาก API
-  user.value = fetchedUser; // ตั้งค่าผู้ใช้
-  selectedImage.value = fetchedUser.profileImage; // ตั้งค่า selectedImage ให้เป็นภาพโปรไฟล์ปัจจุบัน
+  const username = route.params.username;
+  const fetchedUser = await fetchUser(username);
+  user.value = fetchedUser;
+  selectedImage.value = fetchedUser.profileImage;
 });
 
-// ฟังก์ชันเลือกภาพโปรไฟล์
+// Profile picture selection
 const selectImage = (image) => {
   selectedImage.value = image;
 };
 
-// ฟังก์ชันการอัปเดตผู้ใช้
+// Update user information
 const handleUpdateUser = async () => {
   if (!selectedImage.value) {
     alert('Please select a profile picture');
@@ -84,20 +87,31 @@ const handleUpdateUser = async () => {
   }
 
   try {
-    // เพิ่มรูปโปรไฟล์เข้าไปในข้อมูลผู้ใช้
     user.value.profileImage = selectedImage.value;
-
-    await updateUser(user.value); // เรียกใช้ฟังก์ชันเพื่ออัปเดตข้อมูล
-    alert('updated successfully!');
-    router.push('/home'); // นำทางไปยังหน้า Home หลังการอัปเดต
+    await updateUser(user.value);
+    alert('Updated successfully!');
+    router.push('/home');
   } catch (error) {
     alert('Unable to update information: ' + error.message);
+  }
+};
+
+// Delete user account
+const handleDeleteUser = async () => {
+  const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+  if (confirmDelete) {
+    try {
+      await deleteUser(user.value.username); // Call the delete function with the username
+      alert('Account deleted successfully!');
+      router.push({ name: 'login' }); // Redirect to the login page after deletion
+    } catch (error) {
+      alert('Unable to delete account: ' + error.message);
+    }
   }
 };
 </script>
 
 <style scoped>
-/* สไตล์เพิ่มเติมสำหรับการเลือกภาพ */
 .profile-pic img {
   border: 2px solid transparent;
   transition: border-color 0.3s;
