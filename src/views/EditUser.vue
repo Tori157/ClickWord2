@@ -13,7 +13,7 @@
             required
           />
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <label class="block text-sm font-medium mb-1">password:</label>
           <input
             v-model="user.password"
@@ -39,8 +39,12 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-full mt-4">save</button>
+        <button type="submit" class="btn btn-primary w-full mt-4">Save</button>
+        <button @click="cancel()" class="btn w-full mt-4">Cancle</button>
       </form>
+      <div class="flex justify-center mt-4">
+        <button @click="logout()" class="text-red-500 underline hover:text-red-300">Logout</button>
+      </div>
     </div>
   </div>
 </template>
@@ -92,6 +96,11 @@ const handleUpdateUser = async () => {
     alert('Unable to update information: ' + error.message);
   }
 };
+
+// ฟังก์ชัน Cancel กลับไปหน้า home
+function cancel() {
+  router.push('/home');
+}
 </script>
 
 <style scoped>

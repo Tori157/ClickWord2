@@ -111,7 +111,6 @@ function formatTime(seconds) {
       <img :src="Ranking" alt="Rank icon" class="w-[30px] h-[30px] mr-2" />
       Rank Board
     </button>
-    
 
     <div class="flex gap-48 mt-12">
       <div class="flex flex-col item-center gap-2">
