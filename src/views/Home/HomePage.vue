@@ -8,10 +8,11 @@ import TrophyIcon from '/public/assets/icons/prize.png';
 import { useHintStore } from '@/stores';
 const titleGame1 = ['c', 'l', 'i', 'c', 'k'];
 const titleGame2 = ['w', 'o', 'r', 'd'];
-import { useRouter } from 'vue-router'; // นำเข้า useRouter
+// import { useRouter } from 'vue-router'; // นำเข้า useRouter
 const baseURL = import.meta.env.VITE_APP_URL;
 
 const userProfilePic = ref(''); // เก็บ path รูปโปรไฟล์ของผู้ใช้
+const profileFrame = ref('');
 
 // ฟังก์ชันดึงข้อมูลผู้ใช้จาก db.json
 const fetchUserProfile = async () => {
@@ -24,6 +25,7 @@ const fetchUserProfile = async () => {
 
     if (currentUser) {
       userProfilePic.value = currentUser.profileImage; // สมมุติว่ามี field ชื่อ profilePic ใน db.json
+      profileFrame.value = currentUser.profileFrame;
     }
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -34,8 +36,6 @@ const fetchUserProfile = async () => {
 onMounted(() => {
   fetchUserProfile();
 });
-
-
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const hintStore = useHintStore();
@@ -62,19 +62,28 @@ function formatTime(seconds) {
 
 <template>
   <div class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen">
-    <!-- เพิ่มการแสดงรูปโปรไฟล์ชิดซ้าย -->
     <button
-      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
       class="absolute top-5 left-5 flex flex-col items-start mb-5"
+      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
     >
-      <img
-        v-if="userProfilePic"
-        :src="userProfilePic"
-        alt="Profile Picture"
-        class="w-[50px] h-[50px] rounded-full object-cover border border-black-800 shadow-lg mb-3 transition duration-300 ease-in-out transform hover:scale-110"
-        style="box-shadow: 0 0 0 5px black"
-      />
+      <div class="relative">
+        <img
+          v-if="profileFrame"
+          :src="profileFrame"
+          alt="Profile Frame"
+          :style="{ width: '100px', height: '100px' }"
+          class="absolute rounded-full transition duration-300 ease-in-out transform hover:scale-125 z-0"
+        />
+        <img
+          v-if="userProfilePic"
+          :src="userProfilePic"
+          alt="Profile Picture"
+          :style="{ width: '100px', height: '100px' }"
+          class="rounded-full shadow-lg mb-3 transition duration-300 ease-in-out transform hover:scale-110 z-10"
+        />
+      </div>
     </button>
+
     <div
       class="waviy titles text-[#237C9D] text-[30px] md:text-[50px] lg:text-[80px] xl:text-[100px] min-[1440px]:text-[160px] max-[2000px]:text-[150px] mt-[-50px]"
     >
