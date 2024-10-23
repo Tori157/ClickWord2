@@ -58,12 +58,12 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _, next) => {
+router.beforeEach(async (to, _, next) => {
   if (to.name === 'login' || to.name === 'signup') {
     next();
   } else {
     const userStore = useUserStore();
-    userStore.initUser();
+    await userStore.initUser();
 
     if (!userStore.isLoggedIn) {
       next({ name: 'login' });
