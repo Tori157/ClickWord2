@@ -3,6 +3,31 @@ import { useHintStore } from '@/stores';
 
 const baseURL = import.meta.env.VITE_APP_URL;
 
+export const getAllUser = async () => {
+  try {
+    const response = await fetch(`${baseURL}/users`);
+
+    if (!response.ok) {
+      throw new Error(`Error fetching users: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    const filteredData = data.map((user) => ({
+      profileImage: user.profileImage,
+      name: user.username,
+      coin: user.localStorageData ? user.localStorageData.coin : 0, // ตรวจสอบว่ามี localStorageData หรือไม่
+      timerHistory: user.localStorageData ? user.localStorageData.timerHistory : 0,
+      success: user.localStorageData ? user.localStorageData.userSuccess : 0,
+    }));
+
+    return filteredData; 
+  } catch (error) {
+    console.error(`Error in getAllUser: ${error.message}`);
+    throw error;
+  }
+};
+
 // ฟังก์ชันเพื่อตรวจสอบว่าชื่อผู้ใช้มีอยู่ในระบบหรือไม่
 const checkUsernameExists = async (username) => {
   const response = await fetch(`${baseURL}/users`);
@@ -141,7 +166,6 @@ export const deleteUser = async (username) => {
 
   // ลบชื่อผู้ใช้จาก localStorage ถ้าลบสำเร็จ
   localStorage.removeItem('currentUser');
-  localStorage.clear();
 
   return { message: 'User deleted successfully.' };
 };
