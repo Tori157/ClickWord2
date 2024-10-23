@@ -353,7 +353,7 @@ function goToMenuPage() {
   <div class="flex flex-col justify-between bg-[#FEF9EF] h-screen">
     <!-- Back to Menu page -->
 
-    <button class="absolute left-2" @click="goToMenuPage">
+    <button class="fixed left-2" @click="goToMenuPage">
       <img
         :src="HomeIcon"
         alt="Go to menu page"

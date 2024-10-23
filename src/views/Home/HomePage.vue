@@ -64,7 +64,7 @@ function formatTime(seconds) {
 <template>
   <div class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen">
     <button
-      class="absolute top-5 left-5 flex flex-col items-start mb-5"
+      class="fixed top-5 left-5 flex flex-col items-start mb-5"
       @click="$router.push({ name: 'edit-user', params: { username: userName } })"
     >
       <div class="relative">
@@ -86,7 +86,7 @@ function formatTime(seconds) {
     </button>
 
     <div
-      class="waviy titles text-[#237C9D] text-[30px] md:text-[50px] lg:text-[80px] xl:text-[100px] min-[1440px]:text-[160px] max-[2000px]:text-[150px] mt-[-50px]"
+      class="waviy titles text-[#237C9D] text-[30px] md:text-[50px] lg:text-[80px] xl:text-[130px] min-[1440px]:text-[10px] max-[2000px]:text-[150px] mt-[-30px]"
     >
       <div class="flex md:flex-col lg:flex-row justify-center items-center">
         <div class="mx-10">

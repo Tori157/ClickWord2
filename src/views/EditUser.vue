@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { fetchUser, updateUser, deleteUser } from '../lib/fetchUtils'; // Ensure deleteUser is imported
 import { useRoute, useRouter } from 'vue-router';
 import { useProfileStore } from '@/stores/profileStore';
+import deleteIcon from '/public/assets/icons/delete.png';
 const route = useRoute();
 const router = useRouter();
 const user = ref({ username: '', password: '', profileImage: '', profileFrame: '' });
@@ -86,7 +87,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen bg-gray-100">
+  <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
     <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
       <h2 class="text-2xl font-bold text-center mb-6">Edit profile</h2>
       <form @submit.prevent="handleUpdateUser">
@@ -138,11 +139,13 @@ onMounted(() => {
       <div class="flex justify-center mt-4">
         <button @click="logout()" class="text-red-500 underline hover:text-red-300">Logout</button>
       </div>
+    </div>
+    <div class="flex justify-center mt-4">
+      <button @click="handleDeleteUser" class="btn btn-error px-36 text-white">
+        <img :src="deleteIcon" alt="Delete icon" class="w-[25px] h-[25px] mr-2" />
 
-      <!-- Delete User Button -->
-      <div class="flex justify-center mt-4">
-        <button @click="handleDeleteUser" class="text-red-500 underline hover:text-red-300">Delete Account</button>
-      </div>
+        Delete my account
+      </button>
     </div>
   </div>
 </template>
