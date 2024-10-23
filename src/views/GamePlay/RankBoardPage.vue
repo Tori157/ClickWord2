@@ -16,8 +16,8 @@ const sortUsers = (users) => {
 
 const fetchUsers = async () => {
   try {
-    const fetchedUsers = await getAllUser(); 
-    users.value = sortUsers(fetchedUsers); 
+    const fetchedUsers = await getAllUser();
+    users.value = sortUsers(fetchedUsers);
   } catch (error) {
     console.error('Failed to fetch users:', error);
   }

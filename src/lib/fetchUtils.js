@@ -21,7 +21,7 @@ export const getAllUser = async () => {
       success: user.localStorageData ? user.localStorageData.userSuccess : 0,
     }));
 
-    return filteredData; 
+    return filteredData;
   } catch (error) {
     console.error(`Error in getAllUser: ${error.message}`);
     throw error;
