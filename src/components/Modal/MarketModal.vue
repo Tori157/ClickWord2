@@ -2,12 +2,14 @@
 import cancelIcon from '@/../public/assets/icons/cancel.png';
 import bulbmarket from '@/../public/assets/icons/bulbmarket.png';
 import coin from '@/../public/assets/images/coin.png';
-// import blueprofile from '@/../public/assets/images/blueprofile.png';
-// import greenprofile from '@/../public/assets/images/greenprofile.png';
-// import orangeprofile from '@/../public/assets/images/orangeprofile.png';
-// import redprofile from '@/../public/assets/images/redprofile.png';
+import blueprofile from '@/../public/assets/profile-frame/blueprofile.png';
+import greenprofile from '@/../public/assets/profile-frame/greenprofile.png';
+import orangeprofile from '@/../public/assets/profile-frame/orangeprofile.png';
+import redprofile from '@/../public/assets/profile-frame/redprofile.png';
 
 import { useCoinStore, useHintStore } from '@/stores';
+import { useProfileStore } from '@/stores/profileStore';
+const profileStore = useProfileStore();
 
 const coinStore = useCoinStore();
 const hintStore = useHintStore();
@@ -26,10 +28,10 @@ defineProps({
 const items = [
   { id: 1, name: 'Hint 1', price: 4, type: 'hint', hintAmount: 1, image: bulbmarket },
   { id: 2, name: 'Hint 6', price: 20, type: 'hint', hintAmount: 6, image: bulbmarket },
-  // { id: 3, name: 'Blue Profile Frame', price: 10, type: 'profile', image: blueprofile },
-  // { id: 4, name: 'Green Profile Frame', price: 12, type: 'profile', image: greenprofile },
-  // { id: 5, name: 'Orange Profile Frame', price: 15, type: 'profile', image: orangeprofile },
-  // { id: 6, name: 'Red Profile Frame', price: 18, type: 'profile', image: redprofile },
+  { id: 3, name: 'Blue Profile Frame', price: 10, type: 'profile', image: blueprofile },
+  { id: 4, name: 'Green Profile Frame', price: 12, type: 'profile', image: greenprofile },
+  { id: 5, name: 'Orange Profile Frame', price: 15, type: 'profile', image: orangeprofile },
+  { id: 6, name: 'Red Profile Frame', price: 18, type: 'profile', image: redprofile },
 ];
 
 const MarketTitle = ['M', 'a', 'r', 'k', 'e', 't'];
@@ -41,6 +43,12 @@ const buyItem = (item) => {
     if (item.type === 'hint') {
       hintStore.increment(item.hintAmount);
     }
+    if (item.type === 'profile') {
+      profileStore.addPurchasedFrame(item.image);
+      console.log(`You bought ${item.image}!`);
+      console.log(profileStore.purchasedFrames);
+    }
+
     console.log(`You bought ${item.name}!`);
     // alert(`You bought ${item.name}!`);
   } else {
@@ -91,10 +99,15 @@ const buyItem = (item) => {
             {{ item.price }} <img :src="coin" alt="coin" class="inline w-6 h-6 mb-1" />
           </span>
           <button
-            class="mt-2 px-4 py-2 bg-green-500 text-white rounded transition duration-300 ease-in-out transform hover:scale-110"
+            :class="{
+              'bg-gray-500 cursor-not-allowed': profileStore.purchasedFrames.includes(item.image),
+              'bg-green-500 hover:scale-110': !profileStore.purchasedFrames.includes(item.image),
+            }"
+            class="mt-2 px-4 py-2 text-white rounded transition duration-300 ease-in-out transform"
+            :disabled="profileStore.purchasedFrames.includes(item.image)"
             @click="buyItem(item)"
           >
-            Buy
+            {{ profileStore.purchasedFrames.includes(item.image) ? 'Purchased' : 'Buy' }}
           </button>
         </div>
       </div>

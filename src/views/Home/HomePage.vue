@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import PlayButtonIcon from '/public/assets/icons/play.png';
 import BulbIcon from '/public/assets/icons/bulb.png';
 import TimeIcon from '/public/assets/icons/clock.png';
@@ -8,6 +8,34 @@ import TrophyIcon from '/public/assets/icons/prize.png';
 import { useUserStore, useHintStore } from '@/stores';
 const titleGame1 = ['c', 'l', 'i', 'c', 'k'];
 const titleGame2 = ['w', 'o', 'r', 'd'];
+// import { useRouter } from 'vue-router'; // นำเข้า useRouter
+const baseURL = import.meta.env.VITE_APP_URL;
+
+const userProfilePic = ref(''); // เก็บ path รูปโปรไฟล์ของผู้ใช้
+const profileFrame = ref('');
+
+// ฟังก์ชันดึงข้อมูลผู้ใช้จาก db.json
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch(`${baseURL}/users`);
+    const users = await response.json();
+
+    // ค้นหาผู้ใช้ที่ล็อกอินอยู่
+    const currentUser = users.find((user) => user.username === userName);
+
+    if (currentUser) {
+      userProfilePic.value = currentUser.profileImage; // สมมุติว่ามี field ชื่อ profilePic ใน db.json
+      profileFrame.value = currentUser.profileFrame;
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
+
+// เรียกใช้ฟังก์ชัน fetchUserProfile เมื่อ component ถูก mounted
+onMounted(() => {
+  fetchUserProfile();
+});
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const userStore = useUserStore();
@@ -35,8 +63,30 @@ function formatTime(seconds) {
 
 <template>
   <div class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen">
+    <button
+      class="absolute top-5 left-5 flex flex-col items-start mb-5"
+      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
+    >
+      <div class="relative">
+        <img
+          v-if="profileFrame"
+          :src="profileFrame"
+          alt="Profile Frame"
+          :style="{ width: '100px', height: '100px' }"
+          class="absolute rounded-full transition duration-300 ease-in-out transform hover:scale-125 z-0"
+        />
+        <img
+          v-if="userProfilePic"
+          :src="userProfilePic"
+          alt="Profile Picture"
+          :style="{ width: '100px', height: '100px' }"
+          class="rounded-full shadow-lg mb-3 transition duration-300 ease-in-out transform hover:scale-110 z-10"
+        />
+      </div>
+    </button>
+
     <div
-      class="waviy titles text-[#237C9D] text-[40px] md:text-[70px] lg:text-[100px] xl:text-[150px] min-[1440px]:text-[200px] max-[2000px]:text-[200px] mt-[-50px]"
+      class="waviy titles text-[#237C9D] text-[30px] md:text-[50px] lg:text-[80px] xl:text-[100px] min-[1440px]:text-[160px] max-[2000px]:text-[150px] mt-[-50px]"
     >
       <div class="flex md:flex-col lg:flex-row justify-center items-center">
         <div class="mx-10">
@@ -56,7 +106,7 @@ function formatTime(seconds) {
       <img
         :src="PlayButtonIcon"
         alt="Play Button"
-        class="lg:w-60 lg:h-60 md:w-36 md:h-36 mx-auto mb-[30px] transition duration-300 ease-in-out transform hover:scale-110"
+        class="lg:w-[300px] lg:h-[300px] md:w-36 md:h-36 mx-auto mb-[30px] transition duration-300 ease-in-out transform hover:scale-110"
       />
     </button>
     <button
@@ -72,6 +122,7 @@ function formatTime(seconds) {
       <img :src="Ranking" alt="Rank icon" class="w-[30px] h-[30px] mr-2" />
       Rank Board
     </button>
+
     <div class="flex gap-48 mt-12">
       <div class="flex flex-col item-center gap-2">
         <div class="flex flex-col gap-0">
