@@ -60,14 +60,14 @@ function formatTime(seconds) {
       />
     </button>
     <button
-      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
       class="bg-black text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 transition duration-300 ease-in-out transform hover:scale-110"
+      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
     >
       {{ userName }}
     </button>
     <button
-      @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
       class="bg-[#19C3B2] text-[#FEF9EF] flex text-[20px] rounded-2xl p-3 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
+      @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
     >
       <img :src="Ranking" alt="Rank icon" class="w-[30px] h-[30px] mr-2" />
       Rank Board
