@@ -17,6 +17,18 @@ import HomeIcon from '/public/assets/icons/HomeButton.png';
 import Questions from '@/data/word_levels.json';
 import TimeIcon from '/public/assets/icons/timeicon.png';
 
+// Use for data
+import { updateUserWithLocalStorage } from '../../lib/fetchUtils';
+
+const saveLocalStorageToDB = async () => {
+  try {
+    await updateUserWithLocalStorage();
+    // alert('บันทึกข้อมูลจาก localStorage ลงใน db.json สำเร็จ!');
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาด:', error.message);
+  }
+};
+
 // Use this with cut scene components
 const { opened, open, close } = useDisclosure();
 const currentCutScene = ref('');
@@ -161,6 +173,7 @@ const openPage = (completedType) => {
 };
 
 const nextLevel = () => {
+  saveLocalStorageToDB();
   resumeTimer();
   if (level[onMode.value] > maxLevels[onMode.value]) {
     openPage('mode-completed');
