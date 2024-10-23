@@ -1,10 +1,14 @@
 <script setup>
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import UserService from '@/services/userSercvice';
+import { UserService, AssetService } from '@/services';
 
 const router = useRouter();
-const signupFormValues = reactive({ username: '', password: '' });
+const signupFormValues = reactive({
+  username: '',
+  password: '',
+  profilePicture: AssetService.getDefaultProfilePictureUrl(),
+});
 
 const handleCreateUser = async () => {
   await UserService.signUp(signupFormValues);
@@ -13,7 +17,7 @@ const handleCreateUser = async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen bg-gray-100">
+  <div class="flex items-center justify-center h-screen bg-[#FEF9EF]">
     <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
       <h2 class="text-2xl font-bold text-center mb-6">Create a new user</h2>
       <form @submit.prevent="handleCreateUser">
@@ -23,6 +27,8 @@ const handleCreateUser = async () => {
             v-model="signupFormValues.username"
             type="text"
             class="input input-bordered w-full"
+            minlength="3"
+            maxlength="15"
             placeholder="Enter username"
           />
         </div>
@@ -34,6 +40,7 @@ const handleCreateUser = async () => {
             v-model="signupFormValues.password"
             type="password"
             class="input input-bordered w-full"
+            minlength="8"
             placeholder="กรอกรหัสผ่าน"
             required
           />
@@ -44,11 +51,11 @@ const handleCreateUser = async () => {
           <label class="block text-sm font-medium mb-1">Choose a profile picture:</label>
           <div class="flex gap-4">
             <div
-              v-for="(image, index) in profileImages"
+              v-for="(image, index) in AssetService.getBaseProfilePictureUrls()"
               :key="index"
               class="profile-pic cursor-pointer"
-              :class="{ selected: selectedImage === image }"
-              @click="selectImage(image)"
+              :class="{ selected: signupFormValues.profilePicture === image }"
+              @click="signupFormValues.profilePicture = image"
             >
               <img :src="image" alt="Profile Picture" class="w-16 h-16 rounded-full border" />
             </div>

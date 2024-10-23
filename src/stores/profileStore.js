@@ -1,23 +1,34 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import { ref } from 'vue';
-
-const FRAMES_KEY_STORAGE = 'purchasedFrames';
+import { ref, watch } from 'vue';
+import { useUserStore } from './userStore';
 
 export const useProfileStore = defineStore('profileStore', () => {
-  const purchasedFrames = ref(JSON.parse(localStorage.getItem(FRAMES_KEY_STORAGE)) || []);
+  const purchasedFrames = ref([]);
 
-  const addPurchasedFrame = (frame) => {
-    if (!purchasedFrames.value.includes(frame)) {
-      purchasedFrames.value.push(frame);
-      saveToLocalStorage();
+  const initState = () => {
+    const { user } = useUserStore();
+
+    if (user) {
+      purchasedFrames.value = user.profile.decorations || [];
     }
   };
 
-  const saveToLocalStorage = () => {
-    localStorage.setItem(FRAMES_KEY_STORAGE, JSON.stringify(purchasedFrames.value));
+  const addPurchasedFrame = (frame) => {
+    if (!purchasedFrames.value.includes(frame)) {
+      purchasedFrames.value = [...purchasedFrames.value, frame];
+    }
   };
 
+  watch(purchasedFrames, (newFrames) => {
+    const { user, setUser } = useUserStore();
+    if (user) {
+      user.profile.decorations = newFrames;
+      setUser(user);
+    }
+  });
+
   return {
+    initState,
     purchasedFrames,
     addPurchasedFrame,
   };

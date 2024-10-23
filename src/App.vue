@@ -1,16 +1,39 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import AppControlPanel from './components/AppControlPanel.vue';
 import TutorialModal from './components/Modal/TutorialModal.vue';
+import MarketModal from './components/Modal/MarketModal.vue';
 
 import { useDisclosure } from '@/utils';
+import { useUserStore, useCoinStore, useHintStore, useProfileStore } from '@/stores';
 
 const { opened, open, close } = useDisclosure();
+const userStore = useUserStore();
+const coinStore = useCoinStore();
+const hintStore = useHintStore();
+const profileStore = useProfileStore();
+
+const currentModal = ref('');
+
+const openModal = (modal) => {
+  currentModal.value = modal;
+  console.log('openModal', modal);
+  open();
+};
+
+onMounted(async () => {
+  await userStore.rehydrateUser();
+  coinStore.initState();
+  hintStore.initState();
+  profileStore.initState();
+});
 </script>
 
 <template>
   <div class="relative">
-    <app-control-panel :open-tutorial-modal="open" />
-    <tutorial-modal :is-open="opened" :on-close="close" />
+    <app-control-panel :open-modal="openModal" />
+    <market-modal :is-open="opened && currentModal === 'market'" :on-close="close" />
+    <tutorial-modal :is-open="opened && currentModal === 'tutorial'" :on-close="close" />
     <router-view />
   </div>
 </template>

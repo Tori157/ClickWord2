@@ -1,23 +1,13 @@
 <script setup>
-import MarketModal from './Modal/MarketModal.vue';
 import helpButton from '/public/assets/icons/helpButton.png';
-import soundButton from '/public/assets/icons/soundButton.png';
+import settingButton from '../../public/assets/icons/settingButton.png';
 
 import coinDisplay from '/public/assets/icons/coin.png';
 import { useCoinStore } from '@/stores';
 import marketButton from '/public/assets/icons/MarketButton.png';
-import { ref } from 'vue';
 
-const isOpenMarket = ref(false);
-const openMarketModal = () => {
-  isOpenMarket.value = true;
-};
-
-const closeMarketModal = () => {
-  isOpenMarket.value = false;
-};
 defineProps({
-  openTutorialModal: {
+  openModal: {
     type: Function,
     required: true,
   },
@@ -36,17 +26,17 @@ A
           class="w-[45px] h-[45px] transition duration-300 ease-in-out transform hover:scale-110"
         />
         <span class="text-3xl text-black font-bold">
-          {{ coinStore.formattedCoin() }}
+          {{ coinStore.formattedCoin }}
         </span>
       </div>
-      <button @click="openMarketModal">
+      <button @click="openModal('market')">
         <img
           :src="marketButton"
           alt="Market Button"
           class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
-      <button @click="openTutorialModal">
+      <button @click="openModal('tutorial')">
         <img
           :src="helpButton"
           alt="Help Button"
@@ -56,12 +46,11 @@ A
 
       <button @click="toggleSound()">
         <img
-          :src="soundButton"
-          alt="Sound Button"
+          :src="settingButton"
+          alt="setting Button"
           class="w-[50px] h-[50px] mr-5 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
     </div>
   </div>
-  <MarketModal :isOpenMarket="isOpenMarket" :onCloseMarket="closeMarketModal" />
 </template>

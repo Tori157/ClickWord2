@@ -8,8 +8,9 @@ type User = {
     completedPercentage: number;
   };
   profile: {
-    decorations: string[];
-    selectedDecoration: string;
+    avatar: string;
+    decorations?: string[];
+    selectedDecoration?: string;
   };
 };
 

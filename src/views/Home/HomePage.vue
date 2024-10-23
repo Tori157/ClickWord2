@@ -1,51 +1,16 @@
 <script setup>
-import { ref, onMounted } from 'vue';
 import PlayButtonIcon from '/public/assets/icons/play.png';
 import BulbIcon from '/public/assets/icons/bulb.png';
 import TimeIcon from '/public/assets/icons/clock.png';
 import Ranking from '/public/assets/icons/ranking.png';
 import TrophyIcon from '/public/assets/icons/prize.png';
 import { useUserStore, useHintStore } from '@/stores';
+
 const titleGame1 = ['c', 'l', 'i', 'c', 'k'];
 const titleGame2 = ['w', 'o', 'r', 'd'];
-// import { useRouter } from 'vue-router'; // นำเข้า useRouter
-const baseURL = import.meta.env.VITE_APP_URL;
 
-const userProfilePic = ref(''); // เก็บ path รูปโปรไฟล์ของผู้ใช้
-const profileFrame = ref('');
-
-// ฟังก์ชันดึงข้อมูลผู้ใช้จาก db.json
-const fetchUserProfile = async () => {
-  try {
-    const response = await fetch(`${baseURL}/users`);
-    const users = await response.json();
-
-    // ค้นหาผู้ใช้ที่ล็อกอินอยู่
-    const currentUser = users.find((user) => user.username === userName);
-
-    if (currentUser) {
-      userProfilePic.value = currentUser.profileImage; // สมมุติว่ามี field ชื่อ profilePic ใน db.json
-      profileFrame.value = currentUser.profileFrame;
-    }
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-  }
-};
-
-// เรียกใช้ฟังก์ชัน fetchUserProfile เมื่อ component ถูก mounted
-onMounted(() => {
-  fetchUserProfile();
-});
-
-const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const userStore = useUserStore();
 const hintStore = useHintStore();
-// มาเปลี่ยนด้วยนะจุ้บๆ
-// const hints = ref(localStorage.getItem('hint') || 3);
-
-const userName = userStore.user.username;
-
-const totalTimes = ref(localStorage.getItem('timerHistory') || 0);
 
 function formatTime(seconds) {
   const hours = Math.floor(seconds / 3600);
@@ -65,23 +30,26 @@ function formatTime(seconds) {
   <div class="bg-[#FEF9EF] flex flex-col items-center justify-center h-screen">
     <button
       class="fixed top-5 left-5 flex flex-col items-start mb-5"
-      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
+      @click="$router.push({ name: 'edit-user', params: { username: userStore.user.username } })"
     >
       <div class="relative">
         <img
-          v-if="profileFrame"
-          :src="profileFrame"
+          v-if="userStore.user.profile.selectedDecoration"
+          :src="userStore.user.profile.selectedDecoration"
           alt="Profile Frame"
           :style="{ width: '100px', height: '100px' }"
-          class="absolute rounded-full transition duration-300 ease-in-out transform hover:scale-125 z-0"
+          class="absolute shadow-lg rounded-full transition duration-300 ease-in-out transform hover:scale-125 z-0"
         />
         <img
-          v-if="userProfilePic"
-          :src="userProfilePic"
+          v-if="userStore.user.profile.avatar"
+          :src="userStore.user.profile.avatar"
           alt="Profile Picture"
           :style="{ width: '100px', height: '100px' }"
           class="rounded-full shadow-lg mb-3 transition duration-300 ease-in-out transform hover:scale-110 z-10"
         />
+      </div>
+      <div class="w-full mt-4 py-1 px-3 bg-black text-white text-lg rounded-lg shadow-sm">
+        {{ userStore.user.username }}
       </div>
     </button>
 
@@ -110,12 +78,6 @@ function formatTime(seconds) {
       />
     </button>
     <button
-      class="bg-black text-[#FEF9EF] text-[20px] rounded-full px-28 p-1 transition duration-300 ease-in-out transform hover:scale-110"
-      @click="$router.push({ name: 'edit-user', params: { username: userName } })"
-    >
-      {{ userName }}
-    </button>
-    <button
       class="bg-[#19C3B2] text-[#FEF9EF] flex text-[20px] rounded-2xl p-3 mt-5 transition duration-300 ease-in-out transform hover:scale-110"
       @click="$router.push({ name: 'rank-board-page' }), playClickButtonSound(), playBackgroundMusic()"
     >
@@ -127,20 +89,24 @@ function formatTime(seconds) {
       <div class="flex flex-col item-center gap-2">
         <div class="flex flex-col gap-0">
           <img :src="TrophyIcon" alt="Prize" class="w-20 h-20 md:w-16 md:h-16 mx-auto my-auto mb-1" />
-          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Success ({{ Math.round(success) }}%)</h3>
+          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">
+            Success ({{ Math.round(userStore.user.gameStats.completedPercentage) }}%)
+          </h3>
         </div>
       </div>
       <div class="flex flex-col item-center gap-2">
         <div class="flex flex-col gap-0">
           <img :src="TimeIcon" alt="Time Button" class="w-20 h-20 md:w-16 md:h-16 mx-auto mb-1" />
-          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Times ({{ formatTime(totalTimes) }})</h3>
+          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">
+            Times ({{ formatTime(userStore.user.gameStats.playDuration) }})
+          </h3>
         </div>
         <!-- <button class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">Market</button> -->
       </div>
       <div class="flex flex-col item-center gap-2">
         <div class="flex flex-col gap-0">
           <img :src="BulbIcon" alt="Bulb Button" class="w-20 h-20 md:w-16 md:h-16 mx-auto mb-1" />
-          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Hints ({{ hintStore.hint }})</h3>
+          <h3 class="text-black text-[20px] rounded-2xl p-3 mt-[-10px]">Hints ({{ hintStore.hints }})</h3>
         </div>
         <!-- <button class="bg-[#FF9090] text-[#FEF9EF] text-[20px] rounded-2xl p-3 hover:scale-110">Market</button> -->
       </div>

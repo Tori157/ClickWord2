@@ -4,17 +4,24 @@ import UserApi from '@/api/userApi';
 
 export const useUserStore = defineStore('user', () => {
   const user = ref(null);
+  const token = localStorage.getItem('token');
 
   const isLoggedIn = computed(() => !!user.value);
 
   const initUser = async () => {
-    const token = localStorage.getItem('token');
-
     if (!token) {
       return;
     }
 
     user.value = await UserApi.getUser(token);
+  };
+
+  const rehydrateUser = async () => {
+    if (user.value) {
+      return;
+    }
+
+    await initUser();
   };
 
   const setUser = (newUser) => {
@@ -27,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('token');
   };
 
-  return { user, isLoggedIn, initUser, setUser, clearUser };
+  return { user, isLoggedIn, initUser, rehydrateUser, setUser, clearUser };
 });
 
 if (import.meta.hot) {

@@ -13,7 +13,7 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen bg-gray-100">
+  <div class="flex items-center justify-center h-screen bg-[#FEF9EF]">
     <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
       <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
       <form @submit.prevent="handleLogin">
