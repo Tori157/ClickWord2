@@ -13,15 +13,6 @@
             required
           />
         </div>
-        <!-- <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">password:</label>
-          <input
-            v-model="user.password"
-            type="password"
-            class="input input-bordered w-full"
-            placeholder="Enter password"
-          />
-        </div> -->
 
         <!-- Profile Picture Selection -->
         <div class="mb-4">
@@ -40,10 +31,15 @@
         </div>
 
         <button type="submit" class="btn btn-primary w-full mt-4">Save</button>
-        <button @click="cancel()" class="btn w-full mt-4">Cancle</button>
+        <button @click="cancel()" class="btn w-full mt-4">Cancel</button>
       </form>
       <div class="flex justify-center mt-4">
         <button @click="logout()" class="text-red-500 underline hover:text-red-300">Logout</button>
+      </div>
+
+      <!-- Delete User Button -->
+      <div class="flex justify-center mt-4">
+        <button @click="handleDeleteUser" class="text-red-500 underline hover:text-red-300">Delete Account</button>
       </div>
     </div>
   </div>
@@ -58,6 +54,12 @@ const route = useRoute();
 const router = useRouter();
 const user = ref({ username: '', password: '', profileImage: '' });
 const selectedImage = ref('');
+
+// Logout function
+function logout() {
+  localStorage.clear(); // Clear all data in localStorage
+  router.push({ name: 'login' }); // Redirect to 'Login'
+}
 
 // Profile images array
 const profileImages = [
@@ -97,10 +99,24 @@ const handleUpdateUser = async () => {
   }
 };
 
-// ฟังก์ชัน Cancel กลับไปหน้า home
+// Cancel function to go back to home
 function cancel() {
   router.push('/home');
 }
+
+// Delete user account
+const handleDeleteUser = async () => {
+  const confirmDelete = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+  if (confirmDelete) {
+    try {
+      await deleteUser(user.value.username); // Call the delete function with the username
+      alert('Account deleted successfully!');
+      router.push({name:'login'}); // Redirect to the login page after deletion
+    } catch (error) {
+      alert('Unable to delete account: ' + error.message);
+    }
+  }
+};
 </script>
 
 <style scoped>

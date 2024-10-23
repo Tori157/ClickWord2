@@ -35,12 +35,7 @@ onMounted(() => {
   fetchUserProfile();
 });
 
-// ฟั่งชั่น logout
-const router = useRouter();
-function logout() {
-  localStorage.clear(); // ล้างข้อมูลทั้งหมดใน localStorage
-  router.push({ name: 'login' }); // เปลี่ยนหน้าไปยัง 'Login'
-}
+
 
 const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
 const hintStore = useHintStore();
