@@ -27,7 +27,7 @@ const coinStore = useCoinStore();
 </script>
 A
 <template>
-  <div id="app-control-panel" class="z-50 absolute top-0 right-0">
+  <div id="app-control-panel" class="z-50 fixed top-0 right-0">
     <div class="flex flex-col items-end">
       <div class="flex items-center space-x-2 mr-4 mt-4">
         <img
