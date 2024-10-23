@@ -1,0 +1,43 @@
+{
+  "users": [
+    {
+      "id": "f608",
+      "username": "namfon",
+      "password": "isylzjko-v'odvh;o",
+      "gameStats": {
+        "coins": 755,
+        "hints": 10,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/public/assets/profile-pics/profile2.png",
+        "decorations": [
+          "/public/assets/profile-frame/orangeprofile.png",
+          "/public/assets/profile-frame/redprofile.png",
+          "/public/assets/profile-frame/blueprofile.png"
+        ],
+        "selectedDecoration": "/public/assets/profile-frame/blueprofile.png"
+      }
+    },
+    {
+      "id": "b58a",
+      "password": "65130500100",
+      "gameStats": {
+        "coins": 940,
+        "hints": 811,
+        "completedPercentage": 9,
+        "playDuration": 9
+      },
+      "profile": {
+        "avatar": "/public/assets/profile-pics/profile4.png",
+        "decorations": [
+          "/public/assets/profile-frame/orangeprofile.png",
+          "/public/assets/profile-frame/redprofile.png"
+        ],
+        "selectedDecoration": "/public/assets/profile-frame/orangeprofile.png"
+      },
+      "username": "sixthman"
+    }
+  ]
+}

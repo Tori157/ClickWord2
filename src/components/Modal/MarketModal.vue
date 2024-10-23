@@ -6,7 +6,7 @@ import blueprofile from '@/../public/assets/profile-frame/blueprofile.png';
 import greenprofile from '@/../public/assets/profile-frame/greenprofile.png';
 import orangeprofile from '@/../public/assets/profile-frame/orangeprofile.png';
 import redprofile from '@/../public/assets/profile-frame/redprofile.png';
-
+import { UserService } from '@/services';
 import { useCoinStore, useHintStore } from '@/stores';
 import { useProfileStore } from '@/stores/profileStore';
 const profileStore = useProfileStore();
@@ -15,11 +15,11 @@ const coinStore = useCoinStore();
 const hintStore = useHintStore();
 
 defineProps({
-  isOpenMarket: {
+  isOpen: {
     type: Boolean,
     required: true,
   },
-  onCloseMarket: {
+  onClose: {
     type: Function,
     required: true,
   },
@@ -36,31 +36,26 @@ const items = [
 
 const MarketTitle = ['M', 'a', 'r', 'k', 'e', 't'];
 
-const buyItem = (item) => {
-  if (coinStore.coin >= item.price) {
-    coinStore.decrement(item.price);
+const handleBuyItem = async (item) => {
+  if (item.price > coinStore.coins) return;
 
-    if (item.type === 'hint') {
-      hintStore.increment(item.hintAmount);
-    }
-    if (item.type === 'profile') {
-      profileStore.addPurchasedFrame(item.image);
-      console.log(`You bought ${item.image}!`);
-      console.log(profileStore.purchasedFrames);
-    }
+  coinStore.decrement(item.price);
 
-    console.log(`You bought ${item.name}!`);
-    // alert(`You bought ${item.name}!`);
-  } else {
-    console.log("You don't have enough coins!");
-    // alert("You don't have enough coins!");
+  if (item.type === 'hint') {
+    hintStore.increment(item.hintAmount);
+    await UserService.updateGameStats({ hints: hintStore.hints });
+  } else if (item.type === 'profile') {
+    profileStore.addPurchasedFrame(item.image);
+    await UserService.addDecoration(item.image);
   }
+
+  await UserService.updateCoins(coinStore.coins);
 };
 </script>
 
 <template>
-  <div v-if="isOpenMarket" class="fixed inset-0 z-50 flex items-center justify-center">
-    <div class="fixed inset-0 bg-black bg-opacity-50" @click="onCloseMarket"></div>
+  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="fixed inset-0 bg-black bg-opacity-50" @click="onClose"></div>
 
     <div class="relative w-full max-w-3xl p-6 bg-[#FEF9EF] rounded-lg shadow-lg">
       <!-- Market Title -->
@@ -71,7 +66,7 @@ const buyItem = (item) => {
       </div>
 
       <!-- Close Button -->
-      <button class="absolute top-3 left-3 text-gray-600 hover:text-gray-800" @click="onCloseMarket">
+      <button class="absolute top-3 left-3 text-gray-600 hover:text-gray-800" @click="onClose">
         <img
           :src="cancelIcon"
           alt="Close Button"
@@ -83,10 +78,10 @@ const buyItem = (item) => {
       <div class="flex items-end mb-6 absolute top-3 right-3">
         <img :src="coin" alt="coin" class="w-9 h-9 mb-1 mr-2" />
         <span class="text-3xl text-black font-bold mr-3 mb-1">
-          {{ coinStore.formattedCoin() }}
+          {{ coinStore.formattedCoin }}
         </span>
         <img :src="bulbmarket" alt="coin" class="w-9 h-9 mb-1 mr-2" />
-        <span class="text-3xl text-black font-bold mb-1"> {{ hintStore.hint }} </span>
+        <span class="text-3xl text-black font-bold mb-1"> {{ hintStore.hints }} </span>
       </div>
 
       <!-- Items Grid -->
@@ -105,7 +100,7 @@ const buyItem = (item) => {
             }"
             class="mt-2 px-4 py-2 text-white rounded transition duration-300 ease-in-out transform"
             :disabled="profileStore.purchasedFrames.includes(item.image)"
-            @click="buyItem(item)"
+            @click="handleBuyItem(item)"
           >
             {{ profileStore.purchasedFrames.includes(item.image) ? 'Purchased' : 'Buy' }}
           </button>

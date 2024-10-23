@@ -2,8 +2,7 @@
 import { ref, reactive, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDisclosure } from '@/utils';
-import { useHintStore } from '@/stores';
-import { useCoinStore } from '@/stores';
+import { useUserStore, useHintStore, useCoinStore } from '@/stores';
 
 import LevelCompletePage from '../../views/CutScene/LevelCompletedPage.vue';
 import ModeCompletePage from '../../views/CutScene/ModeCompletedPage.vue';
@@ -16,18 +15,7 @@ import HomeIcon from '/public/assets/icons/HomeButton.png';
 
 import Questions from '@/data/word_levels.json';
 import TimeIcon from '/public/assets/icons/timeicon.png';
-
-// Use for data
-import { updateUserWithLocalStorage } from '../../lib/fetchUtils';
-
-const saveLocalStorageToDB = async () => {
-  try {
-    await updateUserWithLocalStorage();
-    // alert('บันทึกข้อมูลจาก localStorage ลงใน db.json สำเร็จ!');
-  } catch (error) {
-    console.error('เกิดข้อผิดพลาด:', error.message);
-  }
-};
+import { UserService } from '@/services';
 
 // Use this with cut scene components
 const { opened, open, close } = useDisclosure();
@@ -40,8 +28,9 @@ const router = useRouter();
 
 const hintStore = useHintStore();
 const coinStore = useCoinStore();
+const userStore = useUserStore();
 
-const success = ref(Number(localStorage.getItem('userSuccess')) ?? 0);
+const success = ref(userStore.user.gameStats.completedPercentage);
 const onMode = ref('');
 const selectedAnswerStatus = ref('');
 const boxAnswerLength = ref(0);
@@ -142,7 +131,6 @@ const clearSelectAnswer = () => {
   saveAnswerHistory();
 };
 
-// TODO: The logic and variables should be extracted to a separate file such as store and hook
 const applyHint = () => {
   if (!hintStore.isEmpty && filledBoxLength.value < selectedAnswer.value.length) {
     const availableIndexes = selectedWord.value.map((ans, i) => (!ans.useHint ? i : -1)).filter((i) => i !== -1);
@@ -173,11 +161,12 @@ const openPage = (completedType) => {
 };
 
 const nextLevel = () => {
-  saveLocalStorageToDB();
   resumeTimer();
   if (level[onMode.value] > maxLevels[onMode.value]) {
     openPage('mode-completed');
-    hintStore.increment(5);
+    if (!queueManager.isFirstRoundCompleted(onMode.value)) {
+      hintStore.increment(5);
+    }
     level[onMode.value] = 1;
     saveToLocalStorage('level', level);
     return;
@@ -208,12 +197,12 @@ const playOnMode = (mode) => {
   nextLevel();
 };
 
-const checkAnswer = () => {
+const checkAnswer = async () => {
   const isCorrect = correctAnswer.value.every((char, index) => char === selectedAnswer.value[index].letter);
   if (isCorrect) {
     // ตรวจสอบว่าตัวจับเวลายังทำงานอยู่หรือไม่
     if (isTimerRunning.value) {
-      saveTimerHistory(); // บันทึกตัวจับเวลาลงใน LocalStorage
+      await saveTimerHistory(); // บันทึกตัวจับเวลาลงใน LocalStorage
     }
     stopTimer();
     selectedAnswerStatus.value = 'correct';
@@ -249,6 +238,7 @@ const checkAnswer = () => {
       if (isSuccessPendingCompletion) {
         openPage('game-completed');
         hintStore.increment(5);
+
         setTimeout(() => {
           router.push({ name: 'home-page' });
         }, 1900);
@@ -274,10 +264,18 @@ onMounted(() => {
 
 watch(
   () => filledBoxLength.value,
-  () => {
+  async () => {
     if (filledBoxLength.value >= selectedAnswer.value.length) {
-      checkAnswer();
+      await checkAnswer();
     }
+  },
+);
+
+watch(
+  () => success.value,
+  async () => {
+    await UserService.updateGameStats({ completedPercentage: success.value });
+    userStore.user.gameStats.completedPercentage = success.value;
   },
 );
 
@@ -287,9 +285,10 @@ const totalSeconds = ref(0);
 const timerVar = ref(null);
 const isTimerRunning = ref(false); // ใช้ตรวจสอบว่าเวลาทำงานอยู่หรือไม่
 
-const saveTimerHistory = () => {
+const saveTimerHistory = async () => {
   const currentTimer = totalSeconds.value; // ตัวแปรจับเวลาที่ต้องการบันทึก
-  saveToLocalStorage('timerHistory', currentTimer); // บันทึกเวลาลงใน LocalStorage
+  await UserService.updateGameStats({ playDuration: currentTimer }); // บันทึกเวลาลงในฐานข้อมูล
+  userStore.user.gameStats.playDuration = currentTimer;
 };
 
 // คำนวณเวลาให้แสดงผลเป็นรูปแบบ HH:MM:SS
@@ -331,7 +330,7 @@ function startTimer() {
     for (const levelType in levels) {
       const currentLevel = levels[levelType];
       if (currentLevel >= 1) {
-        const savedTime = parseInt(localStorage.getItem('timerHistory'), 10) || 0; // ดึงเวลาที่บันทึกไว้จาก timerHistory
+        const savedTime = userStore.user.gameStats.playDuration;
         totalSeconds.value = savedTime; // ตั้งค่าเวลาใหม่
         break; // ออกจากลูปเมื่อพบ Level ที่มากกว่า 1
       }
@@ -444,7 +443,7 @@ function goToMenuPage() {
         ]"
         @click="applyHint(), playHintSound()"
       >
-        Hints ({{ hintStore.hint }})
+        Hints ({{ hintStore.hints }})
       </button>
     </section>
 

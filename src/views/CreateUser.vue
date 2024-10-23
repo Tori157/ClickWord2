@@ -1,17 +1,35 @@
+<script setup>
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { UserService, AssetService } from '@/services';
+
+const router = useRouter();
+const signupFormValues = reactive({
+  username: '',
+  password: '',
+  profilePicture: AssetService.getDefaultProfilePictureUrl(),
+});
+
+const handleCreateUser = async () => {
+  await UserService.signUp(signupFormValues);
+  router.push({ name: 'home-page' });
+};
+</script>
+
 <template>
-  <div class="flex items-center justify-center h-screen bg-gray-100">
+  <div class="flex items-center justify-center h-screen bg-[#FEF9EF]">
     <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
       <h2 class="text-2xl font-bold text-center mb-6">Create a new user</h2>
       <form @submit.prevent="handleCreateUser">
-        <!-- ฟิลด์สำหรับกรอกชื่อผู้ใช้ -->
         <div class="mb-4">
           <label class="block text-sm font-medium mb-1">username:</label>
           <input
-            v-model="newUser.username"
+            v-model="signupFormValues.username"
             type="text"
             class="input input-bordered w-full"
+            minlength="3"
+            maxlength="15"
             placeholder="Enter username"
-            required
           />
         </div>
 
@@ -19,10 +37,11 @@
         <div class="mb-4">
           <label class="block text-sm font-medium mb-1">password:</label>
           <input
-            v-model="newUser.password"
+            v-model="signupFormValues.password"
             type="password"
             class="input input-bordered w-full"
-            placeholder="Enter password"
+            minlength="8"
+            placeholder="กรอกรหัสผ่าน"
             required
           />
         </div>
@@ -32,11 +51,11 @@
           <label class="block text-sm font-medium mb-1">Choose a profile picture:</label>
           <div class="flex gap-4">
             <div
-              v-for="(image, index) in profileImages"
+              v-for="(image, index) in AssetService.getBaseProfilePictureUrls()"
               :key="index"
               class="profile-pic cursor-pointer"
-              :class="{ selected: selectedImage === image }"
-              @click="selectImage(image)"
+              :class="{ selected: signupFormValues.profilePicture === image }"
+              @click="signupFormValues.profilePicture = image"
             >
               <img :src="image" alt="Profile Picture" class="w-16 h-16 rounded-full border" />
             </div>
@@ -55,50 +74,7 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import { createUser } from '../lib/fetchUtils';
-
-// สร้าง state สำหรับชื่อผู้ใช้, รหัสผ่าน, และภาพโปรไฟล์
-const newUser = ref({ username: '', password: '', profileImage: '' });
-const selectedImage = ref(''); // เก็บภาพโปรไฟล์ที่ผู้ใช้เลือก
-
-// ตัวเลือกภาพโปรไฟล์ที่ให้ผู้ใช้เลือก
-const profileImages = [
-  '/assets/profile-pics/profile1.png',
-  '/assets/profile-pics/profile2.png',
-  '/assets/profile-pics/profile3.png',
-  '/assets/profile-pics/profile4.png',
-];
-
-// ฟังก์ชันเลือกภาพโปรไฟล์
-const selectImage = (image) => {
-  selectedImage.value = image;
-};
-
-// ฟังก์ชันสร้างผู้ใช้ใหม่
-const handleCreateUser = async () => {
-  if (!selectedImage.value) {
-    alert('Please select a profile picture');
-    return;
-  }
-
-  try {
-    // เพิ่มรูปโปรไฟล์เข้าไปในข้อมูลผู้ใช้
-    newUser.value.profileImage = selectedImage.value;
-
-    await createUser(newUser.value);
-    alert('created successfully!');
-    newUser.value = { username: '', password: '', profileImage: '' }; // รีเซ็ตฟิลด์
-    selectedImage.value = ''; // รีเซ็ตการเลือกภาพ
-  } catch (error) {
-    alert('Unable to create user: ' + error.message);
-  }
-};
-</script>
-
 <style scoped>
-/* สไตล์เพิ่มเติมสำหรับการเลือกภาพ */
 .profile-pic img {
   border: 2px solid transparent;
   transition: border-color 0.3s;

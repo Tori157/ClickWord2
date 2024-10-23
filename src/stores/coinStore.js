@@ -1,54 +1,64 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useUserStore } from './userStore';
 import getcoin1 from '@/../public/assets/images/getcoin1.png';
 import getcoin2 from '@/../public/assets/images/getcoin2.png';
 import getcoin4 from '@/../public/assets/images/getcoin4.png';
 
-const COIN_KEY_STORAGE = 'coin';
+export const useCoinStore = defineStore('coins', () => {
+  const coins = ref(0);
+  const receivedCoinImagePath = ref(null);
+  const shouldDisplayReceivedCoin = ref(false);
 
-export const useCoinStore = defineStore('coin', () => {
-  const coin = ref(Number(localStorage.getItem(COIN_KEY_STORAGE)) || 1000);
-  const getCoinImage = ref(null);
-  const showGetCoinImage = ref(false);
+  const initState = () => {
+    const { user } = useUserStore();
 
-  const increment = (number = 1) => {
-    coin.value += number;
-    saveToLocalStorage();
-    displayGetCoinImage(number);
-  };
-
-  const decrement = (number = 1) => {
-    if (coin.value >= number) {
-      coin.value -= number;
-      saveToLocalStorage();
+    if (user) {
+      coins.value = user.gameStats.coins;
     }
   };
 
-  const saveToLocalStorage = () => {
-    localStorage.setItem(COIN_KEY_STORAGE, coin.value);
+  const increment = (number = 1) => {
+    coins.value += number;
+    displayReceivedCoin(number);
   };
 
-  const formattedCoin = () => `${coin.value} $`;
+  const decrement = (number = 1) => {
+    if (coins.value >= number) {
+      coins.value -= number;
+    }
+  };
 
-  const displayGetCoinImage = (number) => {
-    if (number === 1) getCoinImage.value = getcoin1;
-    else if (number === 2) getCoinImage.value = getcoin2;
-    else if (number === 4) getCoinImage.value = getcoin4;
+  const formattedCoin = computed(() => `${coins.value.toLocaleString()} $`);
 
-    showGetCoinImage.value = true;
+  const displayReceivedCoin = (number) => {
+    if (number === 1) receivedCoinImagePath.value = getcoin1;
+    else if (number === 2) receivedCoinImagePath.value = getcoin2;
+    else if (number === 4) receivedCoinImagePath.value = getcoin4;
+
+    shouldDisplayReceivedCoin.value = true;
 
     setTimeout(() => {
-      showGetCoinImage.value = false;
-    }, 3000); // ภาพจะหายไปหลัง 3 วินาที
+      shouldDisplayReceivedCoin.value = false;
+    }, 3000); // Image will display for 3 seconds
   };
 
+  watch(coins, (newValue) => {
+    const { user, setUser } = useUserStore();
+
+    if (user) {
+      setUser({ ...user, gameStats: { ...user.gameStats, coins: newValue } });
+    }
+  });
+
   return {
-    coin,
+    coins,
+    initState,
     increment,
     decrement,
     formattedCoin,
-    getCoinImage,
-    showGetCoinImage,
+    receivedCoinImagePath,
+    shouldDisplayReceivedCoin,
   };
 });
 

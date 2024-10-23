@@ -31,7 +31,6 @@ import clearSound from '../../public/assets/sounds/clear.wav';
 import hintSound from '../../public/assets/sounds/hint.wav';
 import backgroundMusic from '../../public/assets/sounds/puzzle-game-bg-music.mp3';
 import QueueManager from '@/class/QueueManager';
-import { updateUserWithLocalStorage } from '../lib/fetchUtils';
 
 import '@/extensions/array';
 

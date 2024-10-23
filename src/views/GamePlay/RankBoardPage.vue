@@ -1,23 +1,24 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import BackIcon from '/public/assets/icons/previous.png';
-import { getAllUser } from '@/lib/fetchUtils';
+import { UserService } from '@/services';
 
 const users = ref([]);
 
 const sortUsers = (users) => {
   return users.sort((a, b) => {
-    if (b.success !== a.success) {
-      return b.success - a.success;
+    if (b.gameStats.completedPercentage !== a.gameStats.completedPercentage) {
+      return b.gameStats.completedPercentage - a.gameStats.completedPercentage;
     }
-    return a.timerHistory - b.timerHistory;
+    return a.gameStats.playDuration - b.gameStats.playDuration;
   });
 };
 
 const fetchUsers = async () => {
   try {
-    const fetchedUsers = await getAllUser(); 
-    users.value = sortUsers(fetchedUsers); 
+    const fetchedUsers = await UserService.loadAllUsers();
+    users.value = sortUsers(fetchedUsers);
+    console.log('Fetched users:', users.value);
   } catch (error) {
     console.error('Failed to fetch users:', error);
   }
@@ -68,13 +69,15 @@ function formatTime(seconds) {
               <!-- แสดงลำดับอันดับ -->
               <div class="rank font-bold text-5xl mr-4">{{ index + 1 }}</div>
               <!-- เพิ่มลำดับ -->
-              <img :src="user.profileImage" alt="Profile" class="w-16 h-16 rounded-full mr-4" />
+              <img :src="user.profile.avatar" alt="Profile" class="w-16 h-16 rounded-full mr-4" />
               <div class="user-details flex-grow">
-                <div class="username font-bold text-4xl">{{ user.name }}</div>
+                <div class="username font-bold text-4xl">{{ user.username }}</div>
                 <div class="info grid grid-cols-3 gap-2 mt-2">
-                  <div class="coin font-bold text-xl">Coin: {{ user.coin }}</div>
-                  <div class="success font-bold text-xl">Success: {{ user.success }}%</div>
-                  <div class="timerHistory font-bold text-xl">Timer History: {{ formatTime(user.timerHistory) }}</div>
+                  <div class="coin font-bold text-xl">Coin: {{ user.gameStats.coins }}</div>
+                  <div class="success font-bold text-xl">Success: {{ user.gameStats.completedPercentage }}%</div>
+                  <div class="timerHistory font-bold text-xl">
+                    Timer History: {{ formatTime(user.gameStats.playDuration) }}
+                  </div>
                 </div>
               </div>
             </div>
