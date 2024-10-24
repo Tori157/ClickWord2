@@ -103,9 +103,9 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
-      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
-      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/createpage.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/loginpage.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/editPage.pmg" width="450px"></td>
       <td>
         <ul>
           <li><b>Create User:</b> Players can create their own user account and choose a user profile, which includes a username (3-15 characters) and a password (at least 8 characters).</li>
@@ -135,7 +135,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/soundEffect.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/soundPage.png" width="450px"></td>
       <td>Player has the option to set background music and sound effect.</td>
     </tr>
   </tbody>
@@ -182,7 +182,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/coin.png" width="450px"></td>
       <td>At the beginning of the game, the player will not have any coins. The player will receive coins when playing through each level. Each mode will receive coins as follows:
         <ul>
           <li><b>Easy Mode</b>: Get 1 coin</li>
@@ -198,7 +198,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/marketpage.png" width="450px"></td>
       <td>
         <ul>
           Players can use their coins to purchase hints and profile frames in the market.</li>
@@ -222,7 +222,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/rankBoardpage.png" width="450px"></td>
       <td>
         <ul>
           <li><b>Time:</b> Tracks the time the user plays the game. It starts tracking the time when the game starts. If the player leaves the page, the time is paused and resumes when the user returns.</li>
@@ -314,3 +314,28 @@
 - **Implement Queue using array**
   - [See the implementation...](src/class/QueueManager.js#L95-L106) from
 [Reference from GeeksForGeeks](https://www.geeksforgeeks.org/implementation-queue-javascript/#:~:text=Implement%20Queue%20using%20array)
+<br>
+
+<div >
+  <h2>Config Post Backend</h2>
+  <p>If you have issue about Cross-origin resource sharing (CORS) when Login and Create new account. follow this:
+
+- change to port never used  for backend in `package.json`
+```
+"backend": "json-server --watch ./data/db.json --port 5000"
+```
+
+- change to samme port backend form `package.json` in `vite.config.js`
+
+  ```
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  }</p>
+  ```
+</div>
