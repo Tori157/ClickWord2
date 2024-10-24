@@ -1,11 +1,11 @@
 <script setup>
-import cancelIcon from '@/../public/assets/icons/cancel.png';
-import bulbmarket from '@/../public/assets/icons/bulbmarket.png';
-import coin from '@/../public/assets/images/coin.png';
-import blueprofile from '@/../public/assets/profile-frame/blueprofile.png';
-import greenprofile from '@/../public/assets/profile-frame/greenprofile.png';
-import orangeprofile from '@/../public/assets/profile-frame/orangeprofile.png';
-import redprofile from '@/../public/assets/profile-frame/redprofile.png';
+import cancelIcon from '/assets/icons/cancel.png';
+import bulbmarket from '/assets/icons/bulbmarket.png';
+import coin from '/assets/images/coin.png';
+import blueprofile from '/assets/profile-frame/blueprofile.png';
+import greenprofile from '/assets/profile-frame/greenprofile.png';
+import orangeprofile from '/assets/profile-frame/orangeprofile.png';
+import redprofile from '/assets/profile-frame/redprofile.png';
 import { UserService } from '@/services';
 import { useCoinStore, useHintStore } from '@/stores';
 import { useProfileStore } from '@/stores/profileStore';

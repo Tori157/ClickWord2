@@ -1,5 +1,8 @@
 <script setup>
-import RightArrowIcon from '/public/assets/icons/back.png';
+import RightArrowIcon from '/assets/icons/back.png';
+import { useSoundPlayerStore } from '@/stores';
+
+const { playSound } = useSoundPlayerStore();
 
 const modeGameTitle = ['m', 'o', 'd', 'e'];
 </script>
@@ -15,23 +18,29 @@ const modeGameTitle = ['m', 'o', 'd', 'e'];
     <div class="flex flex-col gap-6">
       <button
         class="bg-[#19C3B2] select-mode-btn hover:bg-[#20a396]"
-        @click="$router.push({ name: 'game-play-page', query: { mode: 'easy' } }), playClickButtonSound()"
+        @click="
+          $router.push({ name: 'game-play-page', query: { mode: 'easy' } }), playSound('baseClick', { reset: true })
+        "
       >
         Easy
       </button>
       <button
         class="bg-[#FFCB77] select-mode-btn hover:bg-[#ffb031]"
-        @click="$router.push({ name: 'game-play-page', query: { mode: 'medium' } }), playClickButtonSound()"
+        @click="
+          $router.push({ name: 'game-play-page', query: { mode: 'medium' } }), playSound('baseClick', { reset: true })
+        "
       >
         Medium
       </button>
       <button
         class="bg-[#FE6D73] select-mode-btn hover:bg-[#ee464c]"
-        @click="$router.push({ name: 'game-play-page', query: { mode: 'hard' } }), playClickButtonSound()"
+        @click="
+          $router.push({ name: 'game-play-page', query: { mode: 'hard' } }), playSound('baseClick', { reset: true })
+        "
       >
         Hard
       </button>
-      <button @click="$router.push({ name: 'home-page' }), playClickButtonSound()">
+      <button @click="$router.push({ name: 'home-page' }), playSound('baseClick', { reset: true })">
         <img
           :src="RightArrowIcon"
           alt="Go back to home page"

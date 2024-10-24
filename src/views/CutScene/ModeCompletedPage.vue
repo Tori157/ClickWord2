@@ -1,6 +1,6 @@
 <script setup>
-import StarIcon from '/public/assets/icons/level-up-photo.png';
-import PlayIcon from '/public/assets/icons/continue.png';
+import StarIcon from '/assets/icons/level-up-photo.png';
+import PlayIcon from '/assets/icons/continue.png';
 
 defineProps({
   isOpen: {

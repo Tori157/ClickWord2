@@ -1,9 +1,9 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useUserStore } from './userStore';
-import getcoin1 from '@/../public/assets/images/getcoin1.png';
-import getcoin2 from '@/../public/assets/images/getcoin2.png';
-import getcoin4 from '@/../public/assets/images/getcoin4.png';
+import getcoin1 from '/assets/images/getcoin1.png';
+import getcoin2 from '/assets/images/getcoin2.png';
+import getcoin4 from '/assets/images/getcoin4.png';
 
 export const useCoinStore = defineStore('coins', () => {
   const coins = ref(0);

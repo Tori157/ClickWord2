@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import AppControlPanel from './components/AppControlPanel.vue';
 import TutorialModal from './components/Modal/TutorialModal.vue';
 import MarketModal from './components/Modal/MarketModal.vue';
+import SoundModal from './components/Modal/SoundModal.vue';
 
 import { useDisclosure } from '@/utils';
 import { useUserStore, useCoinStore, useHintStore, useProfileStore } from '@/stores';
@@ -31,9 +32,13 @@ onMounted(async () => {
 
 <template>
   <div class="relative">
-    <app-control-panel :open-modal="openModal" />
-    <market-modal :is-open="opened && currentModal === 'market'" :on-close="close" />
-    <tutorial-modal :is-open="opened && currentModal === 'tutorial'" :on-close="close" />
+    <div v-if="$route.name !== 'login' && $route.name !== 'signup'">
+      <app-control-panel :open-modal="openModal" />
+      <market-modal :is-open="opened && currentModal === 'market'" :on-close="close" />
+      <tutorial-modal :is-open="opened && currentModal === 'tutorial'" :on-close="close" />
+      <sound-modal :is-open="opened && currentModal === 'sound'" :on-close="close" />
+    </div>
+
     <router-view />
   </div>
 </template>

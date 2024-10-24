@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import BackIcon from '/public/assets/icons/previous.png';
+import BackIcon from '/assets/icons/previous.png';
 import { UserService } from '@/services';
+import { useSoundPlayerStore } from '@/stores';
 
 const users = ref([]);
+const { playSound } = useSoundPlayerStore();
 
 const sortUsers = (users) => {
   return users.sort((a, b) => {
@@ -45,8 +47,8 @@ function formatTime(seconds) {
     <div class="bg-[#FEF9EF] min-h-screen flex">
       <div class="flex flex-col">
         <button
-          @click="$router.push({ name: 'home-page' }), playClickButtonSound(), playBackgroundMusic()"
           class="fixed top-4 left-5 transition duration-300 ease-in-out transform hover:scale-110"
+          @click="$router.push({ name: 'home-page' }), playSound('baseClick', { reset: true })"
         >
           <img :src="BackIcon" alt="Go to menu page" class="w-[50px] h-[50px]" />
         </button>

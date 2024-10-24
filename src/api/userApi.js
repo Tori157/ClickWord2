@@ -65,7 +65,7 @@ class UserApi {
 
     const newUserData = {
       ...user,
-      username,
+      username: username || user.username,
       gameStats: gameStats || user.gameStats,
       profile: profile || user.profile,
     };
