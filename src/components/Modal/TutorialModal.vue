@@ -10,6 +10,7 @@ import helppage6 from '/assets/images/helppage6.webp';
 import helppage7 from '/assets/images/helppage7.webp';
 import helppage8 from '/assets/images/helppage8.webp';
 import helppage9 from '/assets/images/helppage9.webp';
+import helppage10 from '/assets/images/helppage10.webp';
 import nextLeftIcon from '/assets/icons/nextlefticon.png';
 import nextRightIcon from '/assets/icons/nextrighticon.png';
 import cancelIcon from '/assets/icons/cancel.png';
@@ -26,7 +27,18 @@ defineProps({
 });
 
 const currentTutorialPage = ref(0);
-const helpPages = [helppage1, helppage2, helppage3, helppage4, helppage5, helppage6, helppage7, helppage8, helppage9];
+const helpPages = [
+  helppage1,
+  helppage2,
+  helppage3,
+  helppage4,
+  helppage5,
+  helppage6,
+  helppage7,
+  helppage8,
+  helppage9,
+  helppage10,
+];
 
 const nextPage = () => {
   if (currentTutorialPage.value < helpPages.length - 1) {
