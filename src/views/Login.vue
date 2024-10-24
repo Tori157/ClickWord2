@@ -9,7 +9,10 @@ const loginFormValues = reactive({ username: '', password: '' });
 const handleLogin = async () => {
   await UserService.signIn(loginFormValues);
   router.push({ name: 'home-page' });
-};
+  setTimeout(() => {
+    window.location.reload(true);
+  }, 1000);
+}
 </script>
 
 <template>

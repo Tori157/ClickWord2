@@ -13,6 +13,9 @@ const signupFormValues = reactive({
 const handleCreateUser = async () => {
   await UserService.signUp(signupFormValues);
   router.push({ name: 'home-page' });
+  setTimeout(() => {
+    window.location.reload(true);
+  }, 1000);
 };
 </script>
 

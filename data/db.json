@@ -5,10 +5,10 @@
       "username": "lalita",
       "password": "isylzjko-v'odvh;o",
       "gameStats": {
-        "coins": 482,
-        "hints": 8,
-        "completedPercentage": 50,
-        "playDuration": 90
+        "coins": 1001,
+        "hints": 4,
+        "completedPercentage": 51,
+        "playDuration": 1
       },
       "profile": {
         "avatar": "/assets/profile-pics/profile4.png",
@@ -52,6 +52,102 @@
           "/assets/profile-frame/redprofile.png"
         ],
         "selectedDecoration": "/assets/profile-frame/redprofile.png"
+      }
+    },
+    {
+      "id": "7ce9",
+      "username": "Warisa",
+      "password": "warisa2708",
+      "gameStats": {
+        "coins": 1,
+        "hints": 3,
+        "completedPercentage": 1,
+        "playDuration": 7
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile2.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
+    },
+    {
+      "id": "c6b6",
+      "username": "Aivane",
+      "password": "aivane1234",
+      "gameStats": {
+        "coins": 0,
+        "hints": 3,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile1.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
+    },
+    {
+      "id": "e6f9",
+      "username": "aivane",
+      "password": "1234567890",
+      "gameStats": {
+        "coins": 0,
+        "hints": 3,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile2.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
+    },
+    {
+      "id": "6cf5",
+      "username": "MyName",
+      "password": "Me12345678",
+      "gameStats": {
+        "coins": 0,
+        "hints": 3,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile4.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
+    },
+    {
+      "id": "3e3a",
+      "username": "Mydemo",
+      "password": "Mydemo1234",
+      "gameStats": {
+        "coins": 0,
+        "hints": 3,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile3.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
+    },
+    {
+      "id": "9709",
+      "username": "SAA",
+      "password": "saa12345678",
+      "gameStats": {
+        "coins": 0,
+        "hints": 3,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile3.png",
+        "decorations": [],
+        "selectedDecoration": ""
       }
     }
   ]
