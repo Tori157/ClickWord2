@@ -248,7 +248,7 @@ const checkAnswer = async () => {
     }, 3500);
   } else {
     selectedAnswerStatus.value = 'incorrect';
-    playSound('answerIncorrect');
+    playSound('answerWrong');
     setTimeout(() => {
       clearSelectAnswer();
       selectedAnswerStatus.value = '';
