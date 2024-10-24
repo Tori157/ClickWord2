@@ -105,7 +105,7 @@
     <tr>
       <td><img src="/readme_src/screenshot/createPage.png" width="450px"></td>
       <td><img src="/readme_src/screenshot/loginpage.png" width="450px"></td>
-      <td><img src="/readme_src/screenshot/editPage.pmg" width="450px"></td>
+      <td><img src="/readme_src/screenshot/editPage.png width="450px"></td>
       <td>
         <ul>
           <li><b>Create User:</b> Players can create their own user account and choose a user profile, which includes a username (3-15 characters) and a password (at least 8 characters).</li>
@@ -125,7 +125,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/tutorial.webp" width="450px"></td>
+      <td><img src="/readme_src/screenshot/tutorialImage.webp" width="450px"></td>
       <td> How to play this game.</td>
     </tr>
   </tbody>
@@ -162,7 +162,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/clear.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/clearImage.png" width="450px"></td>
       <td>If you select the wrong letter and need to reset your choices, click the "Clear" button. This will remove all selected letters, except those revealed by hints.</td>
     </tr>
   </tbody>
@@ -182,7 +182,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/coin.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/coinImage.png" width="450px"></td>
       <td>At the beginning of the game, the player will not have any coins. The player will receive coins when playing through each level. Each mode will receive coins as follows:
         <ul>
           <li><b>Easy Mode</b>: Get 1 coin</li>
@@ -222,7 +222,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/rankBoardpage.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/rankBoardPage.png" width="450px"></td>
       <td>
         <ul>
           <li><b>Time:</b> Tracks the time the user plays the game. It starts tracking the time when the game starts. If the player leaves the page, the time is paused and resumes when the user returns.</li>
