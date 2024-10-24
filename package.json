@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "format": "prettier --write src/",
     "lint": "eslint --ext .js,.ts,.vue src",
-    "backend": "json-server --watch ./data/db.json --port 5000"
+    "backend": "json-server --watch ./data/db.json --port 5001"
   },
   "dependencies": {
     "pinia": "^2.2.4",
