@@ -1,7 +1,6 @@
 <script setup>
 import { reactive } from 'vue';
 import { useSoundPlayerStore } from '@/stores';
-
 import cancelicon from '/assets/icons/cancel.png';
 
 defineProps({
@@ -16,10 +15,14 @@ defineProps({
 });
 
 const soundStore = useSoundPlayerStore();
-const { isMuted, volumes } = soundStore;
+const { volumes, isEnabled } = soundStore;
 
-const enableSounds = reactive({ bgMusic: !isMuted.bgMusic, sfx: !isMuted.sfx });
+const enableSounds = reactive({
+  bgMusic: isEnabled.bgMusic,
+  sfx: isEnabled.sfx,
+});
 </script>
+
 <template>
   <div
     v-if="isOpen"
@@ -31,7 +34,13 @@ const enableSounds = reactive({ bgMusic: !isMuted.bgMusic, sfx: !isMuted.sfx });
 
       <!-- Toggle for Sound Effects -->
       <div class="mb-4 flex items-center">
-        <input v-model="enableSounds.sfx" type="checkbox" class="mr-2" @change="soundStore.toggleMuteSFX" />
+        <input
+          v-model="enableSounds.sfx"
+          type="checkbox"
+          class="mr-2"
+          :checked="enableSounds.sfx"
+          @change="soundStore.toggleSFX"
+        />
         <label>Enable Sound Effects</label>
       </div>
 
@@ -45,6 +54,7 @@ const enableSounds = reactive({ bgMusic: !isMuted.bgMusic, sfx: !isMuted.sfx });
           max="1"
           step="0.01"
           class="w-full"
+          :disabled="!enableSounds.sfx"
           @input="(e) => soundStore.updateSFXVolume(e.target.value)"
         />
       </div>
@@ -55,8 +65,8 @@ const enableSounds = reactive({ bgMusic: !isMuted.bgMusic, sfx: !isMuted.sfx });
           v-model="enableSounds.bgMusic"
           type="checkbox"
           class="mr-2"
-          @change="soundStore.toggleMuteBgMusic"
-          @click="soundStore.playSound('bgMusic', { loop: true })"
+          :checked="enableSounds.bgMusic"
+          @change="soundStore.toggleBgMusic"
         />
         <label>Enable Background Music</label>
       </div>
@@ -71,14 +81,15 @@ const enableSounds = reactive({ bgMusic: !isMuted.bgMusic, sfx: !isMuted.sfx });
           max="1"
           step="0.01"
           class="w-full"
+          :disabled="!enableSounds.bgMusic"
           @input="(e) => soundStore.updateBgMusicVolume(e.target.value)"
-          @click="soundStore.playSound('bgMusic', { loop: true })"
         />
       </div>
 
       <button class="absolute top-1 right-1 hover:text-gray-800" @click="onClose(), soundStore.playSound('baseClick')">
         <img
           :src="cancelicon"
+          alt="Close"
           class="w-[40px] h-[40px] mr-4 mt-4 transition duration-300 ease-in-out transform hover:scale-110"
         />
       </button>
