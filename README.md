@@ -105,7 +105,7 @@
     <tr>
       <td><img src="/readme_src/screenshot/createPage.png" width="450px"></td>
       <td><img src="/readme_src/screenshot/loginpage.png" width="450px"></td>
-      <td><img src="/readme_src/screenshot/editPage.png width="450px"></td>
+      <td><img src="/readme_src/screenshot/editPage.png" width="450px"></td>
       <td>
         <ul>
           <li><b>Create User:</b> Players can create their own user account and choose a user profile, which includes a username (3-15 characters) and a password (at least 8 characters).</li>
