@@ -17,61 +17,103 @@ const initSFX = () => {
 export const useSoundPlayerStore = defineStore('soundPlayer', () => {
   const sounds = reactive(initSFX());
 
-  const isMuted = reactive({
-    bgMusic: localStorage.getItem('isMutedBgMusic') === 'true' || false,
-    sfx: localStorage.getItem('isMutedSFX') === 'true' || false,
+  const volumes = reactive({
+    bgMusic: parseFloat(localStorage.getItem('bgMusicVolume')) || 0.5,
+    sfx: parseFloat(localStorage.getItem('sfxVolume')) || 0.5,
+    previousBgMusicVolume: parseFloat(localStorage.getItem('previousBgMusicVolume')) || 0.5,
+    previousSfxVolume: parseFloat(localStorage.getItem('previousSfxVolume')) || 0.5,
   });
 
-  const volumes = reactive({
-    bgMusic: localStorage.getItem('bgMusicVolume') || 0.5,
-    sfx: localStorage.getItem('sfxVolume') || 0.5,
+  const isEnabled = reactive({
+    bgMusic: JSON.parse(localStorage.getItem('isEnabledBgMusic')) ?? true,
+    sfx: JSON.parse(localStorage.getItem('isEnabledSFX')) ?? true, // Single flag for all SFX
   });
 
   const playSound = (key, options) => {
     if (options?.reset) sounds[key].currentTime = 0;
     if (options?.loop) sounds[key].loop = options.loop;
-    sounds[key].play();
+
+    // For background music, check its specific enabled status
+    if (key === 'bgMusic' && isEnabled.bgMusic && sounds[key].volume > 0) {
+      sounds[key].play();
+    }
+
+    // For sound effects, use the global isEnabled.sfx flag
+    if (key !== 'bgMusic' && isEnabled.sfx && sounds[key].volume > 0) {
+      sounds[key].play();
+    }
   };
 
   const updateBgMusicVolume = (volume) => {
     sounds.bgMusic.volume = volume;
+    volumes.bgMusic = volume;
     localStorage.setItem('bgMusicVolume', volume);
+
+    if (isEnabled.bgMusic && volume > 0) {
+      playSound('bgMusic', { loop: true });
+    }
   };
 
   const updateSFXVolume = (volume) => {
-    for (const key in sounds) {
-      if (key !== 'bgMusic') {
-        sounds[key].volume = volume;
-        localStorage.setItem('sfxVolume', volume);
+    volumes.sfx = volume;
+    localStorage.setItem('sfxVolume', volume);
+
+    if (isEnabled.sfx) {
+      // Update all sound effect volumes (exclude bgMusic)
+      for (const key in sounds) {
+        if (key !== 'bgMusic') {
+          sounds[key].volume = volume;
+        }
       }
     }
   };
 
-  const toggleMuteBgMusic = () => {
-    isMuted.bgMusic = !isMuted.bgMusic;
-    updateBgMusicVolume(isMuted.bgMusic ? 0 : 1);
-    localStorage.setItem('isMutedBgMusic', isMuted.bgMusic);
+  const toggleBgMusic = () => {
+    if (isEnabled.bgMusic) {
+      // Disable sound, but store the current volume
+      volumes.previousBgMusicVolume = volumes.bgMusic;
+      updateBgMusicVolume(0);
+    } else {
+      // Enable sound and restore the previous volume
+      updateBgMusicVolume(volumes.previousBgMusicVolume || 0.5);
+    }
+    isEnabled.bgMusic = !isEnabled.bgMusic;
+    localStorage.setItem('isEnabledBgMusic', isEnabled.bgMusic);
+    localStorage.setItem('previousBgMusicVolume', volumes.previousBgMusicVolume);
   };
 
-  const toggleMuteSFX = () => {
-    isMuted.sfx = !isMuted.sfx;
-    for (const key in sounds) {
-      if (key !== 'bgMusic') {
-        sounds[key].muted = isMuted.sfx;
+  const toggleSFX = () => {
+    if (isEnabled.sfx) {
+      // Disable all sound effects by setting their volumes to 0
+      volumes.previousSfxVolume = volumes.sfx;
+      updateSFXVolume(0);
+    } else {
+      // Re-enable sound effects and restore previous volume
+      updateSFXVolume(volumes.previousSfxVolume || 0.5);
+
+      // Reapply the volume to all SFX sounds
+      for (const key in sounds) {
+        if (key !== 'bgMusic') {
+          sounds[key].volume = volumes.previousSfxVolume || 0.5;
+        }
       }
     }
-    localStorage.setItem('isMutedSFX', isMuted.sfx);
+
+    // Toggle the isEnabled.sfx flag
+    isEnabled.sfx = !isEnabled.sfx;
+    localStorage.setItem('isEnabledSFX', isEnabled.sfx);
+    localStorage.setItem('previousSfxVolume', volumes.previousSfxVolume);
   };
 
   return {
     sounds,
-    isMuted,
     volumes,
+    isEnabled,
     playSound,
     updateBgMusicVolume,
     updateSFXVolume,
-    toggleMuteBgMusic,
-    toggleMuteSFX,
+    toggleBgMusic,
+    toggleSFX,
   };
 });
 
