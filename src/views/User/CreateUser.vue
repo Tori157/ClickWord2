@@ -2,6 +2,7 @@
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { UserService, AssetService } from '@/services';
+import { showAlert } from '@/utils/toast.js';
 
 const router = useRouter();
 const signupFormValues = reactive({
@@ -13,6 +14,7 @@ const signupFormValues = reactive({
 const handleCreateUser = async () => {
   await UserService.signUp(signupFormValues);
   router.push({ name: 'home-page' });
+  showAlert('Create success.', 'rgb(25 195 178)');
   setTimeout(() => {
     window.location.reload(true);
   }, 1000);

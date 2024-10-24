@@ -1,5 +1,6 @@
 import UserApi from '@/api/userApi';
 import { useUserStore } from '@/stores';
+import { showAlert } from '@/utils/toast.js';
 
 export default class UserService {
   static async loadAllUsers() {
@@ -45,10 +46,12 @@ export default class UserService {
     const authenticatedUser = await UserApi.authenticateUser(userInput);
 
     if (!authenticatedUser) {
+      showAlert('Login fail.', 'rgb(255 51  51)');
       return;
     }
 
     useUserStore().setUser(authenticatedUser);
+    showAlert('Login successful!', 'rgb(25 195 178)');
     return authenticatedUser;
   }
 
