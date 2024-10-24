@@ -1,23 +1,36 @@
 export default class AssetService {
   static getBaseProfilePictureUrls() {
     return [
-      '/public/assets/profile-pics/profile1.png',
-      '/public/assets/profile-pics/profile2.png',
-      '/public/assets/profile-pics/profile3.png',
-      '/public/assets/profile-pics/profile4.png',
+      '/assets/profile-pics/profile1.png',
+      '/assets/profile-pics/profile2.png',
+      '/assets/profile-pics/profile3.png',
+      '/assets/profile-pics/profile4.png',
     ];
   }
 
   static getDefaultProfilePictureUrl() {
-    return '/public/assets/profile-pics/profile2.png';
+    return '/assets/profile-pics/profile2.png';
   }
 
   static getBaseProfileFrameUrls() {
     return [
-      '/public/assets/profile-frame/blueprofile.png',
-      '/public/assets/profile-frame/greenprofile.png',
-      '/public/assets/profile-frame/orangeprofile.png',
-      '/public/assets/profile-frame/redprofile.png',
+      '/assets/profile-frame/blueprofile.png',
+      '/assets/profile-frame/greenprofile.png',
+      '/assets/profile-frame/orangeprofile.png',
+      '/assets/profile-frame/redprofile.png',
     ];
+  }
+
+  static getSFXUrls() {
+    return {
+      bgMusic: '/assets/sounds/puzzle-game-bg-music.mp3',
+      selectLetter: '/assets/sounds/select.mp3',
+      answerCorrect: '/assets/sounds/success.mp3',
+      answerWrong: '/assets/sounds/fail.mp3',
+      baseClick: '/assets/sounds/buttonclick.wav',
+      clearLetter: '/assets/sounds/clear.wav',
+      useHint: '/assets/sounds/hint.wav',
+      purchased: '/assets/sounds/buyingSound.mp3',
+    };
   }
 }

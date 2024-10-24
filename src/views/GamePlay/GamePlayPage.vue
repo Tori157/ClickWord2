@@ -2,7 +2,7 @@
 import { ref, reactive, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useDisclosure } from '@/utils';
-import { useUserStore, useHintStore, useCoinStore } from '@/stores';
+import { useUserStore, useHintStore, useCoinStore, useSoundPlayerStore } from '@/stores';
 
 import LevelCompletePage from '../../views/CutScene/LevelCompletedPage.vue';
 import ModeCompletePage from '../../views/CutScene/ModeCompletedPage.vue';
@@ -11,10 +11,10 @@ import GameCompletedPage from '../../views/CutScene/GameCompletedPage.vue';
 import QueueManager from '@/class/QueueManager';
 import '@/extensions/array';
 
-import HomeIcon from '/public/assets/icons/HomeButton.png';
+import HomeIcon from '/assets/icons/HomeButton.png';
 
-import Questions from '@/data/word_levels.json';
-import TimeIcon from '/public/assets/icons/timeicon.png';
+import Questions from '@/constants/word_levels.json';
+import TimeIcon from '/assets/icons/timeicon.png';
 import { UserService } from '@/services';
 
 // Use this with cut scene components
@@ -29,6 +29,7 @@ const router = useRouter();
 const hintStore = useHintStore();
 const coinStore = useCoinStore();
 const userStore = useUserStore();
+const { playSound } = useSoundPlayerStore();
 
 const success = ref(userStore.user.gameStats.completedPercentage);
 const onMode = ref('');
@@ -86,9 +87,9 @@ const selectedAnswer = computed(() => {
 const filledBoxLength = computed(() => selectedAnswer.value.filter((ans) => ans.reserved).length);
 
 const maxLevels = {
-  easy: 3,
-  medium: 3,
-  hard: 3,
+  easy: 35,
+  medium: 35,
+  hard: 30,
 };
 const queueManager = new QueueManager('wordQueue', Questions, maxLevels);
 
@@ -117,7 +118,7 @@ const selectLetter = (index) => {
       order: indexOfFirstEmpty,
     });
 
-    // playSelectLetterSound();
+    playSound('selectLetter', { reset: true });
   }
 };
 
@@ -164,9 +165,7 @@ const nextLevel = () => {
   resumeTimer();
   if (level[onMode.value] > maxLevels[onMode.value]) {
     openPage('mode-completed');
-    if (!queueManager.isFirstRoundCompleted(onMode.value)) {
-      hintStore.increment(5);
-    }
+    hintStore.increment(5);
     level[onMode.value] = 1;
     saveToLocalStorage('level', level);
     return;
@@ -208,7 +207,7 @@ const checkAnswer = async () => {
     selectedAnswerStatus.value = 'correct';
     const isLevelWithinMax = level[onMode.value] <= maxLevels[onMode.value];
 
-    // playSuccessSound();
+    playSound('answerCorrect');
     setTimeout(() => {
       if (isLevelWithinMax) {
         level[onMode.value] += 1;
@@ -234,7 +233,7 @@ const checkAnswer = async () => {
         success.value += 1;
       }
       saveToLocalStorage('userSuccess', success.value);
-      const isSuccessPendingCompletion = Math.round(success.value) === 9 && !completedGame();
+      const isSuccessPendingCompletion = Math.round(success.value) === 100 && !completedGame();
       if (isSuccessPendingCompletion) {
         openPage('game-completed');
         hintStore.increment(5);
@@ -249,7 +248,7 @@ const checkAnswer = async () => {
     }, 3500);
   } else {
     selectedAnswerStatus.value = 'incorrect';
-    // playFailSound();
+    playSound('answerIncorrect');
     setTimeout(() => {
       clearSelectAnswer();
       selectedAnswerStatus.value = '';
@@ -276,6 +275,14 @@ watch(
   async () => {
     await UserService.updateGameStats({ completedPercentage: success.value });
     userStore.user.gameStats.completedPercentage = success.value;
+  },
+);
+
+watch(
+  () => hintStore.hints,
+  async () => {
+    await UserService.updateGameStats({ hints: hintStore.hints });
+    userStore.user.gameStats.hints = hintStore.hints;
   },
 );
 
@@ -419,7 +426,7 @@ function goToMenuPage() {
     <section id="gameplay-tools-component" class="flex justify-center items-end mb-6 gap-5">
       <button
         class="bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-20 w-58 hover:bg-[#878787] focus:bg-black transition duration-300 ease-in-out transform hover:scale-110"
-        @click="clearSelectAnswer(), playClearSound()"
+        @click="clearSelectAnswer(), playSound('clearLetter')"
       >
         Clear
       </button>
@@ -432,7 +439,6 @@ function goToMenuPage() {
         <img :src="TimeIcon" alt="Time icon" class="w-[25px] h-[25px] mr-2" />
         <div>
           <div id="timer">{{ formattedTime }}</div>
-          <!-- <button type="button" id="stop_timer" @click="stopTimer">Stop time</button> -->
         </div>
       </div>
       <button
@@ -441,7 +447,7 @@ function goToMenuPage() {
           'bg-[#000000] text-[#FEF9EF] text-3xl rounded-xl px-12 w-58 transition duration-300 ease-in-out transform hover:scale-110',
           !hintStore.isEmpty ? 'hover:bg-[#878787] focus:bg-black' : 'opacity-50 cursor-not-allowed',
         ]"
-        @click="applyHint(), playHintSound()"
+        @click="applyHint(), playSound('useHint', { reset: true })"
       >
         Hints ({{ hintStore.hints }})
       </button>

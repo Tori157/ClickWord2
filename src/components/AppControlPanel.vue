@@ -1,10 +1,10 @@
 <script setup>
-import helpButton from '/public/assets/icons/helpButton.png';
-import settingButton from '../../public/assets/icons/settingButton.png';
+import helpButton from '/assets/icons/helpButton.png';
+import settingButton from '/assets/icons/settingButton.png';
 
-import coinDisplay from '/public/assets/icons/coin.png';
+import coinDisplay from '/assets/icons/coin.png';
 import { useCoinStore } from '@/stores';
-import marketButton from '/public/assets/icons/MarketButton.png';
+import marketButton from '/assets/icons/MarketButton.png';
 
 defineProps({
   openModal: {
@@ -44,7 +44,7 @@ A
         />
       </button>
 
-      <button @click="toggleSound()">
+      <button @click="openModal('sound')">
         <img
           :src="settingButton"
           alt="setting Button"

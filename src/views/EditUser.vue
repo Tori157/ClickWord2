@@ -3,7 +3,7 @@ import { reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 import { UserService, AssetService } from '@/services';
-import deleteIcon from '/public/assets/icons/delete.png';
+import deleteIcon from '/assets/icons/delete.png';
 
 const router = useRouter();
 const { user, rehydrateUser } = useUserStore();

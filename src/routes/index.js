@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '@/stores';
 
-import OriginGamePage from '../views/OriginGamePage.vue';
 import MenuPage from '../views/MenuPage.vue';
 import HomePage from '../views/Home/HomePage.vue';
 import GamePlayPage from '../views/GamePlay/GamePlayPage.vue';
@@ -35,11 +34,6 @@ const routes = [
     path: '/rank-board',
     name: 'rank-board-page',
     component: RankBoardPage,
-  },
-  {
-    path: '/origin',
-    name: 'origin-game-page',
-    component: OriginGamePage,
   },
   {
     path: '/signup',

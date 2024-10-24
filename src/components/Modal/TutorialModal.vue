@@ -1,18 +1,18 @@
 <script setup>
 import { ref } from 'vue';
 
-import helppage1 from '@/../public/assets/images/helppage1.webp';
-import helppage2 from '@/../public/assets/images/helppage2.webp';
-import helppage3 from '@/../public/assets/images/helppage3.webp';
-import helppage4 from '@/../public/assets/images/helppage4.webp';
-import helppage5 from '@/../public/assets/images/helppage5.webp';
-import helppage6 from '@/../public/assets/images/helppage6.webp';
-import helppage7 from '@/../public/assets/images/helppage7.webp';
-import helppage8 from '@/../public/assets/images/helppage8.webp';
-import helppage9 from '@/../public/assets/images/helppage9.webp';
-import nextLeftIcon from '@/../public/assets/icons/nextlefticon.png';
-import nextRightIcon from '@/../public/assets/icons/nextrighticon.png';
-import cancelIcon from '@/../public/assets/icons/cancel.png';
+import helppage1 from '/assets/images/helppage1.webp';
+import helppage2 from '/assets/images/helppage2.webp';
+import helppage3 from '/assets/images/helppage3.webp';
+import helppage4 from '/assets/images/helppage4.webp';
+import helppage5 from '/assets/images/helppage5.webp';
+import helppage6 from '/assets/images/helppage6.webp';
+import helppage7 from '/assets/images/helppage7.webp';
+import helppage8 from '/assets/images/helppage8.webp';
+import helppage9 from '/assets/images/helppage9.webp';
+import nextLeftIcon from '/assets/icons/nextlefticon.png';
+import nextRightIcon from '/assets/icons/nextrighticon.png';
+import cancelIcon from '/assets/icons/cancel.png';
 
 defineProps({
   isOpen: {

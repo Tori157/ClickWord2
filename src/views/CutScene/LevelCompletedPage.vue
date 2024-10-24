@@ -1,5 +1,5 @@
 <script setup>
-import TurtleIcon from '/public/assets/icons/loadPhoto.png';
+import TurtleIcon from '/assets/icons/loadPhoto.png';
 import { ref, watchEffect, toRefs } from 'vue';
 import { useUserStore, useCoinStore } from '@/stores';
 

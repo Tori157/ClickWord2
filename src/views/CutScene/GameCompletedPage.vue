@@ -1,5 +1,5 @@
 <script setup>
-import TrophyIcon from '/public/assets/icons/prizePhoto.png';
+import TrophyIcon from '/assets/icons/prizePhoto.png';
 
 defineProps({
   isOpen: {

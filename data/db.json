@@ -1,43 +1,58 @@
 {
   "users": [
     {
-      "id": "f608",
-      "username": "namfon",
+      "id": "74c2",
+      "username": "lalita",
       "password": "isylzjko-v'odvh;o",
       "gameStats": {
-        "coins": 755,
-        "hints": 10,
-        "completedPercentage": 0,
-        "playDuration": 0
+        "coins": 482,
+        "hints": 8,
+        "completedPercentage": 50,
+        "playDuration": 90
       },
       "profile": {
-        "avatar": "/public/assets/profile-pics/profile2.png",
+        "avatar": "/assets/profile-pics/profile3.png",
         "decorations": [
-          "/public/assets/profile-frame/orangeprofile.png",
-          "/public/assets/profile-frame/redprofile.png",
-          "/public/assets/profile-frame/blueprofile.png"
+          "/assets/profile-frame/blueprofile.png",
+          "/assets/profile-frame/redprofile.png"
         ],
-        "selectedDecoration": "/public/assets/profile-frame/blueprofile.png"
+        "selectedDecoration": "/assets/profile-frame/blueprofile.png"
       }
     },
     {
-      "id": "b58a",
-      "password": "65130500100",
+      "id": "74c3",
+      "username": "putinat",
+      "password": "isylzjko-v'odvh;o",
       "gameStats": {
-        "coins": 940,
-        "hints": 811,
-        "completedPercentage": 9,
-        "playDuration": 9
+        "coins": 1000,
+        "hints": 50,
+        "completedPercentage": 50,
+        "playDuration": 67
       },
       "profile": {
-        "avatar": "/public/assets/profile-pics/profile4.png",
-        "decorations": [
-          "/public/assets/profile-frame/orangeprofile.png",
-          "/public/assets/profile-frame/redprofile.png"
-        ],
-        "selectedDecoration": "/public/assets/profile-frame/orangeprofile.png"
+        "avatar": "/assets/profile-pics/profile2.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
+    },
+    {
+      "id": "74c4",
+      "username": "sixthman",
+      "password": "65130500100",
+      "gameStats": {
+        "coins": 9967,
+        "hints": 100,
+        "completedPercentage": 99,
+        "playDuration": 120
       },
-      "username": "sixthman"
+      "profile": {
+        "avatar": "/assets/profile-pics/profile4.png",
+        "decorations": [
+          "/assets/profile-frame/orangeprofile.png",
+          "/assets/profile-frame/redprofile.png"
+        ],
+        "selectedDecoration": "/assets/profile-frame/redprofile.png"
+      }
     }
   ]
 }
