@@ -222,7 +222,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/rankBoardPage.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/rankBoardpage.png" width="450px"></td>
       <td>
         <ul>
           <li><b>Time:</b> Tracks the time the user plays the game. It starts tracking the time when the game starts. If the player leaves the page, the time is paused and resumes when the user returns.</li>

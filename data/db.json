@@ -149,6 +149,38 @@
         "decorations": [],
         "selectedDecoration": ""
       }
+    },
+    {
+      "id": "f475",
+      "username": "itbkk.kittiwut",
+      "password": "ip23/KIT",
+      "gameStats": {
+        "coins": 0,
+        "hints": 3,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile2.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
+    },
+    {
+      "id": "5d79",
+      "username": "itbkk.siam",
+      "password": "ip23/SIA",
+      "gameStats": {
+        "coins": 0,
+        "hints": 3,
+        "completedPercentage": 0,
+        "playDuration": 0
+      },
+      "profile": {
+        "avatar": "/assets/profile-pics/profile2.png",
+        "decorations": [],
+        "selectedDecoration": ""
+      }
     }
   ]
 }
