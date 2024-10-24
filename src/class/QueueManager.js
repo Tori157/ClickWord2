@@ -1,4 +1,4 @@
-import '../extensions/array';
+import '../utils/array';
 
 class QueueManager {
   constructor(queueKey, collection, config) {

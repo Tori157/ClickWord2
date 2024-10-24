@@ -12,7 +12,7 @@ const handleLogin = async () => {
   setTimeout(() => {
     window.location.reload(true);
   }, 1000);
-}
+};
 </script>
 
 <template>

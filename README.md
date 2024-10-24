@@ -36,7 +36,7 @@
           <ul>
             <li>Implement local storage</li>
             <li>Clear feature</li>
-            <li>Fix and refactor code overall</li>
+            <li>Fix and refactor code overall <b>[UPDATE]</b></li>
             <li>Manage user account <b>[NEW]</b></li>
           </ul>
         </td>
@@ -51,7 +51,7 @@
             <li>Tutorial page <b>[UPDATE]</b></li>
             <li>Quiz word setup</li>
             <li>Animation <b>[UPDATE]</b></li>
-            <li>Fix and refactor code overall</li>
+            <li>Fix and refactor code overal <b>[UPDATE]</b></li>
             <li>Market feature <b>[NEW]</b></li>
             <li>UI image asset <b>[NEW]</b></li>
           </ul>
@@ -65,8 +65,8 @@
         <td>
           <ul>
             <li>Hint feature</li>
-            <li>Fix and refactor code overall</li>
-            <li>Readme</li> <b>[UPDATE]</b>
+            <li>Fix and refactor code overall <b>[UPDATE]</b></li>
+            <li>Readme  <b>[UPDATE]</b></li>
             <li>Components Refactoring <b>[NEW]</b></li>
             <li>Sound effect</li> <b>[NEW]</b>
             <li>Data design <b>[NEW]</b></li>
@@ -82,8 +82,8 @@
           <ul>
             <li>Answer validator</li>
             <li>UI image asset <b>[UPDATE]</b></li>
-            <li>Fix and refactor code overall</li>
-            <li>Time & Rank Board Feature</li> <b>[NEW]</b>
+            <li>Fix and refactor code overall <b>[UPDATE]</b></li>
+            <li>Time & Rank Board Feature <b>[NEW]</b></li>
           </ul>
         </td>
         <td>20%</td>
@@ -103,7 +103,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/createpage.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/createPage.png" width="450px"></td>
       <td><img src="/readme_src/screenshot/loginpage.png" width="450px"></td>
       <td><img src="/readme_src/screenshot/editPage.pmg" width="450px"></td>
       <td>
@@ -172,8 +172,8 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/hint.png" width="450px"></td>
-      <td>The game starts with 3 hints. If you get stuck, you can use a hint to reveal one correct letter in the answer box. You’ll also earn 5 additional hints for upon first completion of each mode.</td>
+      <td><img src="/readme_src/screenshot/hintImage.png" width="450px"></td>
+      <td>The game starts with 3 hints. If you get stuck, you can use a hint to reveal one correct letter in the answer box. You’ll also earn 5 additional hints for completing each game mode.</td>
     </tr>
   </tbody>
 </table>
@@ -212,7 +212,7 @@
 <table align="center">
   <tbody>
     <tr>
-      <td><img src="/readme_src/screenshot/success.png" width="450px"></td>
+      <td><img src="/readme_src/screenshot/successImage.png" width="450px"></td>
       <td>Track your success rate by measuring how many levels you complete in each mode. Your progress will contribute to reaching a total of 100%.</td>
     </tr>
   </tbody>
@@ -278,19 +278,23 @@
 </div>
 
 - **Game Design**
+
   - [Infinite Word Search Crossy](https://apps.apple.com/us/app/infinite-word-search-crossy/id1130710966)
   - UI Game [DaisyUI](https://daisyui.com/) and [TailwindCSS](https://tailwindcss.com/)
 
 - **Images**
+
   - Icons from [Flaticon](https://www.flaticon.com/)
   - Profile Frame [Pngegg](https://www.pngegg.com/th/)
   - Avatars from [Recraft](https://www.recraft.ai/)
 
 - **Animation**
+
   - from [TailwindCSS](https://tailwindcss.com/) and [Codepen io](https://codepen.io/alvarotrigo/pen/bGrXmwM)
 
 - **Sound Effects and Background Music**
-  - Background  sound -- [Cotton Candy (Children Puzzle Game Music)](https://pixabay.com/music/happy-childrens-tunes-cotton-candy-children-puzzle-game-music-197733/)
+
+  - Background sound -- [Cotton Candy (Children Puzzle Game Music)](https://pixabay.com/music/happy-childrens-tunes-cotton-candy-children-puzzle-game-music-197733/)
   - ClickButton sound -- [Click sound](https://mixkit.co/free-sound-effects/click/)
   - Success sound -- [Success 1](https://pixabay.com/sound-effects/success-1-6297/)
   - Fail sound -- [Video game - points lost - retro](https://uppbeat.io/sfx/video-game-points-lost-retro/507/8098)
@@ -299,35 +303,39 @@
   - SelectLetter sound -- [Sound effect click](https://mixkit.co/free-sound-effects/click/)
 
 - **Document Resreach**
+
   - [Mozilla](https://developer.mozilla.org/en-US/)
   - [w3school](https://www.w3schools.com/)
   - [Pinia](https://pinia.vuejs.org/)
 
 - **Using the prototype Property**
+
   - [See the implementation...](src/extensions/array.js) from
-[Reference from W3Schools](https://www.w3schools.com/js/js_object_prototypes.asp#:~:text=Using%20the%20prototype,to%20object%20constructors%3A)
+    [Reference from W3Schools](https://www.w3schools.com/js/js_object_prototypes.asp#:~:text=Using%20the%20prototype,to%20object%20constructors%3A)
 
 - **Documentation Comments in JSDoc**
+
   - [See the implementation...](src/class/QueueManager.js) from
-[Reference from JSDoc](https://www.geeksforgeeks.org/documentation-comments-in-jsdoc/)
+    [Reference from JSDoc](https://www.geeksforgeeks.org/documentation-comments-in-jsdoc/)
 
 - **Implement Queue using array**
   - [See the implementation...](src/class/QueueManager.js#L95-L106) from
-[Reference from GeeksForGeeks](https://www.geeksforgeeks.org/implementation-queue-javascript/#:~:text=Implement%20Queue%20using%20array)
-<br>
+    [Reference from GeeksForGeeks](https://www.geeksforgeeks.org/implementation-queue-javascript/#:~:text=Implement%20Queue%20using%20array)
+    <br>
 
 <div >
   <h2>Config Post Backend</h2>
   <p>If you have issue about Cross-origin resource sharing (CORS) when Login and Create new account. follow this:
 
-- change to port never used  for backend in `package.json`
+- change to port never used for backend in `package.json`
+
 ```
 "backend": "json-server --watch ./data/db.json --port 5000"
 ```
 
 - change to samme port backend form `package.json` in `vite.config.js`
 
-  ```
+```
   server: {
     proxy: {
       '/api': {
@@ -337,5 +345,6 @@
       },
     },
   }</p>
-  ```
+```
+
 </div>

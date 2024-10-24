@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '@/stores';
 
-import MenuPage from '../views/MenuPage.vue';
+import MenuPage from '../views/Menu/MenuPage.vue';
 import HomePage from '../views/Home/HomePage.vue';
 import GamePlayPage from '../views/GamePlay/GamePlayPage.vue';
 import RankBoardPage from '../views/GamePlay/RankBoardPage.vue';
-import Login from '../views/Login.vue';
-import CreateUser from '../views/CreateUser.vue';
-import EditUser from '../views/EditUser.vue';
+import Login from '../views/User/Login.vue';
+import CreateUser from '../views/User/CreateUser.vue';
+import EditUser from '../views/User/EditUser.vue';
 
 const routes = [
   {

@@ -9,7 +9,7 @@ import ModeCompletePage from '../../views/CutScene/ModeCompletedPage.vue';
 import GameCompletedPage from '../../views/CutScene/GameCompletedPage.vue';
 
 import QueueManager from '@/class/QueueManager';
-import '@/extensions/array';
+import '@/utils/array';
 
 import HomeIcon from '/assets/icons/HomeButton.png';
 
