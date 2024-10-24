@@ -271,7 +271,7 @@
   <h1>Clip Tutorial To Play Game</h1>
 </div>
 
-[![Start Page](/readme_src/screenshot/startPage.png)](https://drive.google.com/file/d/1yzetdwbV0A_n2fngy7zKVZ90hLYyevit/view?usp=sharing)
+[![Start Page](/readme_src/screenshot/startPage.png)](https://drive.google.com/file/d/1mJrQBGvyfDnMVQsFWt0pw31sHsKtB_is/view)
 
 <div align="center">
   <h1>References</h1>
