@@ -57,6 +57,7 @@ export default class UserService {
 
   static signOut() {
     useUserStore().clearUser();
+    localStorage.clear();
   }
 
   /**
