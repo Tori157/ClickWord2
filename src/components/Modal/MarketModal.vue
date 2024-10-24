@@ -28,10 +28,10 @@ defineProps({
 const items = [
   { id: 1, name: 'Hint 1', price: 4, type: 'hint', hintAmount: 1, image: bulbmarket },
   { id: 2, name: 'Hint 6', price: 20, type: 'hint', hintAmount: 6, image: bulbmarket },
-  { id: 3, name: 'Blue Profile Frame', price: 10, type: 'profile', image: blueprofile },
-  { id: 4, name: 'Green Profile Frame', price: 12, type: 'profile', image: greenprofile },
-  { id: 5, name: 'Orange Profile Frame', price: 15, type: 'profile', image: orangeprofile },
-  { id: 6, name: 'Red Profile Frame', price: 18, type: 'profile', image: redprofile },
+  { id: 3, name: 'Blue Profile Frame', price: 20, type: 'profile', image: blueprofile },
+  { id: 4, name: 'Green Profile Frame', price: 25, type: 'profile', image: greenprofile },
+  { id: 5, name: 'Red Profile Frame', price: 30, type: 'profile', image: redprofile },
+  { id: 6, name: 'Orange Profile Frame', price: 35, type: 'profile', image: orangeprofile },
 ];
 
 const MarketTitle = ['M', 'a', 'r', 'k', 'e', 't'];
